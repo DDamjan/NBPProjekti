@@ -1,0 +1,20 @@
+<div class="title">
+    <h1>Driver details</h1>
+</div>
+<button mat-raised-button (click)="deleteDriver()">Delete driver</button>
+<map-component #mapView width="70%" height="50%" lat="43.318058" lng="21.891996" zoom="15" float="right"></map-component>
+    <p>Driver name: {{driver.firstName}} {{driver.lastName}}</p>
+    <p>Phone number: +381{{driver.phone}}</p>
+    <p>Car no: {{driver.ID}}</p>
+    <p>Car make and model: {{driver.car}}</p>
+    <p>Car color: {{driver.color}}</p>
+    <p>Licence plates: {{driver.licencePlate}}</p>
+    <p>Current location: {{driver.currentLocation}}</p>
+    <p>Is active: {{driver.isActive}}</p>
+    <p>Total fare: {{fareSum}}</p>
+    <button mat-raised-button (click)="showOnMap()">Show on map</button>
+    <button mat-raised-button (click)="arrive()" [disabled]="buttonArriveDisabled">Arrive to pick up location</button>
+    <button mat-raised-button (click)="endRide()" [disabled]="buttonEndDisabled">End current ride</button>
+    <button mat-raised-button (click)="cancelRide()" [disabled]="buttonCancelDisabled">Cancel current ride</button>
+
+<data-table #dataTable></data-table>

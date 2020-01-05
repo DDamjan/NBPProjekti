@@ -1,0 +1,58 @@
+<div class="mat-elevation-z8">
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Id Column -->
+    <ng-container matColumnDef="rideID">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ride ID</th>
+      <td mat-cell *matCellDef="let row">{{row.rideID}}</td>
+    </ng-container>
+
+    <!-- Start location Column -->
+    <ng-container matColumnDef="startLocation">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Location</th>
+      <td mat-cell *matCellDef="let row">{{row.startLocation}}</td>
+    </ng-container>
+
+    <!-- Start time Column -->
+    <ng-container matColumnDef="startTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Time</th>
+      <td mat-cell *matCellDef="let row">{{row.startTime}}</td>
+    </ng-container>
+
+    <!-- Destination Location Column -->
+    <ng-container matColumnDef="destinationLocation">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Destination Location</th>
+      <td mat-cell *matCellDef="let row">{{row.destinationLocation}}</td>
+    </ng-container>
+
+    <!-- End time Column -->
+    <ng-container matColumnDef="endTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>End Time</th>
+      <td mat-cell *matCellDef="let row">{{row.endTime}}</td>
+    </ng-container>
+
+    <!-- Distance Column -->
+    <ng-container matColumnDef="distance">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Distance</th>
+      <td mat-cell *matCellDef="let row">{{row.distance}}</td>
+    </ng-container>
+
+    <!-- Fare Column -->
+    <ng-container matColumnDef="fare">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fare</th>
+      <td mat-cell *matCellDef="let row">{{row.fare}}</td>
+    </ng-container>
+
+    <!-- Fare Column -->
+    <ng-container matColumnDef="isCanceled">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ride Canceled</th>
+      <td mat-cell *matCellDef="let row">{{row.isCanceled}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator [length]="dataSource?.data.length" [pageIndex]="0" [pageSize]="50"
+    [pageSizeOptions]="[25, 50, 100, 250]">
+  </mat-paginator>
+</div>

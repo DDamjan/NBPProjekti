@@ -1,0 +1,16 @@
+<h2>Active drivers</h2>
+<mat-grid-list cols="4" rowHeight="600px">
+
+  <mat-grid-tile *ngFor="let driver of activeDrivers">
+    <driver-card [driver]="driver" ></driver-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<h2>Free drivers</h2>
+<mat-grid-list cols="4" rowHeight="600px">
+
+  <mat-grid-tile *ngFor="let driver of freeDrivers">
+    <driver-card [driver]="driver" ></driver-card>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<!--*ngIf="driver.isActive==true"-->
