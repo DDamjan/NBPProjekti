@@ -5,9 +5,11 @@ import { ActiveDriversComponent } from './components/active-drivers/active-drive
 import { DriverRegisterComponent } from './components/driver-register/driver-register.component';
 import { FindNearestComponent } from './components/find-nearest/find-nearest.component';
 import { DriverDetailsComponent } from './components/driver-details/driver-details.component';
+import { LoginComponent } from './components/login/login.component';
 
 const routes: Routes = [
-  { path: '', component: ActiveDriversComponent },
+  { path: '', component: LoginComponent },
+  { path: 'home', component: ActiveDriversComponent },
   { path: 'view-map', component: MapViewComponent },
   { path: 'register', component: DriverRegisterComponent },
   { path: 'find', component: FindNearestComponent },

@@ -38,6 +38,7 @@ import { MatSnackBarModule, MatTableModule, MatPaginatorModule, MatSortModule } 
 import { DriverDetailsComponent } from './components/driver-details/driver-details.component';
 import { RideService } from './service/ride.service';
 import { DataTableComponent } from './components/data-table/data-table.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { DataTableComponent } from './components/data-table/data-table.component
     FindNearestComponent,
     DriverDetailsComponent,
     DataTableComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
