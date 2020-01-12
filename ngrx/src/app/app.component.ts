@@ -11,6 +11,7 @@ import { WebSocketService } from './service/web-socket.service';
 
 export class AppComponent implements OnInit {
   title = 'NGDispatcher';
+  jeste: boolean;
 
   constructor(private store: Store<any>,private webSocketService: WebSocketService) { }
 
@@ -25,5 +26,6 @@ export class AppComponent implements OnInit {
       console.log("get-drivers^");
     });
     this.store.dispatch(new driverActions.GetDrivers());
+    // this.store.select()
   }
 }

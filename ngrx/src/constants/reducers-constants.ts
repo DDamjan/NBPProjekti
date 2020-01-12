@@ -14,3 +14,9 @@ export const DELETE_DRIVER = 'DELETE_DRIVER';
 export const DELETE_DRIVER_SUCCESS = 'DELETE_DRIVER_SUCCESS';
 
 export const SELECT_DRIVER = 'SELECT_DRIVER';
+
+export const ADD_USER = 'ADD_USER';
+export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS';
+
+export const GET_USER = 'GET_USER';
+export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
