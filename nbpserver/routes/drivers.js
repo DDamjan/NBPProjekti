@@ -1,16 +1,28 @@
 var express = require('express');
 var router = express.Router();
+const webSocket = require('../socket/web-socket.js');
+const redisDB = require('../db/redisDB.js');
+
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
-
 router.get('/', async (req, res) => {
   //query.execGet(req, res, queryString.GET_DRIVERS);
+  webSocket.io.emit('test', "ovde ide kurac");
+  redisDB.client.set("string key", "string val", redisDB.redis.print);
+  redisDB.client.hset("hash key", "hashtest 1", "some value", redisDB.redis.print);
+  redisDB.client.hset(["hash key", "hashtest 2", "some other value"], redisDB.redis.print);
+  redisDB.client.hkeys("hash key", function (err, replies) {
+      console.log(replies.length + " replies:");
+      replies.forEach(function (reply, i) {
+          console.log("    " + i + ": " + reply);
+      });
+      client.quit();
+  });
 });
 
 router.get('/', async (req, res) => {
-//   let id = req.query.id;
-
-//   query.execGet(req, res, queryString.GET_DRIVER + id);
+  //   let id = req.query.id;
+  //   query.execGet(req, res, queryString.GET_DRIVER + id);
 });
 
 router.post('/create', async (req, res) => {
