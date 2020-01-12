@@ -39,6 +39,7 @@ import { DriverDetailsComponent } from './components/driver-details/driver-detai
 import { RideService } from './service/ride.service';
 import { DataTableComponent } from './components/data-table/data-table.component';
 import { LoginComponent } from './components/login/login.component';
+import { reducers } from './store/reducers';
 
 @NgModule({
   declarations: [
@@ -71,8 +72,7 @@ import { LoginComponent } from './components/login/login.component';
     MatSelectModule,
     StoreDevtoolsModule,
     FormsModule,
-    StoreModule.forRoot({}),
-    StoreModule.forFeature('drivers', DriverReducer),
+    StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({}),
     RouterModule,
     EffectsModule.forRoot([]),

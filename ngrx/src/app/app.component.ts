@@ -10,10 +10,12 @@ import * as driverActions from './store/actions';
 
 export class AppComponent implements OnInit {
   title = 'NGDispatcher';
+  jeste: boolean;
 
   constructor(private store: Store<any>) { }
 
   public ngOnInit() {
     this.store.dispatch(new driverActions.GetDrivers());
+    // this.store.select()
   }
 }

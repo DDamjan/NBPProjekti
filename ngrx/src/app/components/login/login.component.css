@@ -3,16 +3,43 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 1%;
- }
- form > * {
+}
+
+form>* {
     width: 50%;
- }
+}
 
- .buttons{
-     flex-direction: row;
- }
+.buttons {
+    flex-direction: row;
+}
 
- button{
-     margin: 0 1% 0 0;
- }
+button {
+    margin: 0 1% 0 0;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('D:/Faks/NBP/NBPProjekti/ngrx/repo/closeup-photo-of-yellow-taxi-1053765.jpg');
+}
+
+mat-card {
+    width: 400px;
+    padding-top: 0%;
+}
+
+mat-card-header{
+    width: 432px;
+    background-color: rgb(63, 81, 181);
+    margin-left: -4%;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    height: 50px;
+}
+
+mat-card-title{
+    margin-top: 20%;
+    color: white;
+}
