@@ -12,45 +12,36 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/request', async (req, res) => {
-  let userID = req.body.userID;
-  let destinationLat = req.body.destinationLat;
-  let destinationLng = req.body.destinationLng;
-  let destinationLocation = req.body.destinationLocation;
-  let startLat = req.body.startLat;
-  let startLng = req.body.startLng;
-  let startLocation = req.body.startLocation;
-  //RedisdDB funkcija koja pamti koj user trazi voznju
-  redisDB.execPost(req, res, "makeRequest");
-  // console.log(req.body);
-  // console.log("request works!!!!");
-
+  redisDB.execPost(req, res, redisDB.makeRequest);
+  client.hget("requests", req.body.userID, function (err, res) {
+    console.log(res);
+    webSocket.io.emit('incomingRequest',JSON.parse(res) );
+  });
+  webSocket.io.emit('approveRequest',"approveRequest^" );
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
+  setTimeout(/*KAKO SAM SEBI DA POZOVEM RUTU*/()=>{}, 10000);
 });
 
 router.post('/accept', async (req, res) => {
-  let driverID = req.body.driverID;
-  let userID = req.body.userID;
-  //RedisdDB funkcija koja pamti da ovaj vozac prihvata voznju ovog usera
-  console.log(req.body);
-  console.log("accept works!!!!");
+  redisDB.execPost(req, res, redisDB.requestAccepted);
+
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
-  res.json("accepted");
-  res.end();
+  //LOG how many requests accepted by a driver
 });
 
 router.post('/deny', async (req, res) => {
-  let driverID = req.body.driverID;
-  let userID = req.body.userID;
+  redisDB.execPost(req, res, redisDB.requestDenied);
   //RedisdDB funkcija koja pamti da ovaj vozac ne prihvata voznju ovog usera
 
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
+  //LOG how many requests denied by a driver
 });
 
 router.post('/chooseDriver', async (req, res) => {
   let driverID = req.body.driverID;
   let userID = req.body.userID;
-  //RedisdDB funkcija koja pamti da ovaj vozac vozi ovog usera
 
+  webSocket.io.emit('approvedRide',"approvedRide^");
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
