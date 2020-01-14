@@ -28,7 +28,7 @@ export class UserEffects {
 @Effect()
 getUser$ = this.update$.pipe(
     ofAction(userActions.GetUser),
-    switchMap(user => this.userService.getUser(user.payload.ID)),
+    switchMap(user => this.userService.getUser(user.payload)),
     map(response => {
       return new userActions.GetUserSuccess(response);
     })

@@ -46,8 +46,9 @@ export class UserService {
     /* POST: Authenticate a user */
     authUser(data: object): Observable<User> {
         const url = `${this.serverURL}auth`;
+        console.log('URL: ' + url);
         return this.http.post<User>(url, data, httpOptions).pipe(
-            catchError(this.handleError<User>('addUser'))
+            catchError(this.handleError<User>('authUser'))
         );
     }
 

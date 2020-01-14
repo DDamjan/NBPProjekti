@@ -17,6 +17,8 @@ router.post('/register', async (req, res) => {
 router.post('/auth', async (req, res) => {
   let username = req.body.username;
   let password = sha('sha256').update(req.body.password).digest('hex');
+
+  console.log("username:"+username+", password: "+password);
   Neo4jDB.execAuth(username,password,res);
 
 
