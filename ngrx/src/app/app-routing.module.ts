@@ -6,14 +6,18 @@ import { DriverRegisterComponent } from './components/driver-register/driver-reg
 import { FindNearestComponent } from './components/find-nearest/find-nearest.component';
 import { DriverDetailsComponent } from './components/driver-details/driver-details.component';
 import { LoginComponent } from './components/login/login.component';
+import { AuthGuard } from './service/guard/auth.guard';
+import { RouteGuard } from './service/guard/route.guard';
+import { LoginGuard } from './service/guard/login.guard';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'home', component: ActiveDriversComponent },
-  { path: 'view-map', component: MapViewComponent },
-  { path: 'register', component: DriverRegisterComponent },
-  { path: 'find', component: FindNearestComponent },
-  { path: 'details/:id', component: DriverDetailsComponent}
+  { path: 'login', component: LoginComponent },
+  { path: 'operator/home', component: ActiveDriversComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: 'operator/view-map', component: MapViewComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: 'operator/register', component: DriverRegisterComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: 'operator/find', component: FindNearestComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: 'operator/details/:id', component: DriverDetailsComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [LoginGuard] }
 ];
 
 @NgModule({

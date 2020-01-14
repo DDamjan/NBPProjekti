@@ -22,7 +22,7 @@ button {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('D:/Faks/NBP/NBPProjekti/ngrx/repo/closeup-photo-of-yellow-taxi-1053765.jpg');
+    background-image: url('../../../../repo/closeup-photo-of-yellow-taxi-1053765.jpg');
 }
 
 mat-card {
