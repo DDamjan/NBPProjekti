@@ -14,8 +14,7 @@ Neo4jDB.execAllDrivers(req ,res);
 });
 
 router.get('/byid', async (req, res) => {
-      let id = req.query.id;
-  //   query.execGet(req, res, queryString.GET_DRIVER + id);
+    let id = req.query.id;
     Neo4jDB.execGetDriverById(id,res);
 });
 
