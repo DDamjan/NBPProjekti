@@ -7,41 +7,28 @@ const redisDB = require('../db/redisDB.js');
 
 router.get('/', async (req, res) => {
   let id = req.query.id;
-
   //query.execGet(req, res, queryString.GET_RIDES + id);
 });
 
 router.post('/request', async (req, res) => {
   redisDB.execPost(req, res, redisDB.makeRequest);
-  client.hget("requests", req.body.userID, function (err, res) {
-    console.log(res);
-    webSocket.io.emit('incomingRequest',JSON.parse(res) );
-  });
-  webSocket.io.emit('approveRequest',"approveRequest^" );
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
-  setTimeout(/*KAKO SAM SEBI DA POZOVEM RUTU*/()=>{}, 10000);
 });
 
 router.post('/accept', async (req, res) => {
   redisDB.execPost(req, res, redisDB.requestAccepted);
-
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
   //LOG how many requests accepted by a driver
 });
 
 router.post('/deny', async (req, res) => {
   redisDB.execPost(req, res, redisDB.requestDenied);
-  //RedisdDB funkcija koja pamti da ovaj vozac ne prihvata voznju ovog usera
-
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
   //LOG how many requests denied by a driver
 });
 
 router.post('/chooseDriver', async (req, res) => {
-  let driverID = req.body.driverID;
-  let userID = req.body.userID;
-
-  webSocket.io.emit('approvedRide',"approvedRide^");
+  redisDB.execPost(req, res, redisDB.requestFinished);
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
