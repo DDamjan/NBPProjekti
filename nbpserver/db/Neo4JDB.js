@@ -1,9 +1,11 @@
-var neo4j = require('neo4j-driver')
-const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'password'))
+var neo4j = require('neo4j-driver');
+let conn = require('../constants/connectionConstants');
+const driver = neo4j.driver(conn.NEO4J_URL, neo4j.auth.basic(conn.NEO4J_USER, conn.NEO4J_PASS));
+const query = require('../constants/queryStrings');
 
 async function execAllDrivers(req,res) {
   var session=driver.session();
-  session.run('match (n:User {type:"Driver"}) return n')
+  session.run(query.GET_ALL_DRIVERS)
   .then(result => {
     let n=[];
       result.records.forEach(record => {
@@ -30,14 +32,13 @@ async function execAllDrivers(req,res) {
 async function returnDriverById(id)
 {
   var session=driver.session();
-  session.run('match (n:User {type:"Driver"}) where id(n)=$ID return n', {ID: neo4j.int(id)})
+  session.run(query.GET_DRIVER_BY_ID, {ID: neo4j.int(id)})
   .then(result => {
       result.records.forEach(record => {
         let l=record.get('n');
         let s=l.properties;
         s.id=l.identity.low;
         delete s.password;
-        return s;
       });
   })
   .catch(error => {
@@ -47,13 +48,9 @@ async function returnDriverById(id)
     //console.log(error)
 }
 
-
-
-
-
 async function execGetDriverById(id,res) {
   var session=driver.session()
-  session.run('match (n:User {type:"Driver"}) where id(n)=$ID return n', {ID: neo4j.int(id)})
+  session.run(query.GET_DRIVER_BY_ID, {ID: neo4j.int(id)})
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('n');
@@ -89,7 +86,7 @@ async function execTestCreate(){
 
 async function execAuth(username,password,res){
   var session=driver.session();
-  session.run('match (n:User {username:$user,password:$pass}) return n', {user: username , pass: password})
+  session.run(query.USER_AUTH, {user: username , pass: password})
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('n');
@@ -112,7 +109,7 @@ async function execAuth(username,password,res){
 
 async function execReturnById(id,res){
   var session=driver.session();
-  session.run('MATCH (n:User) WHERE id(n)=$ID RETURN n', {ID: neo4j.int(id)})
+  session.run(query.GET_USER_BY_ID, {ID: neo4j.int(id)})
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('n');
