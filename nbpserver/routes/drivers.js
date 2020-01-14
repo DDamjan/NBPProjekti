@@ -9,8 +9,10 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 
 router.get('/peki', async (req, res) => {
   //   query.execGet(req, res, queryString.GET_DRIVER + id);
+  let id=req.body.id;
+  console.log(Neo4jDB.returnDriverById(2));
+  res.json("fduys");
   
-  console.log(Neo4jDB.returnDriverById(req.body.id));
   });
 
 

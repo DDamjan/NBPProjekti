@@ -32,8 +32,9 @@ async function execAllDrivers(req,res) {
 
 async function returnDriverById(id)
 {
-  var session=driver.session()
-  session
+  var session=driver.session();
+   let prom;
+   session
   .run('match (n:User {type:"Driver"}) where id(n)=$ID return n', {ID: neo4j.int(id)})
   .then(result => {
       result.records.forEach(record => {
@@ -41,14 +42,20 @@ async function returnDriverById(id)
         let s=l.properties;
         s.id=l.identity.low;
         delete s.password;
-       return s;
+        prom =s;
+        //console.log(prom);
         })
   })
-  .catch(error)
-  session.close();
-  
-   console.log(error)
-  }
+  .catch(error => {
+    console.log(error)
+  })
+  .then(() => {
+    session.close();
+    //console.log(prom);
+    return prom;
+  })
+
+}
 
 
 
