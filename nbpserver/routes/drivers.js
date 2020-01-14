@@ -7,6 +7,12 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
 
+router.get('/peki', async (req, res) => {
+  //   query.execGet(req, res, queryString.GET_DRIVER + id);
+  
+  console.log(Neo4jDB.returnDriverById(req.body.id));
+  });
+
 
 router.get('/', async (req, res) => {
 //   query.execGet(req, res, queryString.GET_DRIVER + id);

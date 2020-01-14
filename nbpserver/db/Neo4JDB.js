@@ -6,16 +6,20 @@ async function execAllDrivers(req,res) {
   session
   .run('match (n:User {type:"Driver"}) return n')
   .then(result => {
-    console.log(result.records);
+    let n=[];
+    
       result.records.forEach(record => {
         let l=record.get('n');
-        console.log(l);
+        //console.log(l);
         let s=l.properties;
         s.id=l.identity.low;
         delete s.password;
-          res.json(s),
-          res.end()
+        n.push(s);
+        
         })
+       // console.log(n);
+        res.json(n),
+        res.end()
   })
   .catch(error => {
     res.status(500);
@@ -25,6 +29,27 @@ async function execAllDrivers(req,res) {
   })
   .then(() => session.close())
 }
+
+async function returnDriverById(id)
+{
+  var session=driver.session()
+  session
+  .run('match (n:User {type:"Driver"}) where id(n)=$ID return n', {ID: neo4j.int(id)})
+  .then(result => {
+      result.records.forEach(record => {
+        let l=record.get('n');
+        let s=l.properties;
+        s.id=l.identity.low;
+        delete s.password;
+       return s;
+        })
+  })
+  .catch(error)
+  session.close();
+  
+   console.log(error)
+  }
+
 
 
 
@@ -122,6 +147,6 @@ module.exports={
     execTestCreate: execTestCreate,
     execAuth: execAuth,
     execReturnById: execReturnById,
-    execAllDrivers: execAllDrivers
-
+    execAllDrivers: execAllDrivers,
+    returnDriverById: returnDriverById
 }
