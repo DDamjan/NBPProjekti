@@ -28,6 +28,7 @@ router.post('/deny', async (req, res) => {
 });
 
 router.post('/chooseDriver', async (req, res) => {
+  //Neo4jDB.execGetDriverById(req.body.driverID, res);
   redisDB.execPost(req, res, redisDB.requestFinished);
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
