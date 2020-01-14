@@ -2,17 +2,19 @@ var express = require('express');
 var router = express.Router();
 const webSocket = require('../socket/web-socket.js');
 const redisDB = require('../db/redisDB.js');
+const Neo4jDB= require('../db/Neo4JDB.js');
 
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
 router.get('/', async (req, res) => {
-  //query.execGet(req, res, queryString.GET_DRIVERS);
+  query.execGet(req, res, queryString.GET_DRIVERS);
   webSocket.io.emit('test', "ovde ide kurac");
 });
 
-router.get('/', async (req, res) => {
-  //   let id = req.query.id;
+router.get('/byid', async (req, res) => {
+      let id = req.query.id;
   //   query.execGet(req, res, queryString.GET_DRIVER + id);
+    Neo4jDB.execGetDriverById(id,res);
 });
 
 router.post('/create', async (req, res) => {
@@ -25,7 +27,7 @@ router.post('/create', async (req, res) => {
   let currentLat = req.body.currentLat;
   let currentLng = req.body.currentLng;
   let currentLocation = req.body.currentLocation;
-
+  Neo4jDB.execTestCreate();
   //query.execPost(req, res, queryString.ADD_DRIVER(firstName, lastName, phone, car, color, licencePlate, currentLat, currentLng, currentLocation));
 });
 

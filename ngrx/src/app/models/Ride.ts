@@ -1,4 +1,4 @@
-export interface Ride{
+export interface Ride {
     ID: number;
     driverID: number;
     startLat: number;
