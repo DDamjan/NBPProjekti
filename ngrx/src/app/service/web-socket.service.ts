@@ -18,7 +18,6 @@ import { Observable, Subscriber } from 'rxjs';
         return new Observable((subscriber) => {
             this.socket.on(eventName, (data) => {
                 subscriber.next(data);
-                console.log('  ');
             });
         });
     }

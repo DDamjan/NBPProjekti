@@ -7,13 +7,14 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
 router.get('/', async (req, res) => {
-  query.execGet(req, res, queryString.GET_DRIVERS);
+  //query.execGet(req, res, queryString.GET_DRIVERS);
   webSocket.io.emit('test', "ovde ide kurac");
+  res.json("Post successful");
+  res.end();
 });
 
 router.get('/byid', async (req, res) => {
-      let id = req.query.id;
-  //   query.execGet(req, res, queryString.GET_DRIVER + id);
+    let id = req.query.id;
     Neo4jDB.execGetDriverById(id,res);
 });
 
