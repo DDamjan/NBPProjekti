@@ -6,21 +6,11 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
-router.get('/', async (req, res) => {
-  query.execGet(req, res, queryString.GET_DRIVERS);
-  webSocket.io.emit('test', "ovde ide kurac");
-  redisDB.client.set("string key", "string val", redisDB.redis.print);
-  redisDB.client.hset("hash key", "hashtest 1", "some value", redisDB.redis.print);
-  redisDB.client.hset(["hash key", "hashtest 2", "some other value"], redisDB.redis.print);
-  redisDB.client.hkeys("hash key", function (err, replies) {
-      console.log(replies.length + " replies:");
-      replies.forEach(function (reply, i) {
-          console.log("    " + i + ": " + reply);
-      });
-      client.quit();
-    });
 
-  
+
+router.get('/', async (req, res) => {
+//   query.execGet(req, res, queryString.GET_DRIVER + id);
+Neo4jDB.execAllDrivers(req ,res);
 });
 
 router.get('/byid', async (req, res) => {
