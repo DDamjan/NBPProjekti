@@ -40,6 +40,8 @@ import { RideService } from './service/ride.service';
 import { DataTableComponent } from './components/data-table/data-table.component';
 import { LoginComponent } from './components/login/login.component';
 import { reducers } from './store/reducers';
+import { UserEffects } from './store/effects/user.effects';
+import { UserService } from './service/user.service';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,7 @@ import { reducers } from './store/reducers';
     StoreDevtoolsModule.instrument({}),
     RouterModule,
     EffectsModule.forRoot([]),
-    EffectsModule.forFeature([DriverEffects]),
+    EffectsModule.forFeature([DriverEffects, UserEffects]),
     HttpClientModule,
     MatSnackBarModule,
     MatTableModule,
@@ -84,7 +86,7 @@ import { reducers } from './store/reducers';
     MatSortModule,
     MatAutocompleteModule
   ],
-  providers: [DriverService, RideService],
+  providers: [DriverService, RideService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
