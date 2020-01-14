@@ -18,7 +18,7 @@ client.on("error", function (err) {
 function makeRequest(req){
     //console.log(req.body);
     client.hmset("requests", req.body.userID, JSON.stringify(req.body), redis.print);
-    client.lrange("accepted:"+req.body.userID, 0, -1, redis.print);
+    //client.lrange("accepted:"+req.body.userID, 0, -1, redis.print);
 
     client.hget("requests", req.body.userID, function (err, res) {
         //console.log(JSON.parse(res));
@@ -49,18 +49,18 @@ function requestDenied(req){
 }
 
 function requestFinished(req){
-    client.hget("requests", req.body.userID, function (err, res) {
+    client.hget("requests", req.body.userID, (err, res) => {
         res = JSON.parse(res);
         res.driverID = req.body.driverID;
         webSocket.io.emit('approvedRide', res);
         client.hmset("requests", req.body.userID, JSON.stringify(res), redis.print);
     });
-    client.hdel("requests", req.body.userID, redis.print);
-    console.log("DELETED request");
-    client.ldel("accepted:"+req.body.userID, redis.print)
+    client.del("accepted:"+req.body.userID, redis.print)
     console.log("DELETED accepted");
-    client.ldel("denied:"+req.body.userID, redis.print)
+    client.del("denied:"+req.body.userID, redis.print)
     console.log("DELETED denied");
+    client.del("requests", req.body.userID, redis.print);
+    console.log("DELETED request");
 }
 
 async function execPost(req, res, fun) {

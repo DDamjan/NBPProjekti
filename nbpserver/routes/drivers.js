@@ -6,14 +6,21 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
+
+router.get('/peki', async (req, res) => {
+  //   query.execGet(req, res, queryString.GET_DRIVER + id);
+  
+  console.log(Neo4jDB.returnDriverById(req.body.id));
+  });
+
+
 router.get('/', async (req, res) => {
-  query.execGet(req, res, queryString.GET_DRIVERS);
-  webSocket.io.emit('test', "ovde ide kurac");
+//   query.execGet(req, res, queryString.GET_DRIVER + id);
+Neo4jDB.execAllDrivers(req ,res);
 });
 
 router.get('/byid', async (req, res) => {
-      let id = req.query.id;
-  //   query.execGet(req, res, queryString.GET_DRIVER + id);
+    let id = req.query.id;
     Neo4jDB.execGetDriverById(id,res);
 });
 
