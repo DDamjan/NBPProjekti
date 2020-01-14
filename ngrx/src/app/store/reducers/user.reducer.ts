@@ -1,6 +1,6 @@
 import { User } from 'src/app/models/User';
 import {
-    ADD_USER_SUCCESS,
+    AUTH_USER_SUCCESS,
     GET_USER_SUCCESS,
 } from 'src/constants/reducers-constants';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
@@ -22,7 +22,7 @@ export function UserReducer(
 ) {
     console.log(action.type);
     switch (action.type) {
-        case ADD_USER_SUCCESS:
+        case AUTH_USER_SUCCESS:
             return UserAdapter.addOne(action.payload, state);
         case GET_USER_SUCCESS:
             return UserAdapter.addAll(action.payload, state);
@@ -31,9 +31,9 @@ export function UserReducer(
     }
 }
 
-export const selectUserState = createFeatureSelector<UserState>('drivers');
+export const selectUserState = createFeatureSelector<UserState>('users');
 
-export const { selectAll: selectAllDrivers, selectIds } = UserAdapter.getSelectors(
+export const { selectAll: selectAllUsers, selectIds } = UserAdapter.getSelectors(
     selectUserState
 );
 
