@@ -36,7 +36,7 @@ router.post('/create', async (req, res) => {
   let currentLat = req.body.currentLat;
   let currentLng = req.body.currentLng;
   let currentLocation = req.body.currentLocation;
-  Neo4jDB.execTestCreate();
+  Neo4jDB.execCreateDriver(req,res);
   //query.execPost(req, res, queryString.ADD_DRIVER(firstName, lastName, phone, car, color, licencePlate, currentLat, currentLng, currentLocation));
 });
 
