@@ -9,17 +9,27 @@ import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  constructor(private store: Store<any>) { }
+  public error: boolean;
+  constructor(private store: Store<any>) { this.error = false; }
   ngOnInit() {
   }
 
-  async onSubmit($event) {
+  onSubmit($event) {
     const payload = {
       username: $event.target[0].value,
       password: $event.target[1].value
     };
 
-    await this.store.dispatch(new actions.AuthUser(payload));
+    this.store.dispatch(new actions.AuthUser(payload));
+  }
+
+  ngDoCheck() {
+    this.store.select(selectAllUsers).subscribe(currentUser => {
+      if (currentUser.length !== 0) {
+        if (currentUser[0].type === 'error') {
+          this.error = true;
+        }
+      }
+    });
   }
 }

@@ -2,6 +2,7 @@ import { User } from 'src/app/models/User';
 import {
     AUTH_USER_SUCCESS,
     GET_USER_SUCCESS,
+    AUTH_USER_FAIL,
 } from 'src/constants/reducers-constants';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
@@ -26,6 +27,11 @@ export function UserReducer(
         case AUTH_USER_SUCCESS:
             localStorage.setItem('currentUser', action.payload.id);
             localStorage.setItem('currentUserType', action.payload.type);
+            UserAdapter.removeAll(state);
+            console.log(action.payload);
+            return UserAdapter.addOne(action.payload, state);
+        case AUTH_USER_FAIL:
+            UserAdapter.removeAll(state);
             return UserAdapter.addOne(action.payload, state);
         case GET_USER_SUCCESS:
             return UserAdapter.addAll(action.payload, state);
