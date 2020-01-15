@@ -43,3 +43,8 @@ mat-card-title{
     margin-top: 20%;
     color: white;
 }
+
+p{
+    font-size: small;
+    color: red;
+}

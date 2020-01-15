@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { throwToolbarMixedModesError } from '@angular/material';
 
 @Component({
   selector: 'main-nav',
@@ -10,19 +11,25 @@ import { Router } from '@angular/router';
   styleUrls: ['./main-nav.component.css']
 })
 export class MainNavComponent {
-
+  public type: boolean;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router) {}
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router) {
+    const currentType = localStorage.getItem('currentUserType');
+    if (currentType === 'operator') {
+      this.type = true;
+    } else {
+      this.type = false;
+    }
+  }
 
-  public onLogout(){
+  public onLogout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('currentUserType');
     this.router.navigate(['/']);
-
   }
 
 }
