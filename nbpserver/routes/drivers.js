@@ -9,8 +9,10 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 
 router.get('/peki', async (req, res) => {
   //   query.execGet(req, res, queryString.GET_DRIVER + id);
+  let id=req.body.id;
+  console.log(Neo4jDB.returnDriverById(2));
+  res.json("fduys");
   
-  console.log(Neo4jDB.returnDriverById(req.body.id).then());
   });
 
 
@@ -34,7 +36,7 @@ router.post('/create', async (req, res) => {
   let currentLat = req.body.currentLat;
   let currentLng = req.body.currentLng;
   let currentLocation = req.body.currentLocation;
-  Neo4jDB.execTestCreate();
+  Neo4jDB.execCreateDriver(req,res);
   //query.execPost(req, res, queryString.ADD_DRIVER(firstName, lastName, phone, car, color, licencePlate, currentLat, currentLng, currentLocation));
 });
 
