@@ -61,12 +61,12 @@ export class DriverService {
 
     /* DELETE: delete the driver from the server */
     deleteDriver(driver: Driver): Observable<number> {
-        const id = driver.ID;
+        const id = driver.id;
         const url = `${this.serverURL}delete?id=${id}`;
 
         this.http.get<Driver>(url, httpOptions).subscribe();
 
-        return of(driver.ID);
+        return of(driver.id);
     }
 
     /*

@@ -10,7 +10,7 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 router.get('/peki', async (req, res) => {
   //   query.execGet(req, res, queryString.GET_DRIVER + id);
   
-  console.log(Neo4jDB.returnDriverById(req.body.id));
+  console.log(Neo4jDB.returnDriverById(req.body.id).then());
   });
 
 
@@ -59,11 +59,12 @@ router.get('/currentid', async (req, res) => {
 });
 
 router.get('/picture', async (req, res) => {
-  let picId = req.query.picId;
-  if (picId === null || picId === undefined) {
-    picId = 'Cab.png';
+  try {
+    res.sendFile('Cab.png', {root: '../nbpserver/repo'});
+  } catch (err) {
+    res.status(500);
+    res.send(err.message);
   }
-  console.log(queryString.REPO_PATH+picId);
   
   //query.execFile(res, queryString.REPO_PATH + picId);
 });

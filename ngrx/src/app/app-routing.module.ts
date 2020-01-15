@@ -11,7 +11,7 @@ import { RouteGuard } from './service/guard/route.guard';
 import { LoginGuard } from './service/guard/login.guard';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'operator/home', component: ActiveDriversComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'operator/view-map', component: MapViewComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'operator/register', component: DriverRegisterComponent, canActivate: [AuthGuard, RouteGuard] },

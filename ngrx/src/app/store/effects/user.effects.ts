@@ -6,13 +6,15 @@ import * as userActions from '../actions';
 import { Store } from '@ngrx/store';
 import { UserService } from 'src/app/service/user.service';
 import { ofAction } from 'ngrx-actions/dist';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UserEffects {
   constructor(
     private store: Store<any>,
     private update$: Actions,
-    private userService: UserService) { }
+    private userService: UserService,
+    private router: Router) { }
 
 //   @Effect()
 //   adduser$ = this.update$.pipe(
@@ -39,6 +41,7 @@ authUser$ = this.update$.pipe(
     ofAction(userActions.AuthUser),
     switchMap(data => this.userService.authUser(data.payload)),
     map(response => {
+      this.router.navigate([`${response.type}/home`]);
       return new userActions.AuthUserSuccess(response);
     })
 );
