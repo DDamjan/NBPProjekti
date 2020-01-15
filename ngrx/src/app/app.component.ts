@@ -36,6 +36,11 @@ export class AppComponent implements OnInit {
       console.log(data);
     });
 
+    this.webSocketService.listen('rideStatus').subscribe((data) => {
+      // Emit za Operatore
+      console.log(data);
+    });
+
     this.store.dispatch(new actions.GetDrivers());
     // this.store.select()
   }

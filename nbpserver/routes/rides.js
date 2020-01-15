@@ -12,25 +12,16 @@ router.get('/', async (req, res) => {
 
 router.post('/request', async (req, res) => {
   redisDB.execPost(req, res, redisDB.makeRequest);
-  //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
 router.post('/accept', async (req, res) => {
   redisDB.execPost(req, res, redisDB.requestAccepted);
-  //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
   //LOG how many requests accepted by a driver
 });
 
 router.post('/deny', async (req, res) => {
   redisDB.execPost(req, res, redisDB.requestDenied);
-  //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
   //LOG how many requests denied by a driver
-});
-
-router.post('/chooseDriver', async (req, res) => {
-  //Neo4jDB.execGetDriverById(req.body.driverID, res);
-  redisDB.execPost(req, res, redisDB.requestFinished);
-  //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
 router.post('/create', async (req, res) => {
@@ -43,6 +34,7 @@ router.post('/create', async (req, res) => {
   let startLng = req.body.startLng;
   let startLocation = req.body.startLocation;
 
+ redisDB.requestFinished(req);
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
@@ -59,6 +51,11 @@ router.post('/finish', async (req, res) => {
   } else {
     //query.execPost(req, res, queryString.CANCEL_RIDE(ID, driverID, endTime));
   }
+  let ride;
+  ride.ID = req.body.ID;
+  ride.isCanceled = req.body.isCanceled;
+  ride.driverID = req.body.driverID;
+  webSocket.io.emit('rideStatus', ride);
 })
 
 router.get('/currentid', async (req, res) => {
