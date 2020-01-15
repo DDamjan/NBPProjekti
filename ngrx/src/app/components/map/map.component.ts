@@ -54,7 +54,7 @@ export class MapComponent implements OnInit {
 
   public ngOnInit() {
     this.store.select(selectAllDrivers).subscribe(drivers => {
-      drivers.forEach(d => this.drivers.push(d));
+      drivers.forEach(d => {console.log(typeof(d.currentLat)); this.drivers.push(d)});
     });
   }
 

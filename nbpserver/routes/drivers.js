@@ -18,7 +18,7 @@ router.get('/peki', async (req, res) => {
 
 router.get('/', async (req, res) => {
 //   query.execGet(req, res, queryString.GET_DRIVER + id);
-Neo4jDB.execAllDrivers(req ,res);
+Neo4jDB.execAllUsersByType('driver' ,res);
 });
 
 router.get('/byid', async (req, res) => {

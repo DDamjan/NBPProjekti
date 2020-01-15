@@ -11,7 +11,7 @@ import { WebSocketService } from './service/web-socket.service';
 
 export class AppComponent implements OnInit {
   title = 'NGDispatcher';
-  jeste: boolean;
+  loggedIn: boolean;
 
   constructor(private store: Store<any>, private webSocketService: WebSocketService) { }
 
@@ -38,5 +38,9 @@ export class AppComponent implements OnInit {
 
     this.store.dispatch(new actions.GetDrivers());
     // this.store.select()
+  }
+
+  public ngDoCheck(){
+    localStorage.getItem('currentUser') != null ? this.loggedIn = true : this.loggedIn = false;
   }
 }

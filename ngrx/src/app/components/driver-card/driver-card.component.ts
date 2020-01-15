@@ -18,7 +18,7 @@ export class DriverCardComponent implements OnInit {
   }
 
   onclick() {
-    this.router.navigateByUrl(`/details/${this.driver.id}`);
+    this.router.navigateByUrl(`operator/details/${this.driver.id}`);
   }
 
 }
