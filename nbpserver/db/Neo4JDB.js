@@ -223,7 +223,7 @@ async function execCreateRide(req,res){
   session.run(query.CREATE_RIDE,
   { CID:req.body.clientID,
     DID:req.body.driverID,
-    sLat:req.body.startLat,
+    SLat:req.body.startLat,
     SLng:req.body.startLng,
     DLat:req.body.destinationLat,
     DLng:req.body.destinationLng,
