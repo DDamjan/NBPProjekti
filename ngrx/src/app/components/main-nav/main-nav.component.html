@@ -10,16 +10,18 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+      <button *ngIf="type" type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <a routerLink='/' routerLinkActive="active">
         <span>NGDispatcher</span>
         <mat-icon aria-label="Logo">local_taxi</mat-icon>
       </a>
-      <a class="logout" (click)="onLogout()">
-        <span>Logout</span>
-      </a>
+      <div class="logout-container">
+        <a class="logout" (click)="onLogout()">
+          <span>Logout</span>
+        </a>
+      </div>
     </mat-toolbar>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -28,7 +28,6 @@ export function UserReducer(
             localStorage.setItem('currentUser', action.payload.id);
             localStorage.setItem('currentUserType', action.payload.type);
             UserAdapter.removeAll(state);
-            console.log(action.payload);
             return UserAdapter.addOne(action.payload, state);
         case AUTH_USER_FAIL:
             UserAdapter.removeAll(state);

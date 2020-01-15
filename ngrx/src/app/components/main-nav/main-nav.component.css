@@ -25,5 +25,13 @@ a:hover
 }
 
 .logout{
-  margin-left: 80%;
+  align-self: flex-end;
 }
+
+.logout-container{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+
