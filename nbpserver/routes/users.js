@@ -7,11 +7,7 @@ const webSocket = require('../socket/web-socket.js');
 const redisDB = require('../db/redisDB.js');
 const Neo4jDB= require('../db/Neo4JDB.js');
 
-router.post('/register', async (req, res) => {
-  let username = req.body.username;
-  let password = sha('sha256').update(req.body.password).digest('hex');
-  //query.execPost(req, res, queryString.REGISTER_USER(username, password));
-});
+
 
 router.post('/auth', async (req, res) => {
   let username = req.body.username;

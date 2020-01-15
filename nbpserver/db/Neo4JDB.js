@@ -36,8 +36,14 @@ async function execAuth(username,password,res){
   session.run(query.USER_AUTH, {user: username , pass: password})
   .then(result => {
     if(result.records.length==0){
-      let l=false;
-      res.json(l);
+      const failed = {
+        id: -1,
+        firstName: 'error',
+        lastName: 'error',
+        username: 'error',
+        type: 'error'
+      };
+      res.json(failed);
       res.end();
     }
     else
@@ -214,7 +220,8 @@ async function execCheckUser(username,res){
 async function execCreateRide(req,res){
   var session=driver.session()
   session.run(query.CREATE_RIDE,
-  {
+  { CID:req.body.clientID,
+    DID:req.body.driverID,
     sLat:req.body.startLat,
     SLng:req.body.startLng,
     DLat:req.body.destinationLat,

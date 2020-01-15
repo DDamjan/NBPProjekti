@@ -27,14 +27,8 @@ router.post('/deny', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-  let ID = req.body.driverID;
-  let userID = req.body.userID;
-  let destinationLat = req.body.destinationLat;
-  let destinationLng = req.body.destinationLng;
-  let destinationLocation = req.body.destinationLocation;
-  let startLat = req.body.startLat;
-  let startLng = req.body.startLng;
-  let startLocation = req.body.startLocation;
+
+  Neo4jDB.execCreateRide(req,res);
  redisDB.requestFinished(req);
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
