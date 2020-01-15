@@ -37,7 +37,6 @@ export class RequestRideComponent implements OnInit {
       this.distanceDestination = $event.distance;
       this.ETADestination = $event.ETA;
     }
-
   }
 
   autoCompleteListener(event) {
