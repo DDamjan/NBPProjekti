@@ -30,7 +30,7 @@ export class DataTableDataSource extends DataSource<DataTableItem> {
     super();
     this.rides.forEach(ride => {
       const r: DataTableItem = {
-        rideID: ride.ID,
+        rideID: ride.id,
         driverID: ride.driverID,
         startLocation: ride.startLocation,
         startTime: ride.startTime,

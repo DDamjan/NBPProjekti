@@ -7,7 +7,7 @@ export interface User {
     // Driver i Operator
     isActive?: boolean;
     // Driver
-    phone?: number;
+    phone?: string;
     car?: string;
     carColor?: string;
     licencePlate?: string;
