@@ -5,11 +5,11 @@ import { RideService } from 'src/app/service/ride.service';
 
 
 @Component({
-  selector: 'app-find-nearest',
-  templateUrl: './find-nearest.component.html',
-  styleUrls: ['./find-nearest.component.css']
+  selector: 'app-request-ride',
+  templateUrl: './request-ride.component.html',
+  styleUrls: ['./request-ride.component.css']
 })
-export class FindNearestComponent implements OnInit {
+export class RequestRideComponent implements OnInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   private pickupAddressName: string;
   private destinationAddressName: string;
@@ -30,14 +30,14 @@ export class FindNearestComponent implements OnInit {
   }
 
   receiveRouteParams($event) {
-    if ($event.mode === 'pickup'){
+    if ($event.mode === 'pickup') {
       this.distancePickup = $event.distance;
       this.ETAPickup = $event.ETA;
-    }else if ($event.mode === 'destination'){
+    } else if ($event.mode === 'destination') {
       this.distanceDestination = $event.distance;
       this.ETADestination = $event.ETA;
     }
-    
+
   }
 
   autoCompleteListener(event) {

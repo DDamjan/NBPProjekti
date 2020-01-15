@@ -25,7 +25,7 @@ import { DriverCardComponent } from './components/driver-card/driver-card.compon
 import { RouterModule } from '@angular/router';
 import { ActiveDriversComponent } from './components/active-drivers/active-drivers.component';
 import { DriverRegisterComponent } from './components/driver-register/driver-register.component';
-import { FindNearestComponent } from './components/find-nearest/find-nearest.component';
+import { RequestRideComponent } from './components/request-ride/request-ride.component';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FormsModule } from '@angular/forms';
@@ -52,7 +52,7 @@ import { UserService } from './service/user.service';
     MapViewComponent,
     ActiveDriversComponent,
     DriverRegisterComponent,
-    FindNearestComponent,
+    RequestRideComponent,
     DriverDetailsComponent,
     DataTableComponent,
     LoginComponent,

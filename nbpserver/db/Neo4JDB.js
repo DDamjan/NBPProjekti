@@ -361,6 +361,61 @@ async function execCancelRide(req,res)
 
 }
 
+async function execFinishRide(req,res){
+  var session=driver.session()
+  session.run(query.FINISH_RIDE,
+  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    DLat:req.body.destinationLat,
+    DLng:req.body.destinationLng,
+    DLoc:req.body.destinationLocation,
+    ETime:req.body.endTime
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execCancelRide(req,res)
+{
+
+  var session=driver.session()
+  session.run(query.CANCEL_RIDE,
+  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    ETime:req.body.endTime
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
 
 
 module.exports={
