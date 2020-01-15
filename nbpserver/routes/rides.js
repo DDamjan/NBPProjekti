@@ -29,7 +29,7 @@ router.post('/deny', async (req, res) => {
 router.post('/create', async (req, res) => {
 
   Neo4jDB.execCreateRide(req,res);
- redisDB.requestFinished(req);
+ // redisDB.requestFinished(req);
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
@@ -42,8 +42,10 @@ router.post('/finish', async (req, res) => {
   let destinationLocation = req.body.destinationLocation;
 
   if (!req.body.isCanceled) {
+    Neo4jDB.execFinishRide(req,res)
     //query.execPost(req, res, queryString.FINISH_RIDE(ID, driverID, endTime, destinationLat, destinationLng, destinationLocation));
   } else {
+    Neo4jDB.execCancelRide(req,res)
     //query.execPost(req, res, queryString.CANCEL_RIDE(ID, driverID, endTime));
   }
   let ride;
