@@ -35,6 +35,13 @@ async function execAuth(username,password,res){
   var session=driver.session();
   session.run(query.USER_AUTH, {user: username , pass: password})
   .then(result => {
+    if(result.records.length==0){
+      let l=false;
+      res.json(l);
+      res.end();
+    }
+    else
+    {
     result.records.forEach(record => {
       let l=record.get('n');
       let s=l.properties;
@@ -42,7 +49,8 @@ async function execAuth(username,password,res){
       delete s.password;
       res.json(s);
       res.end();
-    })
+    
+    })}
   })
   .catch(error => {
     res.status(500);
@@ -202,6 +210,37 @@ async function execCheckUser(username,res){
   })
   .then(() => session.close())
 
+}  
+async function execCreateRide(req,res){
+  var session=driver.session()
+  session.run(query.CREATE_RIDE,
+  {
+    sLat:req.body.startLat,
+    SLng:req.body.startLng,
+    DLat:req.body.destinationLat,
+    DLng:req.body.destinationLng,
+    SLoc:req.body.startLocation,
+    DLoc:req.body.destinationLocation,
+    STime:req.body.startTime,
+    ETime:req.body.endTime,
+    Fare:req.body.fare,
+    Dist:req.body.distance,
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
 }
 
 
@@ -213,6 +252,7 @@ module.exports={
     execCheckUser: execCheckUser,
     execCreateDriver: execCreateDriver,
     execCreateClient: execCreateClient,
-    execCreateOperator: execCreateOperator
+    execCreateOperator: execCreateOperator,
+    execCreateRide: execCreateRide
   
 }

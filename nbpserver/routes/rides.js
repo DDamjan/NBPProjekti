@@ -4,6 +4,8 @@ const webSocket = require('../socket/web-socket.js');
 const redisDB = require('../db/redisDB.js');
 //const queryString = require('../constants/queryConstants');
 //const query = require('../db/query');
+const Neo4jDB= require('../db/Neo4JDB.js');
+
 
 router.get('/', async (req, res) => {
   let id = req.query.id;
@@ -33,7 +35,6 @@ router.post('/create', async (req, res) => {
   let startLat = req.body.startLat;
   let startLng = req.body.startLng;
   let startLocation = req.body.startLocation;
-
  redisDB.requestFinished(req);
   //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
