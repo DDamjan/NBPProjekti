@@ -219,19 +219,130 @@ async function execCheckUser(username,res){
 }  
 async function execCreateRide(req,res){
   var session=driver.session()
+  console.log(req.body.destinationLocation);
   session.run(query.CREATE_RIDE,
-  { CID:req.body.clientID,
+  { 
+    CID:req.body.clientID,
     DID:req.body.driverID,
-    sLat:req.body.startLat,
+    SLat:req.body.startLat,
     SLng:req.body.startLng,
     DLat:req.body.destinationLat,
     DLng:req.body.destinationLng,
     SLoc:req.body.startLocation,
     DLoc:req.body.destinationLocation,
     STime:req.body.startTime,
-    ETime:req.body.endTime,
     Fare:req.body.fare,
-    Dist:req.body.distance,
+    Dist:req.body.distance
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execFinishRide(req,res){
+  var session=driver.session()
+  session.run(query.FINISH_RIDE,
+  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    DLat:req.body.destinationLat,
+    DLng:req.body.destinationLng,
+    DLoc:req.body.destinationLocation,
+    ETime:req.body.endTime
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execCancelRide(req,res)
+{
+
+  var session=driver.session()
+  session.run(query.CANCEL_RIDE,
+  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    ETime:req.body.endTime
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execFinishRide(req,res){
+  var session=driver.session()
+  session.run(query.FINISH_RIDE,
+  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    DLat:req.body.destinationLat,
+    DLng:req.body.destinationLng,
+    DLoc:req.body.destinationLocation,
+    ETime:req.body.endTime
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      res.json(l);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execCancelRide(req,res)
+{
+
+  var session=driver.session()
+  session.run(query.CANCEL_RIDE,
+  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    ETime:req.body.endTime
 })
   .then(result => {
     result.records.forEach(record => {
@@ -260,6 +371,7 @@ module.exports={
     execCreateDriver: execCreateDriver,
     execCreateClient: execCreateClient,
     execCreateOperator: execCreateOperator,
-    execCreateRide: execCreateRide
-  
+    execCreateRide: execCreateRide,
+    execFinishRide: execFinishRide,
+    execCancelRide: execCancelRide
 }

@@ -7,14 +7,79 @@ client.on("error", function (err) {
     console.log("Error " + err);
 });
 
-// let driverID = req.body.driverID;
-// let userID = req.body.userID;
-// let destinationLat = req.body.destinationLat;
-// let destinationLng = req.body.destinationLng;
-// let destinationLocation = req.body.destinationLocation;
-// let startLat = req.body.startLat;
-// let startLng = req.body.startLng;
-// let startLocation = req.body.startLocation;
+//-------------------------------------------------------------------------------------
+
+var pub = redis.createClient();
+pub.publish("a nice channel", "I am sending a message.");
+
+var subIncomingRequest = redis.createClient();
+subIncomingRequest.subscribe("IncomingRequest");
+// subIncomingRequest.on("subscribe", function (channel, count) {
+//     console.log("subIncomingRequest subscribed to: " + channel + " count: " + count);
+// });
+subIncomingRequest.on("message", function (channel, clientID) {
+    //console.log(channel + ": " + clientID);
+    client.hget("requests", clientID, function (err, res) {
+        webSocket.io.emit('User:', JSON.parse(res));
+    });
+});
+
+var subAprovedRide = redis.createClient();
+subAprovedRide.subscribe("AprovedRide");
+// subAprovedRide.on("subscribe", function (channel, count) {
+//     console.log("subAprovedRide subscribed to: " + channel + " count: " + count);
+// });
+subAprovedRide.on("message", function (channel, body) {
+    //console.log(channel + ": " + req);
+    console.log(body);
+    body = JSON.parse(body);
+    let clientID = body.clientID;
+    let driverID = body.driverID;
+
+    client.hget("requests", clientID, (err, res) => {
+        res = JSON.parse(res);
+        res.driverID = driverID;
+        webSocket.io.emit('User:', res);
+        client.hmset("requests",clientID, JSON.stringify(res));
+    });
+    client.lrange("accepted:"+clientID, 0, -1, (err, driverList)=>{
+        console.log(driverList);
+        let driverIDlist = [];
+        driverList.forEach((element, i) => {
+            driverIDlist[i] = element.driverID.toString();
+        });
+        console.log(driverIDlist);
+    });
+    // geo.removeLocations(['New York', 'St. John\'s', 'San Francisco'], function(err, reply){
+    //     if(err) console.error(err)
+    //     else console.log('removed locations', reply)
+    //   })
+    client.del("accepted:" + clientID);
+    client.del("denied:" + clientID);
+    client.hdel("requests", clientID);
+    console.log("DELETED request");
+});
+
+var subRideStatus = redis.createClient();
+subRideStatus.subscribe("RideStatus");
+// subRideStatus.on("subscribe", function (channel, count) {
+//     console.log("subRideStatus subscribed to: " + channel + " count: " + count);
+// });
+subRideStatus.on("message", function (channel, body) {
+    console.log(channel + ": " + body);
+    let ride;
+    ride.ID = body.ID;
+    ride.isCanceled = body.isCanceled;
+    ride.driverID = body.driverID;
+    ride.clientID = body.clientID;
+    webSocket.io.emit('User:', ride);
+});
+ 
+
+//setTimeout(()=>{pub.publish("IncomingRequest", "I am sending a messageTUKIIIII.");},6000);
+//setTimeout(()=>{pub.publish("AprovedRide", "I am sending a message.");},2000);
+//setTimeout(()=>{pub.publish("RideStatus", "I am sending a message.");},3000);
+//-------------------------------------------------------------------------------------
 
 var options = {
     withCoordinates: false, // Will provide coordinates with locations, default false
@@ -28,41 +93,14 @@ var options = {
 
 function makeRequest(req){
     //console.log(req.body);
-    client.hmset("requests", req.body.userID, JSON.stringify(req.body));
-    //client.lrange("accepted:"+req.body.userID, 0, -1, redis.print);
+    client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
 
-    //client.geopos("requests:"+req.body.userID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.startLat, req.body.startLng, "src",  redis.print);
-    geo.addLocation("dest:"+ req.body.userID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
-    geo.addLocation("src:"+ req.body.userID, {latitude: req.body.startLat, longitude: req.body.startLng});
+    //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.startLat, req.body.startLng, "src",  redis.print);
+    //geo.addLocation("dest:"+ req.body.clientID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
+    geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.startLat, longitude: req.body.startLng});
 
-    client.hget("requests", req.body.userID, function (err, res) {
-        webSocket.io.emit('incomingRequest', JSON.parse(res));
-    });
-
-      setTimeout(()=>{
-        client.hget("requests", req.body.userID, function (err, request) {
-            client.lrange("accepted:"+req.body.userID, 0, -1, (err, driverList)=>{
-
-                request = JSON.parse(request);
-                driverList.forEach((element, i) => {
-                    driverList[i] = JSON.parse(element);
-                });
-                request.drivers = driverList;
-
-                geo.location("src:"+ req.body.userID, (err, location) => {
-                    if(err) console.error(err);
-                    else{
-                        geo.removeLocation("src:"+ req.body.userID);
-                        geo.removeLocation("dest:"+ req.body.userID);
-                        geo.nearby({latitude: location.latitude, longitude: location.longitude}, 10000, options, (err, locations) => {
-                            request.closestDriver = locations[0];
-                            webSocket.io.emit('approveRequest', request);
-                          })
-                    }
-                });
-            });
-        });
-      },10000);
+    pub.publish("IncomingRequest", req.body.clientID);
+    setTimeout(() => {sendOperatorRequest(req.body.clientID)},10000);
 }
 
 function requestAccepted(req){
@@ -71,32 +109,40 @@ function requestAccepted(req){
     driver.destinationLat =  req.body.startLat;
     driver.destinationLng =  req.body.startLng;
     driver.destinationLocation =  req.body.startLocation;
-    client.lpush("accepted:"+req.body.userID, JSON.stringify(driver));
+    client.lpush("accepted:"+req.body.clientID, JSON.stringify(driver));
     geo.addLocation(req.body.driverID, {latitude: req.body.startLat, longitude: req.body.startLng});
-    //client.lpop("accepted:"+req.body.userID, redis.print);
 }
 
 function requestDenied(req){
     //console.log(req.body);
-    client.lpush("denied:"+req.body.userID, JSON.stringify(req.body.driverID));
-    //client.lrange("denied:"+req.body.userID, 0, -1, redis.print);
+    client.lpush("denied:"+req.body.clientID, JSON.stringify(req.body.driverID));
+    //client.lrange("denied:"+req.body.clientID, 0, -1, redis.print);
 }
 
-function requestFinished(req){
-    client.hget("requests", req.body.userID, (err, res) => {
-        res = JSON.parse(res);
-        res.driverID = req.body.driverID;
-        webSocket.io.emit('approvedRide', res);
-        client.hmset("requests", req.body.userID, JSON.stringify(res));
+function sendOperatorRequest(clientID){
+    client.hget("requests", clientID, function (err, request) {
+        client.lrange("accepted:"+clientID, 0, -1, (err, driverList)=>{
+
+            request = JSON.parse(request);
+            driverList.forEach((element, i) => {
+                driverList[i] = JSON.parse(element);
+            });
+            request.drivers = driverList;
+
+            geo.location("src:"+ clientID, (err, location) => {
+                if(err) console.error(err);
+                else{
+                    geo.removeLocation("src:"+ clientID);
+                    //geo.removeLocation("dest:"+ clientID);
+                    geo.nearby({latitude: location.latitude, longitude: location.longitude}, 10000, options, (err, locations) => {
+                        request.closestDriver = locations[0];
+                        webSocket.io.emit('User:', request);
+                        console.error("Operator resolve request");
+                    });
+                }
+            });
+        });
     });
-    client.del("accepted:"+req.body.userID)
-    client.del("denied:"+req.body.userID)
-    client.hdel("requests", req.body.userID);
-    // geo.removeLocations(['New York', 'St. John\'s', 'San Francisco'], function(err, reply){
-    //     if(err) console.error(err)
-    //     else console.log('removed locations', reply)
-    //   })
-    console.log("DELETED request");
 }
 
 async function execPost(req, res, fun) {
@@ -119,5 +165,5 @@ module.exports = {
     makeRequest: makeRequest,
     requestAccepted: requestAccepted,
     requestDenied: requestDenied,
-    requestFinished: requestFinished
+    pub: pub
 }
