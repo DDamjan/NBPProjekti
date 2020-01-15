@@ -9,7 +9,7 @@ var server = http.listen(port, function () {
 });
 
 io.on('connection', function (socket) {
-    console.log('a user connected');
+    console.log('new user connected');
     socket.emit('connection', 'Connected to the server');
     socket.on('disconnect', function () {
         console.log('user disconnected');
