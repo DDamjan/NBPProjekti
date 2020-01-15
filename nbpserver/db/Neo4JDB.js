@@ -2,10 +2,12 @@ var neo4j = require('neo4j-driver');
 let conn = require('../constants/connectionConstants');
 const driver = neo4j.driver(conn.NEO4J_URL, neo4j.auth.basic(conn.NEO4J_USER, conn.NEO4J_PASS));
 const query = require('../constants/queryStrings');
+const sha = require('sha.js');
 
-async function execAllDrivers(req,res) {
+
+async function execAllUsersByType(type,res) {
   var session=driver.session();
-  session.run(query.GET_ALL_DRIVERS)
+  session.run(query.GET_ALL_USERS_TYPE, {Type:type})
   .then(result => {
     let n=[];
       result.records.forEach(record => {
@@ -24,69 +26,6 @@ async function execAllDrivers(req,res) {
     res.status(500);
     res.send(error.message);
     res.end();
-    console.log(error);
-  })
-  .then(() => session.close())
-}
-
-async function returnDriverById(id)
-{
-  var session=driver.session();
-   let prom;
-   session
-  .run('match (n:User {type:"Driver"}) where id(n)=$ID return n', {ID: neo4j.int(id)})
-  .then(result => {
-      result.records.forEach(record => {
-        let l=record.get('n');
-        let s=l.properties;
-        s.id=l.identity.low;
-        delete s.password;
-        prom =s;
-        //console.log(prom);
-        })
-  })
-  .catch(error => {
-    console.log(error)
-  })
-  .then(() => {
-    session.close();
-    //console.log(prom);
-    return prom;
-  })
-
-}
-
-async function execGetDriverById(id,res) {
-  var session=driver.session()
-  session.run(query.GET_DRIVER_BY_ID, {ID: neo4j.int(id)})
-  .then(result => {
-    result.records.forEach(record => {
-      let l=record.get('n');
-      let s=l.properties;
-      s.id=l.identity.low;
-      delete s.password;
-      res.json(s);
-      res.end();
-    })
-  })
-  .catch(error => {
-    res.status(500);
-    res.send(error.message);
-    res.end();
-    console.log(error);
-  })
-  .then(() => session.close())
-}
-
-async function execTestCreate(){
-  var session=driver.session();
-  session.run('CREATE(n:Person {name:$Ime})', {Ime:'Feget'})
-  .then(result => {
-    result.records.forEach(record => {
-      console.log(record.get('n'));
-    })
-  })
-  .catch(error => {
     console.log(error);
   })
   .then(() => session.close())
@@ -139,45 +78,105 @@ async function execReturnById(id,res){
 }
 
 async function execCreateDriver(req,res){
-  // var session=driver.session()
-  // session.run('CREATE(a:User {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"Driver",isActive:"true",phone:$Tel,car:$Car,carColor:$Color,licencePlate:$Plate,currentLat:$cLat,currentLng:$cLng,currentLocation:$cLoc,pickupLat:$pLat,pickupLng:$pLng,pickupLocation:$pLoc})',
-  //  {Ime:req.body.firstName,
-  //   Prez:req.body.lastName,
-  //   User:req.body.username,
-  //   Pass:sha('sha256').update(req.body.password).digest('hex'),
-  //   Tel:req.body.phone,
-  //   Car:
-  //   Color
-  //   Plate
-  //   cLat
-
-  
-  
-  
-  
-  
-  
-  
-  // })
-  // .then(result => {
-  //   result.records.forEach(record => {
-  //     let l=record.get('n');
-  //     let s=l.properties;
-  //     s.id=l.identity.low;
-  //     delete s.password;
-  //     res.json(s);
-  //     res.end();
-  //   })
-  // })
-  // .catch(error => {
-  //   res.status(500);
-  //   res.send(error.message);
-  //   res.end();
-  //   console.log(error);
-  // })
-  // .then(() => session.close())
+  var session=driver.session()
+  session.run(query.CREATE_DRIVER,
+  {Ime:req.body.firstName,
+    Prez:req.body.lastName,
+    User:req.body.username,
+    Pass:sha('sha256').update(req.body.password).digest('hex'),
+    Tel:req.body.phone,
+    Car:req.body.car,
+    Color:req.body.carColor,
+    Plate:req.body.licencePlate,
+    cLat:req.body.currentLat,
+    cLng:req.body.currentLng,
+    cLoc:req.body.currentLoc,
+    pLat:req.body.pickupLat,
+    pLng:req.body.pickupLng,
+    pLoc:req.body.pickupLoc
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('a');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
 
 }
+
+async function execCreateClient(req,res){
+  var session=driver.session()
+  session.run(query.CREATE_CLIENT,
+  {Ime:req.body.firstName,
+    Prez:req.body.lastName,
+    User:req.body.username,
+    Pass:sha('sha256').update(req.body.password).digest('hex'),
+    cLat:req.body.currentLat,
+    cLng:req.body.currentLng,
+    cLoc:req.body.currentLoc,
+    pLat:req.body.pickupLat,
+    pLng:req.body.pickupLng,
+    pLoc:req.body.pickupLoc
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('a');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execCreateOperator(req,res){
+  var session=driver.session()
+  session.run(query.CREATE_DRIVER,
+  {Ime:req.body.firstName,
+    Prez:req.body.lastName,
+    User:req.body.username,
+    Pass:sha('sha256').update(req.body.password).digest('hex'),
+})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('a');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
 
 async function execCheckUser(username,res){
   var session=driver.session();
@@ -205,13 +204,15 @@ async function execCheckUser(username,res){
 
 }
 
+
+
 module.exports={
-    execGetDriverById: execGetDriverById,
-    execTestCreate: execTestCreate,
     execAuth: execAuth,
     execReturnById: execReturnById,
-    execAllDrivers: execAllDrivers,
-    returnDriverById: returnDriverById,
+    execAllUsersByType: execAllUsersByType,
+    execCheckUser: execCheckUser,
     execCreateDriver: execCreateDriver,
-    execCheckUser: execCheckUser
+    execCreateClient: execCreateClient,
+    execCreateOperator: execCreateOperator
+  
 }
