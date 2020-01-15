@@ -43,17 +43,15 @@ subAprovedRide.on("message", function (channel, body) {
         client.hmset("requests",clientID, JSON.stringify(res));
     });
     client.lrange("accepted:"+clientID, 0, -1, (err, driverList)=>{
-        console.log(driverList);
         let driverIDlist = [];
         driverList.forEach((element, i) => {
-            driverIDlist[i] = element.driverID.toString();
+            driverIDlist[i] = JSON.parse(element).driverID.toString();
         });
-        console.log(driverIDlist);
+         geo.removeLocations(driverIDlist, function(err, reply){
+            if(err) console.error(err)
+            else console.log('removed locations', reply)
+        })
     });
-    // geo.removeLocations(['New York', 'St. John\'s', 'San Francisco'], function(err, reply){
-    //     if(err) console.error(err)
-    //     else console.log('removed locations', reply)
-    //   })
     client.del("accepted:" + clientID);
     client.del("denied:" + clientID);
     client.hdel("requests", clientID);
