@@ -17,6 +17,7 @@ export class ActiveDriversComponent implements OnInit {
   constructor(private driverService: DriverService, private store$: Store<any>) { }
 
   ngOnInit() {
+    const currentUser = localStorage.getItem('currentUser');
     this.store$.select(selectAllDrivers).subscribe(drivers => {
       drivers.forEach(d => {
         if (d.isActive === true) {

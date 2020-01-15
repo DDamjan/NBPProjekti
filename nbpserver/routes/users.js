@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
 router.post('/auth', async (req, res) => {
   let username = req.body.username;
   let password = sha('sha256').update(req.body.password).digest('hex');
-  console.log("username:"+username+", password: "+password);
+  //console.log("username:"+username+", password: "+password);
   Neo4jDB.execAuth(username,password,res);
   //query.execGet(req, res, queryString.AUTH_USER(username, password));
 });
@@ -25,12 +25,30 @@ router.get('/', async (req, res) => {
   let id = req.query.id;
   console.log(id);
   Neo4jDB.execReturnById(id,res);
-  //query.execUser(req, res, id);
+});
+
+router.get('/all', async (req, res) => {
+  let type = req.query.type;
+  Neo4jDB.execAllUsersByType(type,res);
+  //   /all?type=Client,Operator,Driver
 });
 
 router.get('/checkuser', async (req, res) => {
   let username = req.query.username;
-  //query.execGet(req, res, queryString.CHECK_USERNAME(username));
+  Neo4jDB.execCheckUser(username,res);
 })
+
+router.post('/create/driver', async (req, res) => {
+  Neo4jDB.execCreateDriver(req,res);
+});
+
+router.post('/create/operator', async (req, res) => {
+  Neo4jDB.execCreateOperator(req,res);
+});
+
+router.post('/create/client', async (req, res) => {
+  Neo4jDB.execCreateClient(req,res);
+});
+
 
 module.exports = router;

@@ -42,7 +42,7 @@ export class DriverDetailsComponent implements OnInit {
       this.driver = driver;
     });
 
-    this.rideService.getRide(this.driver.ID).subscribe(rides => {
+    this.rideService.getRide(this.driver.id).subscribe(rides => {
       this.rides = rides;
       this.rides.forEach(ride => {
         if (ride.isCanceled !== true) {

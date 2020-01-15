@@ -120,7 +120,7 @@ export class MapComponent implements OnInit {
 
       this.findDestination(nearestDriver, destinationAddressString);
       this.store.dispatch(new driverActions.UpdateDriver(nearestDriver));
-      this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.ID}`, 'Close', {
+      this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.id}`, 'Close', {
         duration: 3000
       });
     } else {
@@ -154,14 +154,14 @@ export class MapComponent implements OnInit {
       lat: nearestDriver.pickupLat,
       lng: nearestDriver.pickupLng,
       mode: 'location',
-      driverID: nearestDriver.ID
+      driverID: nearestDriver.id
     };
 
     this.addLocationToMap(destinationCoord, destinationAddressString);
     this.calculateRouteFromAtoB(pickupCoord, destinationCoord);
 
     createRide(nearestDriver, destinationCoord, destinationAddressString, this.rideService);
-    this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.ID}`, 'Close', {
+    this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.id}`, 'Close', {
       duration: 3000
     });
   }
@@ -224,7 +224,7 @@ export class MapComponent implements OnInit {
     }
     const driverIcon = new H.map.Icon(svg);
     const marker = new H.map.Marker(coord, { icon: driverIcon });
-    marker.setData(`Car no: ${driver.ID} Name: ${driver.firstName} ${driver.lastName}`);
+    marker.setData(`Car no: ${driver.id} Name: ${driver.firstName} ${driver.lastName}`);
     this.map.addObject(marker);
   }
 

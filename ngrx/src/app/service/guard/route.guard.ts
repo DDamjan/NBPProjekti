@@ -6,21 +6,22 @@ import { User } from 'src/app/models/User';
 
 @Injectable({ providedIn: 'root' })
 export class RouteGuard implements CanActivate {
-    currentUser: User;
+    //currentUser: User;
     constructor(
         private router: Router,
         private store: Store<any>
     ) {
-        if (localStorage.getItem('currentUser') != null) {
-            this.store.select(selectAllUsers).subscribe(user => {
-                this.currentUser = user[0];
-            });
-        }
+        // if (localStorage.getItem('currentUser') != null) {
+        //     this.store.select(selectAllUsers).subscribe(user => {
+        //         this.currentUser = user[0];
+        //     });
+        // }
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         const subroute = route.url[0].path;
-        if (subroute === this.currentUser.type) {
+        const currentUserType = localStorage.getItem('currentUserType');
+        if (subroute === currentUserType) {
             return true;
         }
         this.router.navigate(['/login']);
