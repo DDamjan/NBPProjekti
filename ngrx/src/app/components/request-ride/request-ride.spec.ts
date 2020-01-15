@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FindNearestComponent } from './find-nearest.component';
+import { RequestRideComponent } from './request-ride.component';
 
-describe('FindNearestComponent', () => {
-  let component: FindNearestComponent;
-  let fixture: ComponentFixture<FindNearestComponent>;
+describe('RequestRideComponent', () => {
+  let component: RequestRideComponent;
+  let fixture: ComponentFixture<RequestRideComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FindNearestComponent ]
+      declarations: [ RequestRideComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FindNearestComponent);
+    fixture = TestBed.createComponent(RequestRideComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
