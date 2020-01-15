@@ -1,5 +1,5 @@
 export interface Ride {
-    ID: number;
+    id: number;
     driverID: number;
     startLat: number;
     startLng: number;

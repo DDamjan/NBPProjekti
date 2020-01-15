@@ -32,11 +32,11 @@ export class DataTableComponent implements OnInit {
   }
 
   onChange(val: Ride) {
-    this.dataSource.data.forEach(ride=>{
-      if (ride.rideID === val.ID){
+    this.dataSource.data.forEach(ride => {
+      if (ride.rideID === val.id) {
         ride.endTime = val.endTime;
         ride.isCanceled = val.isCanceled;
       }
-    })
+    });
   }
 }
