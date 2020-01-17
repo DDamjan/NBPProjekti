@@ -9,11 +9,14 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 
 router.get('/', async (req, res) => {
   let id = req.query.id;
-  //query.execGet(req, res, queryString.GET_RIDES + id);
 });
 
 router.post('/request', async (req, res) => {
   redisDB.execPost(req, res, redisDB.makeRequest);
+});
+
+router.post('/requesttest', async (req, res) => {
+  redisDB.execPost(req, res, redisDB.RequestTest);
 });
 
 router.post('/accept', async (req, res) => {
@@ -29,7 +32,6 @@ router.post('/deny', async (req, res) => {
 router.post('/create', async (req, res) => {
   redisDB.pub.publish("AprovedRide", JSON.stringify(req.body));
   Neo4jDB.execCreateRide(req,res);
-  //query.execPost(req, res, queryString.ADD_RIDE(startLat, startLng, startLocation, destinationLat, destinationLng, destinationLocation, ID));
 });
 
 router.post('/finish', async (req, res) => {
@@ -42,10 +44,8 @@ router.post('/finish', async (req, res) => {
 
   if (!req.body.isCanceled) {
     Neo4jDB.execFinishRide(req,res)
-    //query.execPost(req, res, queryString.FINISH_RIDE(ID, driverID, endTime, destinationLat, destinationLng, destinationLocation));
   } else {
     Neo4jDB.execCancelRide(req,res)
-    //query.execPost(req, res, queryString.CANCEL_RIDE(ID, driverID, endTime));
   }
   redisDB.pub.publish("RideStatus", JSON.stringify(req));
 })
@@ -59,7 +59,6 @@ router.post('/adddistancefare', async (req, res) => {
   let distance = req.body.distance;
   let fare = req.body.fare;
   console.log(ID + ' ' + distance + ' ' + fare)
-  //query.execPost(req, res, queryString.ADD_DISTANCE_FARE(distance, fare, ID));
 })
 
 

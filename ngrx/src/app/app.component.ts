@@ -21,8 +21,12 @@ export class AppComponent implements OnInit {
       console.log('Unutar random kompompponente slusa i reaguje na poziv severa');
     });
 
-    this.webSocketService.listen('User:'/*+ USER.ID*/).subscribe((data) => {
-      // Emit za Drivere
+    this.webSocketService.listen('User:0'/*+ USER.ID*/).subscribe((data) => {
+      // Emit za Usere
+      console.log(data);
+    });
+
+    this.webSocketService.listen('RequestTest').subscribe((data) => {
       console.log(data);
     });
 

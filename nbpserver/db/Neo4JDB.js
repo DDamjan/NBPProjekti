@@ -3,6 +3,7 @@ let conn = require('../constants/connectionConstants');
 const driver = neo4j.driver(conn.NEO4J_URL, neo4j.auth.basic(conn.NEO4J_USER, conn.NEO4J_PASS));
 const query = require('../constants/queryStrings');
 const sha = require('sha.js');
+const redisDB = require('../db/redisDB.js');
 
 
 async function execAllUsersByType(type,res) {
@@ -53,6 +54,7 @@ async function execAuth(username,password,res){
       let s=l.properties;
       s.id=l.identity.low;
       delete s.password;
+      redisDB.pub.publish("UserAuth", JSON.stringify(s));//authed user
       res.json(s);
       res.end();
     

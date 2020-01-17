@@ -14,9 +14,6 @@ pub.publish("a nice channel", "I am sending a message.");
 
 var subIncomingRequest = redis.createClient();
 subIncomingRequest.subscribe("IncomingRequest");
-// subIncomingRequest.on("subscribe", function (channel, count) {
-//     console.log("subIncomingRequest subscribed to: " + channel + " count: " + count);
-// });
 subIncomingRequest.on("message", function (channel, clientID) {
     //console.log(channel + ": " + clientID);
     client.hget("requests", clientID, function (err, res) {
@@ -26,15 +23,13 @@ subIncomingRequest.on("message", function (channel, clientID) {
 
 var subAprovedRide = redis.createClient();
 subAprovedRide.subscribe("AprovedRide");
-// subAprovedRide.on("subscribe", function (channel, count) {
-//     console.log("subAprovedRide subscribed to: " + channel + " count: " + count);
-// });
 subAprovedRide.on("message", function (channel, body) {
     //console.log(channel + ": " + req);
     console.log(body);
     body = JSON.parse(body);
     let clientID = body.clientID;
     let driverID = body.driverID;
+    let operatorID = body.operatorID;
 
     client.hget("requests", clientID, (err, res) => {
         res = JSON.parse(res);
@@ -60,9 +55,6 @@ subAprovedRide.on("message", function (channel, body) {
 
 var subRideStatus = redis.createClient();
 subRideStatus.subscribe("RideStatus");
-// subRideStatus.on("subscribe", function (channel, count) {
-//     console.log("subRideStatus subscribed to: " + channel + " count: " + count);
-// });
 subRideStatus.on("message", function (channel, body) {
     console.log(channel + ": " + body);
     let ride;
@@ -70,13 +62,36 @@ subRideStatus.on("message", function (channel, body) {
     ride.isCanceled = body.isCanceled;
     ride.driverID = body.driverID;
     ride.clientID = body.clientID;
+    client.lrange("operator", 0, -1, (err, operatorList)=>{
+        operatorList.forEach(element => {
+            console.log(element);
+        });
+    });
     webSocket.io.emit('User:', ride);
+});
+
+var subUserAuth = redis.createClient();
+subUserAuth.subscribe("UserAuth");
+subUserAuth.on("message", function (channel, user) {
+    user = JSON.parse(user);
+    console.log(user);
+    switch(user.type){
+        case "operator": 
+            client.lpush("operator", user.id, JSON.stringify(user));
+        break;
+        case "driver": 
+            client.lpush("driver", user.id, JSON.stringify(user));
+        break;
+        case "client": 
+            client.lpush("client", user.id, JSON.stringify(user));
+        break;
+        default: break;
+    }
+    webSocket.io.emit('User:'+user.id, "AUTH USER emit TEST for DAMJAN");
 });
  
 
-//setTimeout(()=>{pub.publish("IncomingRequest", "I am sending a messageTUKIIIII.");},6000);
-//setTimeout(()=>{pub.publish("AprovedRide", "I am sending a message.");},2000);
-//setTimeout(()=>{pub.publish("RideStatus", "I am sending a message.");},3000);
+
 //-------------------------------------------------------------------------------------
 
 var options = {
@@ -88,6 +103,16 @@ var options = {
     count: 1, // Number of results to return, default undefined
     accurate: true // Useful if in emulated mode and accuracy is important, default false
   }
+
+function RequestTest(req){
+    let driver ={};
+    driver.driverID = 5;
+    driver.currentLat = 43.318058;
+    driver.currentLng = 21.891996;
+    driver.currentLocation = "neka";
+
+    webSocket.io.emit('RequestTest',driver);
+}
 
 function makeRequest(req){
     //console.log(req.body);
@@ -163,5 +188,6 @@ module.exports = {
     makeRequest: makeRequest,
     requestAccepted: requestAccepted,
     requestDenied: requestDenied,
-    pub: pub
+    pub: pub,
+    RequestTest: RequestTest
 }

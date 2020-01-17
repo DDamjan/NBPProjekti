@@ -14,7 +14,6 @@ router.post('/auth', async (req, res) => {
   let password = sha('sha256').update(req.body.password).digest('hex');
   //console.log("username:"+username+", password: "+password);
   Neo4jDB.execAuth(username,password,res);
-  //query.execGet(req, res, queryString.AUTH_USER(username, password));
 });
 
 router.get('/', async (req, res) => {
