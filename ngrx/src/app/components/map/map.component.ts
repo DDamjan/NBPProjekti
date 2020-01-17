@@ -53,9 +53,9 @@ export class MapComponent implements OnInit {
   public constructor(public store: Store<any>, private snackBar: MatSnackBar, private rideService: RideService) { }
 
   public ngOnInit() {
-    this.store.select(selectAllDrivers).subscribe(drivers => {
-      drivers.forEach(d => {console.log(typeof(d.currentLat)); this.drivers.push(d)});
-    });
+    // this.store.select(selectAllDrivers).subscribe(drivers => {
+    //   drivers.forEach(d => {console.log(typeof(d.currentLat)); this.drivers.push(d)});
+    // });
   }
 
   public async ngAfterViewInit() {
@@ -101,36 +101,37 @@ export class MapComponent implements OnInit {
     const pickupRoute = resultAddress.response.view[0].result;
     const pickupCoord = {
       lat: pickupRoute[0].location.displayPosition.latitude,
-      lng: pickupRoute[0].location.displayPosition.longitude
+      lng: pickupRoute[0].location.displayPosition.longitude,
+      mode: 'location'
     };
-    const nearestDriver = this.findNearestDriver(pickupCoord);
-    if (nearestDriver !== null) {
-      nearestDriver.isActive = true;
-      nearestDriver.pickupLat = pickupCoord.lat;
-      nearestDriver.pickupLng = pickupCoord.lng;
-      nearestDriver.pickupLocation = pickupAddressString;
-      this.addDriverToMap(nearestDriver);
-      this.addLocationToMap(pickupCoord, pickupAddressString);
-      const driverCoord = {
-        lat: nearestDriver.currentLat,
-        lng: nearestDriver.currentLng,
-        mode: 'driver'
-      };
-      this.calculateRouteFromAtoB(driverCoord, pickupCoord);
+    // const nearestDriver = this.findNearestDriver(pickupCoord);
+    // if (nearestDriver !== null) {
+    //   nearestDriver.isActive = true;
+    //   nearestDriver.pickupLat = pickupCoord.lat;
+    //   nearestDriver.pickupLng = pickupCoord.lng;
+    //   nearestDriver.pickupLocation = pickupAddressString;
+    //   this.addDriverToMap(nearestDriver);
+    this.addLocationToMap(pickupCoord, pickupAddressString);
+    //   const driverCoord = {
+    //     lat: nearestDriver.currentLat,
+    //     lng: nearestDriver.currentLng,
+    //     mode: 'driver'
+    //   };
+    //   this.calculateRouteFromAtoB(driverCoord, pickupCoord);
 
-      this.findDestination(nearestDriver, destinationAddressString);
-      this.store.dispatch(new driverActions.UpdateDriver(nearestDriver));
-      this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.id}`, 'Close', {
-        duration: 3000
-      });
-    } else {
-      this.snackBar.open('No available drivers at the moment!', 'Close', {
-        duration: 3000
-      });
-    }
+    this.findDestination(pickupCoord, destinationAddressString);
+    // this.store.dispatch(new driverActions.UpdateDriver(nearestDriver));
+    this.snackBar.open(`Ride requested`, 'Close', {
+      duration: 3000
+    });
+    // } else {
+    //   this.snackBar.open('No available drivers at the moment!', 'Close', {
+    //     duration: 3000
+    //   });
+    // }
   }
 
-  findDestination(nearestDriver, destinationAddress: string) {
+  findDestination(pickupLocation, destinationAddress: string) {
     const geocoder = this.platform.getGeocodingService();
     const geocodingParameters = {
       searchText: destinationAddress,
@@ -139,31 +140,26 @@ export class MapComponent implements OnInit {
 
     geocoder.geocode(
       geocodingParameters, (result) => {
-        this.drawDestination(result, nearestDriver, destinationAddress);
+        this.drawDestination(result, pickupLocation, destinationAddress);
       }, (error) => { console.log(error); }
     );
   }
 
-  drawDestination(destinationCoords, nearestDriver: Driver, destinationAddressString: string) {
+  drawDestination(destinationCoords, pickupLocation: any, destinationAddressString: string) {
     const destinationRoute = destinationCoords.response.view[0].result;
     const destinationCoord = {
       lat: destinationRoute[0].location.displayPosition.latitude,
-      lng: destinationRoute[0].location.displayPosition.longitude
-    };
-    const pickupCoord = {
-      lat: nearestDriver.pickupLat,
-      lng: nearestDriver.pickupLng,
-      mode: 'location',
-      driverID: nearestDriver.id
+      lng: destinationRoute[0].location.displayPosition.longitude,
+      mode: 'location'
     };
 
     this.addLocationToMap(destinationCoord, destinationAddressString);
-    this.calculateRouteFromAtoB(pickupCoord, destinationCoord);
+    this.calculateRouteFromAtoB(pickupLocation, destinationCoord);
 
-    createRide(nearestDriver, destinationCoord, destinationAddressString, this.rideService);
-    this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.id}`, 'Close', {
-      duration: 3000
-    });
+    // createRide(nearestDriver, destinationCoord, destinationAddressString, this.rideService);
+    // this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.id}`, 'Close', {
+    //   duration: 3000
+    // });
   }
 
   addLocationToMap(location, addressString) {
