@@ -46,5 +46,16 @@ router.post('/create/client', async (req, res) => {
   Neo4jDB.execCreateClient(req,res);
 });
 
+router.get('/allLoc', async (req, res) => {
+  let id = req.query.id;
+  Neo4jDB.execClientAllDestLoc(id,res);
+  //   /all?type=Client,Operator,Driver
+});
+
+router.get('/driversWrides', async (req, res) => {
+  Neo4jDB.execDriversWithRides(res);
+  //   /all?type=Client,Operator,Driver
+});
+
 
 module.exports = router;
