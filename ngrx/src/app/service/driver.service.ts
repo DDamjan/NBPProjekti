@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Driver } from '../models/Driver';
+import * as conn from '../../constants/server-urls';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,7 +13,8 @@ const httpOptions = {
 @Injectable()
 export class DriverService {
 
-    private serverURL = 'http://localhost:8080/drivers/';
+    private serverURL = conn.PUBLIC_SERVER + 'drivers/';
+    // private serverURL = conn.LOCAL_SERVER + 'drivers/';
 
     constructor(
         private http: HttpClient) { }

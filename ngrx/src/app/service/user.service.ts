@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { User } from '../models/User';
+import * as conn from '../../constants/server-urls';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,7 +13,8 @@ const httpOptions = {
 @Injectable()
 export class UserService {
 
-    private serverURL = 'http://localhost:8080/users/';
+    private serverURL = conn.PUBLIC_SERVER + 'users/';
+    // private serverURL = conn.LOCAL_SERVER + 'users/';
 
     constructor(
         private http: HttpClient) { }

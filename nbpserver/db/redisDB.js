@@ -106,10 +106,13 @@ var options = {
 
 function RequestTest(req){
     let driver ={};
-    driver.driverID = 5;
+    driver.id = 5;
     driver.currentLat = 43.318058;
     driver.currentLng = 21.891996;
     driver.currentLocation = "neka";
+    driver.isActive = "true";
+    driver.firstName = 'Pera';
+    driver.lastName = 'Peric';
 
     webSocket.io.emit('RequestTest',driver);
 }

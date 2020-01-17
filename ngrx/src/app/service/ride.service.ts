@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../models/Ride';
+import * as conn from '../../constants/server-urls';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,7 +13,8 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    private serverURL = 'http://localhost:8080/rides/';
+    private serverURL = conn.PUBLIC_SERVER + 'rides/';
+    // private serverURL = conn.LOCAL_SERVER + 'rides/';
     private HEREApiURL = 'https://autocomplete.geocoder.api.here.com/6.2/suggest.json';
 
     constructor(
@@ -62,6 +64,13 @@ export class RideService {
         }
         return this.http.post(url, body, httpOptions).pipe(
             catchError(this.handleError<any>('addDistanceFare'))
+        );
+    }
+
+    testRequest(): Observable<Ride> {
+        const url = `${this.serverURL}requesttest`;
+        return this.http.post<Ride>(url, {}, httpOptions).pipe(
+            catchError(this.handleError<Ride>('requesttest'))
         );
     }
 

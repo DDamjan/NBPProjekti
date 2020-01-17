@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { APPID, APPCODE } from 'src/constants/map-credentials';
 import { RideService } from 'src/app/service/ride.service';
-
+import { WebSocketService } from '../../service/web-socket.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-request-ride',
@@ -19,14 +20,22 @@ export class RequestRideComponent implements OnInit {
   private ETADestination: string;
   private options: string[] = [];
 
-  constructor(private rideService: RideService) { }
+  constructor(private rideService: RideService, private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
+    this.webSocketService.listen('RequestTest').subscribe((data: any) => {
+      console.log(data);
+      this.mapView.renderDriver(data, this.pickupAddressName);
+      this.snackBar.open(`Driver ${data.id} en route`, 'Close', {
+        duration: 3000
+      });
+    });
   }
 
   onSubmit(event) {
     this.pickupAddressName = event.target[0].value;
     this.destinationAddressName = event.target[1].value;
-    this.mapView.findAdress(this.pickupAddressName, this.destinationAddressName);
+    this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
+    this.rideService.testRequest().subscribe();
   }
 
   receiveRouteParams($event) {

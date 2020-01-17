@@ -16,17 +16,18 @@ export class AppComponent implements OnInit {
   constructor(private store: Store<any>, private webSocketService: WebSocketService) { }
 
   public ngOnInit() {
-    this.webSocketService.listen('connection').subscribe((data) => {
+    this.webSocketService.listen('ngdispatcher-connection').subscribe((data) => {
       console.log(data);
       console.log('Unutar random kompompponente slusa i reaguje na poziv severa');
     });
 
+    // this.webSocketService.listen('RequestTest').subscribe((data) => {
+    //     console.log(data);
+    //     //this.mapView.renderDriver(data, this.pickupAddressName);
+    //   });
+
     this.webSocketService.listen('User:0'/*+ USER.ID*/).subscribe((data) => {
       // Emit za Usere
-      console.log(data);
-    });
-
-    this.webSocketService.listen('RequestTest').subscribe((data) => {
       console.log(data);
     });
 

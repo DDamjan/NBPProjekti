@@ -1,13 +1,15 @@
 import {Injectable} from '@angular/core';
 import * as io from 'socket.io-client';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs';
+import * as conn from '../../constants/server-urls';
 
 @Injectable({
     providedIn: 'root'
 })export class WebSocketService {
 
     socket: any;
-    readonly uri: string = 'ws://localhost:4201';
+    readonly uri: string = conn.PUBLIC_WEBSOCKET;
+    // readonly uri: string = conn.LOCAL_WEBSOCKET;
 
     constructor() {
         this.socket = io(this.uri);
