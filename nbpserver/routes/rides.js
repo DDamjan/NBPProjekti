@@ -9,6 +9,10 @@ const Neo4jDB= require('../db/Neo4JDB.js');
 
 router.get('/', async (req, res) => {
   let id = req.query.id;
+<<<<<<< HEAD
+  Neo4jDB.execDriverAllRides(id,res);
+=======
+>>>>>>> 2e35421beefb4c08ea7b06403cfe6710409178cf
 });
 
 router.post('/request', async (req, res) => {
@@ -42,7 +46,7 @@ router.post('/finish', async (req, res) => {
   let destinationLng = req.body.destinationLng;
   let destinationLocation = req.body.destinationLocation;
 
-  if (!req.body.isCanceled) {
+  if (req.body.isCanceled==false) {
     Neo4jDB.execFinishRide(req,res)
   } else {
     Neo4jDB.execCancelRide(req,res)

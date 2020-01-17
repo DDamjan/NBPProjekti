@@ -349,7 +349,9 @@ async function execCancelRide(req,res)
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('r');
-      res.json(l);
+      let s=l.properties;
+      s.id=l.identity.low;
+      res.json(s);
       res.end();
     })
   })
@@ -367,6 +369,7 @@ async function execFinishRide(req,res){
   var session=driver.session()
   session.run(query.FINISH_RIDE,
   { 
+    RID:req.body.rideID,
     CID:req.body.clientID,
     DID:req.body.driverID,
     DLat:req.body.destinationLat,
@@ -377,7 +380,9 @@ async function execFinishRide(req,res){
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('r');
-      res.json(l);
+      let s=l.properties;
+      s.id=l.identity.low;
+      res.json(s);
       res.end();
     })
   })
@@ -397,6 +402,7 @@ async function execCancelRide(req,res)
   var session=driver.session()
   session.run(query.CANCEL_RIDE,
   { 
+    RID:req.body.rideID,
     CID:req.body.clientID,
     DID:req.body.driverID,
     ETime:req.body.endTime
@@ -404,7 +410,9 @@ async function execCancelRide(req,res)
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('r');
-      res.json(l);
+      let s=l.properties;
+      s.id=l.identity.low;
+      res.json(s);
       res.end();
     })
   })
@@ -418,7 +426,112 @@ async function execCancelRide(req,res)
 
 }
 
+async function execDriverAllRides(driverID,res){
 
+var session=driver.session();
+  session.run(query.DRIVER_ALL_RIDES, {DID:neo4j.int(driverID)})
+  .then(result => {
+      let n=[];
+      console.log(result.records);
+      result.records.forEach(record => {
+      let l=record.get('r');
+      let s=l.properties;
+      s.id=l.identity.low;
+      //console.log(s);
+      n.push(s);
+      });
+    // console.log(n);
+    res.json(n);
+    res.end();
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execClientAllDestLoc(clientID,res){
+
+  var session=driver.session();
+  session.run(query.CLIENT_ALL_DEST_LOC, {CID:neo4j.int(clientID)})
+  .then(result => {
+      let n=[];
+      result.records.forEach(record => {
+      let l=record.get('r.destinationLocation');
+      n.push(l);
+      });
+    res.json(n);
+    res.end();
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execDriversWithRides(res)
+{
+
+  var session=driver.session();
+  session.run(query.ALL_DRIVERS_WITH_RIDES)
+  .then(result => {
+    let n=[];
+      result.records.forEach(record => {
+      let l=record.get('n');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      n.push(s);
+      });
+    // console.log(n);
+    res.json(n);
+    res.end();
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
+
+async function execDispatch(req,res){
+  
+  var session=driver.session()
+  console.log(req.body.destinationLocation);
+  session.run(query.DISPATCH,
+  { 
+    OID:req.body.operatorID,
+    DID:req.body.driverID,
+  })
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('r');
+      let s=l.properties;
+      s.id=l.identity.low;
+      res.json(s);
+      res.end();
+    })
+  })
+  .catch(error => {
+    res.status(500);
+    res.send(error.message);
+    res.end();
+    console.log(error);
+  })
+  .then(() => session.close())
+
+}
 
 module.exports={
     execAuth: execAuth,
@@ -430,5 +543,10 @@ module.exports={
     execCreateOperator: execCreateOperator,
     execCreateRide: execCreateRide,
     execFinishRide: execFinishRide,
-    execCancelRide: execCancelRide
+    execCancelRide: execCancelRide,
+    execDriverAllRides: execDriverAllRides,
+    execClientAllDestLoc: execClientAllDestLoc,
+    execDriversWithRides: execDriversWithRides,
+    execDispatch: execDispatch
+
 }
