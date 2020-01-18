@@ -34,15 +34,41 @@ router.get('/checkuser', async (req, res) => {
 })
 
 router.post('/create/driver', async (req, res) => {
-  Neo4jDB.execCreateDriver(req,res);
+  const payload= {
+      Ime:req.body.firstName,
+      Prez:req.body.lastName,
+      User:req.body.username,
+      Pass:sha('sha256').update(req.body.password).digest('hex'),
+      Tel:req.body.phone,
+      Car:req.body.car,
+      Color:req.body.carColor,
+      Plate:req.body.licencePlate,
+      cLat:req.body.currentLat,
+      cLng:req.body.currentLng,
+      cLoc:req.body.currentLoc,
+      pLat:req.body.pickupLat,
+      pLng:req.body.pickupLng,
+      pLoc:req.body.pickupLoc
+  }
+  Neo4jDB.execCreateDriver(req,res, payload);
 });
 
-router.post('/create/operator', async (req, res) => {
-  Neo4jDB.execCreateOperator(req,res);
-});
 
 router.post('/create/client', async (req, res) => {
-  Neo4jDB.execCreateClient(req,res);
+  const payload=  
+  {
+    Ime:req.body.firstName,
+    Prez:req.body.lastName,
+    User:req.body.username,
+    Pass:sha('sha256').update(req.body.password).digest('hex'),
+    cLat:req.body.currentLat,
+    cLng:req.body.currentLng,
+    cLoc:req.body.currentLoc,
+    pLat:req.body.pickupLat,
+    pLng:req.body.pickupLng,
+    pLoc:req.body.pickupLoc
+ }
+  Neo4jDB.execCreateClient(req,res,payload);
 });
 
 router.get('/allLoc', async (req, res) => {
