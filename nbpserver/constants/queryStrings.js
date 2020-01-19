@@ -12,6 +12,7 @@ const CLIENT_ALL_DEST_LOC='match (m:User)-[r:Ride]->(n:User) where id(m)=$CID re
 const ALL_DRIVERS_WITH_RIDES='match (m:User)-[r:Ride]->(n:User) return distinct n';
 const DISPATCH='match (n:User),(m:User) where id(m)=$DID and id(n)=$OID create (n)-[r:Dispatch {dispachDateTime:datetime()}]->(m) return r';
 const CHECK_USER='match (n:User {username:$user}) return n';
+const TOP_LOCATIONS='match (m:User)-[r:Ride]->(n:User) where  id(m)=$CID return distinct count(r),r.destLoc order by r.destLoc';
 
 module.exports = {
     GET_ALL_USERS_TYPE: GET_ALL_USERS_TYPE,
@@ -26,8 +27,6 @@ module.exports = {
     CLIENT_ALL_DEST_LOC: CLIENT_ALL_DEST_LOC,
     ALL_DRIVERS_WITH_RIDES: ALL_DRIVERS_WITH_RIDES,
     DISPATCH: DISPATCH,
-    CHECK_USER: CHECK_USER 
-    
-    //match (m:User)-[r:Ride]->(n:User) where  id(m)=$CID return distinct count(r),r.destLoc order by r.destLoc
-
+    CHECK_USER: CHECK_USER ,
+    TOP_LOCATIONS: TOP_LOCATIONS
 }

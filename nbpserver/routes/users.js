@@ -22,6 +22,12 @@ router.get('/', async (req, res) => {
   Neo4jDB.execReturnById(id,res);
 });
 
+router.get('/topLoc', async (req, res) => {
+  let id = req.query.id;
+  //console.log(id);
+  Neo4jDB.execClientTopLocations(id,res);
+});
+
 router.get('/all', async (req, res) => {
   let type = req.query.type;
   Neo4jDB.execAllUsersByType(type,res);

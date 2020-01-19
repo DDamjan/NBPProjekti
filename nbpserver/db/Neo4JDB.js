@@ -171,7 +171,6 @@ async function execFinishRide(req,res,payload){
     errorHandler(error,res);
   })
   .then(() => session.close())
-
 }
 
 async function execCancelRide(req,res,paylaod)
@@ -275,6 +274,25 @@ async function execDispatch(req,res,payload){
   .then(() => session.close())
 }
 
+async function execClientTopLocations(id,res){
+  var session=driver.session()
+  session.run(query.TOP_LOCATIONS,{CID:neo4j.int(id)})
+  .then(result => {
+    console.log(result.records);
+    let m=[];
+    result.records.forEach(record => {
+      let l= { count: record.get('count(r)').low ,location: record.get('r.destLoc')};
+      m.push(l);
+    })
+    res.json(m);
+    res.end();
+  })
+  .catch(error => {
+    errorHandler(error,res);
+  })
+  .then(() => session.close())
+}
+
 async function errorHandler(err,res)
 {
     res.status(500);
@@ -297,5 +315,6 @@ module.exports={
     execClientAllDestLoc: execClientAllDestLoc,
     execDriversWithRides: execDriversWithRides,
     execDispatch: execDispatch,
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+    execClientTopLocations: execClientTopLocations 
 }
