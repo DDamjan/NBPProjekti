@@ -7,11 +7,11 @@ import { MatSnackBar } from '@angular/material';
 import { calculateFare } from 'src/app/func/functions';
 
 @Component({
-  selector: 'app-request-ride',
-  templateUrl: './request-ride.component.html',
-  styleUrls: ['./request-ride.component.css']
+  selector: 'app-driver-hub',
+  templateUrl: './driver-hub.component.html',
+  styleUrls: ['./driver-hub.component.css']
 })
-export class RequestRideComponent implements OnInit {
+export class DriverHubComponent implements OnInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   private pickupAddressName: string;
   private destinationAddressName: string;

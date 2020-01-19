@@ -13,7 +13,7 @@ const httpOptions = {
 @Injectable()
 export class DriverService {
 
-    private serverURL = conn.PUBLIC_SERVER + 'drivers/';
+    private serverURL = conn.PUBLIC_SERVER + 'users/';
     // private serverURL = conn.LOCAL_SERVER + 'drivers/';
 
     constructor(
@@ -21,7 +21,7 @@ export class DriverService {
 
     /* GET drivers from the server */
     getDrivers(): Observable<Driver[]> {
-        return this.http.get<Driver[]>(this.serverURL)
+        return this.http.get<Driver[]>(this.serverURL + 'all?type=driver')
             .pipe(
                 catchError(this.handleError('getDrivers', []))
             );
@@ -32,14 +32,6 @@ export class DriverService {
         const url = `${this.serverURL}?id=${id}`;
         return this.http.get<Driver>(url).pipe(
             catchError(this.handleError<Driver>(`getDriver id=${id}`))
-        );
-    }
-
-    /* GET last ID */
-    getLastID(): Observable<any> {
-        const url = `${this.serverURL}currentid`;
-        return this.http.get<any>(url).pipe(
-            catchError(this.handleError<any>('getLastID'))
         );
     }
 

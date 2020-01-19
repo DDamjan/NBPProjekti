@@ -17,7 +17,8 @@ import {
   MatInputModule,
   MatOptionModule,
   MatSelectModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatTabsModule
 } from '@angular/material';
 import { MapComponent } from './components/map/map.component';
 import { MapViewComponent } from './components/map-view/map-view.component';
@@ -72,6 +73,7 @@ import { UserService } from './service/user.service';
     MatInputModule,
     MatOptionModule,
     MatSelectModule,
+    MatTabsModule,
     StoreDevtoolsModule,
     FormsModule,
     StoreModule.forRoot(reducers),

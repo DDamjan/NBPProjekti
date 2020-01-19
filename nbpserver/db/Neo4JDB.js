@@ -219,23 +219,11 @@ async function execCheckUser(username,res){
   .then(() => session.close())
 
 }  
-async function execCreateRide(req,res){
+async function execCreateRide(req,res, payload){
   var session=driver.session()
   console.log(req.body.destinationLocation);
-  session.run(query.CREATE_RIDE,
-  { 
-    CID:req.body.clientID,
-    DID:req.body.driverID,
-    SLat:req.body.startLat,
-    SLng:req.body.startLng,
-    DLat:req.body.destinationLat,
-    DLng:req.body.destinationLng,
-    SLoc:req.body.startLocation,
-    DLoc:req.body.destinationLocation,
-    STime:req.body.startTime,
-    Fare:req.body.fare,
-    Dist:req.body.distance
-})
+  session.run(query.CREATE_RIDE, payload
+  )
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('r');

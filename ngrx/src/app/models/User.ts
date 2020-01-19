@@ -11,10 +11,10 @@ export interface User {
     car?: string;
     carColor?: string;
     licencePlate?: string;
-    // Driver i Client
     currentLat?: number;
     currentLng?: number;
     currentLocation?: string;
+    // Driver i Client
     pickupLat?: number;
     pickupLng?: number;
     pickupLocation?: string;
