@@ -3,27 +3,6 @@
     <div class="tab-container">
       <div class="input-container">
         <div class="container">
-          <form (ngSubmit)="onSubmit($event)" *ngIf="isRequested">
-            <mat-form-field>
-              <input matInput placeholder="Pickup address" name="pickupAddressName"
-                (keyup)="autoCompleteListener($event)" [matAutocomplete]="auto" required>
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let option of options" [value]="option">
-                  {{ option }}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field>
-              <input matInput placeholder="Destination address" name="destinationAddressName"
-                (keyup)="autoCompleteListener($event)" [matAutocomplete]="auto" required>
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let option of options" [value]="option">
-                  {{ option }}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <button mat-raised-button>Request</button>
-          </form>
         </div>
       </div>
       <div class="container" *ngIf="!isRequested">
