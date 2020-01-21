@@ -13,8 +13,8 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    private serverURL = cons.PUBLIC_SERVER + 'rides/';
-    // private serverURL = cons.LOCAL_SERVER + 'rides/';
+    //private serverURL = cons.PUBLIC_SERVER + 'rides/';
+    private serverURL = cons.LOCAL_SERVER + 'rides/';
 
     constructor(
         private http: HttpClient) { }

@@ -112,12 +112,15 @@ subUserAuth.on("message", function (channel, user) {
         case "operator": 
             client.lpush("notActiveOperators", user.id);
             client.hmset("operator", user.id, false);
+            console.log("Operator authenticated");
         break;
         case "driver": 
             client.hmset("driver", user.id, false);
+            console.log("Driver authenticated");
         break;
         case "client": 
             client.hmset("client", user.id, false);
+            console.log("Client authenticated");
         break;
         default: break;
     }
@@ -144,23 +147,28 @@ function makeRequest(req){
     console.log(req.body);
     client.hmset("client", req.body.clientID, true);
     client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
-
-    //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.startLat, req.body.startLng, "src",  redis.print);
+    webSocket.io.emit('User:20', {
+        ID: 21,
+        currentLat: 40.20543,
+        currentLng: 23.56378
+    });
+    //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.currentLat, req.body.currentLng, "src",  redis.print);
     //geo.addLocation("dest:"+ req.body.clientID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
-    geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.startLat, longitude: req.body.startLng});
+    geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.currentLat, longitude: req.body.currentLng});
 
     pub.publish("ClientRequestToDrivers", req.body.clientID); //salje svim driverima request za voznju
-    setTimeout(() => {sendOperatorRequest(req.body.clientID)},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
+    
+    setTimeout(() => {console.log(req.body.clientID); sendOperatorRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
 }
 
 function requestAccepted(req){
     let driver = {};
     driver.driverID =  req.body.driverID;
-    driver.destinationLat =  req.body.startLat;
-    driver.destinationLng =  req.body.startLng;
-    driver.destinationLocation =  req.body.startLocation;
+    driver.destinationLat =  req.body.currentLat;
+    driver.destinationLng =  req.body.currentLng;
+    driver.destinationLocation =  req.body.currentLocation;
     client.lpush("accepted:"+req.body.clientID, JSON.stringify(driver));
-    geo.addLocation(req.body.driverID, {latitude: req.body.startLat, longitude: req.body.startLng});
+    geo.addLocation(req.body.driverID, {latitude: req.body.currentLat, longitude: req.body.currentLng});
 }
 
 function requestDenied(req){
@@ -199,7 +207,8 @@ function NextRequestToNextOperator(clientID){
             driverList.forEach((element, i) => {
                 driverList[i] = JSON.parse(element);
             });
-            request.drivers = driverList;
+            request = {...request, "drivers" : driverList}
+            //request.drivers = driverList;
 
             geo.location("src:"+ clientID, (err, location) => {
                 if(err) console.error(err);
