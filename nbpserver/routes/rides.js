@@ -22,12 +22,10 @@ router.post('/requesttest', async (req, res) => {
 
 router.post('/accept', async (req, res) => {
   redisDB.execPost(req, res, redisDB.requestAccepted);
-  //LOG how many requests accepted by a driver
 });
 
 router.post('/deny', async (req, res) => {
   redisDB.execPost(req, res, redisDB.requestDenied);
-  //LOG how many requests denied by a driver
 });
 
 router.post('/create', async (req, res) => {
@@ -74,8 +72,7 @@ router.post('/adddistancefare', async (req, res) => {
   let ID = req.body.ID;
   let distance = req.body.distance;
   let fare = req.body.fare;
-  console.log(ID + ' ' + distance + ' ' + fare)
+  console.log(ID + ' ' + distance + ' ' + fare);
 })
-
 
 module.exports = router;

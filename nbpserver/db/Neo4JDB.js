@@ -140,7 +140,7 @@ async function execCheckUser(username,res){
  
 async function execCreateRide(req,res,payload){
   var session=driver.session()
-  console.log(req.body.destinationLocation);
+  //console.log(req.body.destinationLocation);
   session.run(query.CREATE_RIDE,payload)
   .then(result => {
     result.records.forEach(record => {
