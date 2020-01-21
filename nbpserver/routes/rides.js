@@ -29,20 +29,21 @@ router.post('/deny', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-    const payload = { 
-      CID:req.body.clientID,
-      DID:req.body.driverID,
-      SLat:req.body.startLat,
-      SLng:req.body.startLng,
-      DLat:req.body.destinationLat,
-      DLng:req.body.destinationLng,
-      SLoc:req.body.startLocation,
-      DLoc:req.body.destinationLocation,
-      STime:req.body.startTime,
-      Fare:req.body.fare,
-      Dist:req.body.distance
-  }
-  redisDB.pub.publish("AprovedRide", JSON.stringify(req.body)); 
+  const payload=  { 
+    CID:req.body.clientID,
+    DID:req.body.driverID,
+    SLat:req.body.startLat,
+    SLng:req.body.startLng,
+    DLat:req.body.destinationLat,
+    DLng:req.body.destinationLng,
+    SLoc:req.body.startLocation,
+    DLoc:req.body.destinationLocation,
+    STime:req.body.startTime,
+    Fare:req.body.fare,
+    Dist:req.body.distance
+}
+  redisDB.pub.publish("AprovedRide", JSON.stringify(req.body));
+  Neo4jDB.execCreateRide(req,res,payload);
 });
 
 router.post('/finish', async (req, res) => {

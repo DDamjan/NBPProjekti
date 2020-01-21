@@ -31,29 +31,7 @@ export class AppComponent implements OnInit {
       console.log(data);
     });
 
-    this.webSocketService.listen('User:1').subscribe((data) => {
-      // Emit za Usere
-      console.log("USer1");
-      console.log(data);
-    });
-
-    this.webSocketService.listen('User:2').subscribe((data) => {
-      // Emit za Usere
-      console.log("USer2");
-      console.log(data);
-    });
-
-    this.webSocketService.listen('User:3').subscribe((data) => {
-      // Emit za Usere
-      console.log("USer3");
-      console.log(data);
-    });
-
-    this.webSocketService.listen('RequestTest').subscribe((data) => {
-      console.log(data);
-    });
-
-    this.store.dispatch(new actions.GetDrivers());
+    // this.store.dispatch(new actions.GetDrivers());
     // this.store.select()
   }
 

@@ -51,10 +51,7 @@ router.post('/create/driver', async (req, res) => {
       Plate:req.body.licencePlate,
       cLat:req.body.currentLat,
       cLng:req.body.currentLng,
-      cLoc:req.body.currentLoc,
-      pLat:req.body.pickupLat,
-      pLng:req.body.pickupLng,
-      pLoc:req.body.pickupLoc
+      cLoc:req.body.currentLoc
   }
   Neo4jDB.execCreateDriver(req,res, payload);
 });
@@ -67,12 +64,9 @@ router.post('/create/client', async (req, res) => {
     Prez:req.body.lastName,
     User:req.body.username,
     Pass:sha('sha256').update(req.body.password).digest('hex'),
-    cLat:req.body.currentLat,
-    cLng:req.body.currentLng,
-    cLoc:req.body.currentLoc,
-    pLat:req.body.pickupLat,
-    pLng:req.body.pickupLng,
-    pLoc:req.body.pickupLoc
+    Lat:req.body.currentLat,
+    Lng:req.body.currentLng,
+    Loc:req.body.currentLoc
  }
   Neo4jDB.execCreateClient(req,res,payload);
 });

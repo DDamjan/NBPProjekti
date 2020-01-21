@@ -1,0 +1,36 @@
+<mat-tab-group animationDuration="350ms" mat-align-tabs="left">
+  <mat-tab label="Map">
+    <div class="tab-container">
+      <div class="input-container">
+        <div class="container">
+        </div>
+      </div>
+      <div class="container" *ngIf="!isDriving">
+        <div class="route-params">
+          <p>Distance to pick up: {{distancePickup}}</p>
+        </div>
+        <div class="route-params">
+          <p>ETA for pick up: {{ETAPickup}}</p>
+        </div>
+        <div class="route-params">
+          <p>Distance to destination: {{distanceDestination}}</p>
+        </div>
+        <div class="route-params">
+          <p>ETA for destination: {{ETADestination}}</p>
+        </div>
+        <div class="route-params">
+          <p>Fare: {{fare}} dinara</p>
+        </div>
+      </div>
+
+      <map-component #mapView width="100%" height="67vh" lat="43.318058" lng="21.891996" zoom="15"
+        (routeParams)="receiveRouteParams($event)"></map-component>
+    </div>
+  </mat-tab>
+  <mat-tab label="History">
+  
+</mat-tab>
+<mat-tab label="Recent rides">
+
+</mat-tab>
+</mat-tab-group>

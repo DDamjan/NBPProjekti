@@ -301,8 +301,8 @@ export class MapComponent implements OnInit {
   }
 
   alertDispatcher(result, mode) {
+    const route = result.response.route[0];
     if (mode === 'driver') {
-      const route = result.response.route[0];
       const msg = {
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
@@ -310,11 +310,11 @@ export class MapComponent implements OnInit {
       };
       this.routeParams.emit(msg);
     } else {
-      const route = result.response.route[0];
       const msg = {
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
-        mode: 'destination'
+        mode: 'destination',
+        fare: route.summary.distance
       };
       this.routeParams.emit(msg);
     }

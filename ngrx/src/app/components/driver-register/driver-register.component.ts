@@ -31,10 +31,8 @@ export class DriverRegisterComponent implements OnInit {
 
   onSubmit(event$) {
 
-    this.DService.getLastID().subscribe(val => {
-      this.id = val[0].ID; console.log(this.id);
       this.driver = {
-        id: this.id + 1,
+        id: 0,
         firstName: event$.target[0].value,
         lastName: event$.target[1].value,
         phone: event$.target[2].value,
@@ -51,6 +49,5 @@ export class DriverRegisterComponent implements OnInit {
       this.snackBar.open(`Driver registered.`, 'Close', {
         duration: 3000
       });
-    });
   }
 }

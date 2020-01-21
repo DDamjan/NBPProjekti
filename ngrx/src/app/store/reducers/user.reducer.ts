@@ -32,7 +32,7 @@ export function UserReducer(
             UserAdapter.removeAll(state);
             return UserAdapter.addOne(action.payload, state);
         case GET_USER_SUCCESS:
-            return UserAdapter.addAll(action.payload, state);
+            return UserAdapter.addOne(action.payload, state);
         default:
             return state;
     }
