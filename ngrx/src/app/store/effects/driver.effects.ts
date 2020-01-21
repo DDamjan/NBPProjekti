@@ -30,7 +30,6 @@ export class DriverEffects {
     ofAction(driverActions.GetDrivers),
     switchMap(driver => this.driverService.getDrivers()),
     map(response => {
-      console.log(response);
       return new driverActions.GetDriversSuccess(response);
     }));
 

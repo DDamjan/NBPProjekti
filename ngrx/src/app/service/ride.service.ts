@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../models/Ride';
-import * as conn from '../../constants/server-urls';
+import * as cons from '../../constants/server-urls';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -13,9 +13,8 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    private serverURL = conn.PUBLIC_SERVER + 'rides/';
-    // private serverURL = conn.LOCAL_SERVER + 'rides/';
-    private HEREApiURL = 'https://autocomplete.geocoder.api.here.com/6.2/suggest.json';
+    private serverURL = cons.PUBLIC_SERVER + 'rides/';
+    // private serverURL = cons.LOCAL_SERVER + 'rides/';
 
     constructor(
         private http: HttpClient) { }
@@ -61,21 +60,21 @@ export class RideService {
             distance,
             fare,
             ID
-        }
+        };
         return this.http.post(url, body, httpOptions).pipe(
             catchError(this.handleError<any>('addDistanceFare'))
         );
     }
 
-    testRequest(): Observable<Ride> {
-        const url = `${this.serverURL}requesttest`;
-        return this.http.post<Ride>(url, {}, httpOptions).pipe(
+    requestRide(payload: any): Observable<Ride> {
+        const url = `${this.serverURL}request`;
+        return this.http.post<Ride>(url, payload, httpOptions).pipe(
             catchError(this.handleError<Ride>('requesttest'))
         );
     }
 
     findRideAddress(params): Observable<any> {
-        const url = this.HEREApiURL + params;
+        const url = cons.HERE_API_AUTOCOMPLETE + params;
         return this.http.get<any>(url);
     }
 

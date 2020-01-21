@@ -6,7 +6,6 @@ var logger = require('morgan');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 
-var driverRouter = require('./routes/dispatches');
 var ridesRouter = require('./routes/rides');
 var usersRouter = require('./routes/users');
 
@@ -21,7 +20,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use('/dispatches', driverRouter);
 app.use('/rides', ridesRouter);
 app.use('/users', usersRouter);
 
