@@ -83,7 +83,7 @@ export class MapComponent implements OnInit {
     }, false);
   }
 
-  public findAdress(pickupAddress: string, destinationAddress: string) {
+  public renderRequest(pickupAddress: string, destinationAddress: string) {
     const geocoder = this.platform.getGeocodingService();
     const geocodingParameters = {
       searchText: pickupAddress,
@@ -97,6 +97,37 @@ export class MapComponent implements OnInit {
     );
   }
 
+  public renderDriver(driver: any, pickupAddress: any) {
+    const geocoder = this.platform.getGeocodingService();
+    const geocodingParameters = {
+      searchText: pickupAddress,
+      jsonattributes: 1
+    };
+
+    geocoder.geocode(
+      geocodingParameters, (result) => {
+        this.renderDriverSuccess(driver, result);
+      }, (error) => { console.log(error); }
+    );
+  }
+
+  public renderDriverSuccess(driver: any, pickupCoords: any) {
+    const pickupRoute = pickupCoords.response.view[0].result;
+    const extractedCoords = {
+      lat: pickupRoute[0].location.displayPosition.latitude,
+      lng: pickupRoute[0].location.displayPosition.longitude
+    };
+
+    const driverCoords = {
+      lat: driver.currentLat,
+      lng: driver.currentLng,
+      mode: 'driver'
+    };
+
+    this.addDriverToMap(driver);
+    this.calculateRouteFromAtoB(driverCoords, extractedCoords);
+  }
+
   onSuccess(resultAddress, pickupAddressString: string, destinationAddressString: string) {
     const pickupRoute = resultAddress.response.view[0].result;
     const pickupCoord = {
@@ -104,31 +135,13 @@ export class MapComponent implements OnInit {
       lng: pickupRoute[0].location.displayPosition.longitude,
       mode: 'location'
     };
-    // const nearestDriver = this.findNearestDriver(pickupCoord);
-    // if (nearestDriver !== null) {
-    //   nearestDriver.isActive = true;
-    //   nearestDriver.pickupLat = pickupCoord.lat;
-    //   nearestDriver.pickupLng = pickupCoord.lng;
-    //   nearestDriver.pickupLocation = pickupAddressString;
-    //   this.addDriverToMap(nearestDriver);
+
     this.addLocationToMap(pickupCoord, pickupAddressString);
-    //   const driverCoord = {
-    //     lat: nearestDriver.currentLat,
-    //     lng: nearestDriver.currentLng,
-    //     mode: 'driver'
-    //   };
-    //   this.calculateRouteFromAtoB(driverCoord, pickupCoord);
 
     this.findDestination(pickupCoord, destinationAddressString);
-    // this.store.dispatch(new driverActions.UpdateDriver(nearestDriver));
     this.snackBar.open(`Ride requested`, 'Close', {
       duration: 3000
     });
-    // } else {
-    //   this.snackBar.open('No available drivers at the moment!', 'Close', {
-    //     duration: 3000
-    //   });
-    // }
   }
 
   findDestination(pickupLocation, destinationAddress: string) {
@@ -218,6 +231,7 @@ export class MapComponent implements OnInit {
     } else {
       svg = taxiWhite;
     }
+    console.log(driver);
     const driverIcon = new H.map.Icon(svg);
     const marker = new H.map.Marker(coord, { icon: driverIcon });
     marker.setData(`Car no: ${driver.id} Name: ${driver.firstName} ${driver.lastName}`);
@@ -227,7 +241,7 @@ export class MapComponent implements OnInit {
   addDriversToMap(drivers) {
     drivers.forEach(driver => {
       this.addDriverToMap(driver);
-    })
+    });
   }
 
   calculateRouteFromAtoB(waypoint1, waypoint2) {
@@ -256,7 +270,6 @@ export class MapComponent implements OnInit {
   }
 
   addRouteShapeToMap(result, mode) {
-    console.log(result);
     const route = result.response.route[0];
     const lineString = new H.geo.LineString();
     const routeShape = route.shape;

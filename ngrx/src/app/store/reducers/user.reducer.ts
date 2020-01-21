@@ -6,7 +6,6 @@ import {
 } from 'src/constants/reducers-constants';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { Router } from '@angular/router';
 
 export interface UserState extends EntityState<User> {
 }

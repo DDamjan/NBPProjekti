@@ -19,8 +19,11 @@ router.post('/update', async(req, res)=>{
 })
 
 router.post('/dispatch', async(req, res)=>{
-  
-  
+  const payload= { 
+    OID:req.body.operatorID,
+    DID:req.body.driverID,
+  }
+  Neo4jDB.execDispatch(req,res,payload);
   
 })
 
