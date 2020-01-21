@@ -18,4 +18,8 @@ export interface User {
     pickupLat?: number;
     pickupLng?: number;
     pickupLocation?: string;
+    // Client
+    destinationLat?: number;
+    destinationLng?: number;
+    destinationLocation?: number;
 }

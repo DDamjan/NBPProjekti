@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
       console.log(data);
     });
 
-    this.store.dispatch(new actions.GetDrivers());
+    // this.store.dispatch(new actions.GetDrivers());
     // this.store.select()
   }
 

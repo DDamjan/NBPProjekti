@@ -21,32 +21,17 @@ export class DriverHubComponent implements OnInit {
   private ETADestination: string;
   private fare: number;
   private options: string[] = [];
-  public isRequested = true;
+  public isDriving = true;
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
-    this.webSocketService.listen('RequestTest').subscribe((data: any) => {
+    this.webSocketService.listen('').subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
-      this.snackBar.open(`Driver ${data.id} en route`, 'Close', {
+      this.snackBar.open(` ${data.id} en route`, 'Close', {
         duration: 3000
       });
     });
-  }
-
-  onSubmit(event) {
-    this.pickupAddressName = event.target[0].value;
-    this.destinationAddressName = event.target[1].value;
-    if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
-      this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
-      this.rideService.testRequest().subscribe();
-      this.isRequested = false;
-    } else {
-      this.snackBar.open('Enter a valid address!', 'Close', {
-        duration: 3000
-      });
-    }
-
   }
 
   receiveRouteParams($event) {
@@ -59,26 +44,4 @@ export class DriverHubComponent implements OnInit {
       this.fare = calculateFare($event.fare);
     }
   }
-
-  autoCompleteListener(event) {
-    let query = '';
-    this.options.length = 0;
-    if (query !== event.target.value) {
-      if (event.target.value.length >= 1) {
-
-        const params = '?' +
-          'query=' + encodeURIComponent(event.target.value) +   // The search text which is the basis of the query
-          '&maxresults=5' +
-          '&app_id=' + APPID +
-          '&app_code=' + APPCODE;
-        this.rideService.findRideAddress(params).subscribe(suggestion => suggestion.suggestions.forEach(s => this.options.push(s.label)));
-      }
-    }
-    query = event.target.value;
-
-  }
 }
-
-
-
-

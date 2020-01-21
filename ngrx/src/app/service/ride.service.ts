@@ -66,9 +66,9 @@ export class RideService {
         );
     }
 
-    testRequest(): Observable<Ride> {
-        const url = `${this.serverURL}requesttest`;
-        return this.http.post<Ride>(url, {}, httpOptions).pipe(
+    requestRide(payload: any): Observable<Ride> {
+        const url = `${this.serverURL}request`;
+        return this.http.post<Ride>(url, payload, httpOptions).pipe(
             catchError(this.handleError<Ride>('requesttest'))
         );
     }

@@ -1,11 +1,11 @@
 <mat-tab-group animationDuration="350ms" mat-align-tabs="left">
-  <mat-tab label="Request a taxi">
+  <mat-tab label="Map">
     <div class="tab-container">
       <div class="input-container">
         <div class="container">
         </div>
       </div>
-      <div class="container" *ngIf="!isRequested">
+      <div class="container" *ngIf="!isDriving">
         <div class="route-params">
           <p>Distance to pick up: {{distancePickup}}</p>
         </div>
@@ -27,7 +27,7 @@
         (routeParams)="receiveRouteParams($event)"></map-component>
     </div>
   </mat-tab>
-  <mat-tab label="Favourite locations">
+  <mat-tab label="History">
   
 </mat-tab>
 <mat-tab label="Recent rides">

@@ -5,6 +5,10 @@ import { RideService } from 'src/app/service/ride.service';
 import { WebSocketService } from '../../service/web-socket.service';
 import { MatSnackBar } from '@angular/material';
 import { calculateFare } from 'src/app/func/functions';
+import * as actions from '../../store/actions';
+import { Store, select } from '@ngrx/store';
+import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
+import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-request-ride',
@@ -22,10 +26,26 @@ export class RequestRideComponent implements OnInit {
   private fare: number;
   private options: string[] = [];
   public isRequested = true;
+  private user: User;
 
-  constructor(private rideService: RideService, private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
+  constructor(private store: Store<any>, private rideService: RideService,
+              private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
-    this.webSocketService.listen('RequestTest').subscribe((data: any) => {
+    this.store.select(selectAllUsers).subscribe(currentUser => {
+      if (currentUser.length === 0) {
+        // tslint:disable-next-line: radix
+        const id = parseInt(localStorage.getItem('currentUser'));
+        this.store.dispatch(new actions.GetUser(id));
+        this.store.select(selectAllUsers).subscribe(current => {
+          this.user = current[0];
+        });
+      } else {
+        this.store.select(selectAllUsers).subscribe(current => {
+          this.user = current[0];
+        });
+      }
+    });
+    this.webSocketService.listen(`user:${this.user.id}`).subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
       this.snackBar.open(`Driver ${data.id} en route`, 'Close', {
@@ -39,7 +59,18 @@ export class RequestRideComponent implements OnInit {
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
       this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
-      this.rideService.testRequest().subscribe();
+
+      const payload = {
+        clientID: this.user.id,
+        currentLat: this.user.currentLat,
+        currentLng: this.user.currentLng,
+        currentLocation: this.user.currentLocation,
+        destinationLat: this.user.destinationLat,
+        destinationLng: this.user.destinationLng,
+        destinationLocation: this.user.destinationLocation
+      };
+
+      this.rideService.requestRide(payload).subscribe();
       this.isRequested = false;
     } else {
       this.snackBar.open('Enter a valid address!', 'Close', {
