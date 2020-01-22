@@ -39,7 +39,8 @@ router.get('/checkuser', async (req, res) => {
   Neo4jDB.execCheckUser(username,res);
 })
 
-router.post('/create/driver', async (req, res) => {
+router.post('/create', async (req, res) => {
+  if(req.body.type=="driver"){
   const payload= {
       Ime:req.body.firstName,
       Prez:req.body.lastName,
@@ -54,10 +55,8 @@ router.post('/create/driver', async (req, res) => {
       cLoc:req.body.currentLoc
   }
   Neo4jDB.execCreateDriver(req,res, payload);
-});
-
-
-router.post('/create/client', async (req, res) => {
+}
+else if (req.body.type=="client"){
   const payload=  
   {
     Ime:req.body.firstName,
@@ -69,6 +68,9 @@ router.post('/create/client', async (req, res) => {
     Loc:req.body.currentLoc
  }
   Neo4jDB.execCreateClient(req,res,payload);
+
+}
+
 });
 
 router.get('/allLoc', async (req, res) => {

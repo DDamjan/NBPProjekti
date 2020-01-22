@@ -7,13 +7,13 @@ const CREATE_RIDE='CREATE (r:Ride {pickupLat:$SLat,pickupLng:$SLng,destinationLa
 const RIDE_DISPACHED='match (n:Operator),(m:Ride) where id(m)=$RID and id(n)=$OID create (n)-[r:RIDE_DISPACHED {DateTime:datetime()}]->(m) return r';
 const RIDE_DRIVEN='match (n:Driver),(m:Ride) where id(m)=$RID and id(n)=$DID create (n)-[r:RIDE_DRIVEN {DateTime:datetime()}]->(m) return r';
 const RIDE_REQUESTED='match (n:Client),(m:Ride) where id(m)=$RID and id(n)=$CID create (n)-[r:RIDE_REQUESTED {DateTime:datetime()}]->(m) return r';
-const FINISH_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(d)=$DID and id(r)=$RID set d.currentLat=$DLat,d.currentLng=$DLng,d.currentLocation=$DLoc,c.pickupLat=$DLat,c.pickupLng=$DLng,c.pickupLocation=$DLoc,r.endTime=$ETime return r';
-const CANCEL_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(d)=$DID and id(r)=$RID set r.endTime=$ETime return r';
+const FINISH_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(d)=$DID and id(r)=$RID set d.currentLat=$DLat,d.currentLng=$DLng,d.currentLocation=$DLoc,c.pickupLat=$DLat,c.pickupLng=$DLng,c.pickupLocation=$DLoc,r.endTime=$ETime,r.isCanceled=$Canc return r';
+const CANCEL_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(d)=$DID and id(r)=$RID set r.endTime=$ETime,r.isCanceled=$Canc return r';
 const DRIVER_ALL_RIDES='match (d:Driver)-[r1]->(r:Ride) where id(d)=$DID return r';
 const CLIENT_ALL_DEST_LOC='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct r.destinationLocation';
 const ALL_DRIVERS_WITH_RIDES='match (n:Driver)-[r1]->(r:Ride) return distinct n';
 const CHECK_USER='match (n) where n.username=$user return n';
-const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r),r.destinationLocation order by r.destinationLocation';
+const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r),r.destinationLocation order by count(r) desc';
 
 module.exports = {
     GET_ALL_USERS_TYPE: GET_ALL_USERS_TYPE,

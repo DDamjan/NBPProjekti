@@ -33,11 +33,11 @@ router.post('/create', async (req, res) => {
   const payload=  { 
     CID:req.body.clientID,
     DID:req.body.driverID,
-    SLat:req.body.startLat,
-    SLng:req.body.startLng,
+    SLat:req.body.pickupLat,
+    SLng:req.body.pickupLng,
     DLat:req.body.destinationLat,
     DLng:req.body.destinationLng,
-    SLoc:req.body.startLocation,
+    SLoc:req.body.pickupLocation,
     DLoc:req.body.destinationLocation,
     STime:req.body.startTime,
     Fare:req.body.fare,
@@ -55,7 +55,8 @@ router.post('/finish', async (req, res) => {
       DLat:req.body.destinationLat,
       DLng:req.body.destinationLng,
       DLoc:req.body.destinationLocation,
-      ETime:req.body.endTime
+      ETime:req.body.endTime,
+      Canc:req.body.isCanceled
   }
   if (req.body.isCanceled==false) {
     Neo4jDB.execFinishRide(req,res,payload)
