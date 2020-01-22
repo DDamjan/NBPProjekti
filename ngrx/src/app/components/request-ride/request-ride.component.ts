@@ -9,6 +9,7 @@ import * as actions from '../../store/actions';
 import { Store, select } from '@ngrx/store';
 import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
 import { User } from 'src/app/models/User';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-request-ride',
@@ -17,8 +18,14 @@ import { User } from 'src/app/models/User';
 })
 export class RequestRideComponent implements OnInit {
   @ViewChild('mapView', null) mapView: MapComponent;
+  private pickupLat: number;
+  private pickupLng: number;
   private pickupAddressName: string;
+
+  private destinationLat: number;
+  private destinationLng: number;
   private destinationAddressName: string;
+
   private distancePickup: number;
   private ETAPickup: string;
   private distanceDestination: number;
@@ -31,21 +38,18 @@ export class RequestRideComponent implements OnInit {
   constructor(private store: Store<any>, private rideService: RideService,
               private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
+    const id = Number(localStorage.getItem('currentUser'));
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
-        // tslint:disable-next-line: radix
-        const id = parseInt(localStorage.getItem('currentUser'));
         this.store.dispatch(new actions.GetUser(id));
-        this.store.select(selectAllUsers).subscribe(current => {
-          this.user = current[0];
-        });
       } else {
         this.store.select(selectAllUsers).subscribe(current => {
           this.user = current[0];
         });
       }
     });
-    this.webSocketService.listen(`user:${this.user.id}`).subscribe((data: any) => {
+
+    this.webSocketService.listen(`user:${id}`).subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
       this.snackBar.open(`Driver ${data.id} en route`, 'Close', {
@@ -59,18 +63,6 @@ export class RequestRideComponent implements OnInit {
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
       this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
-
-      const payload = {
-        clientID: this.user.id,
-        currentLat: this.user.currentLat,
-        currentLng: this.user.currentLng,
-        currentLocation: this.user.currentLocation,
-        destinationLat: this.user.destinationLat,
-        destinationLng: this.user.destinationLng,
-        destinationLocation: this.user.destinationLocation
-      };
-
-      this.rideService.requestRide(payload).subscribe();
       this.isRequested = false;
     } else {
       this.snackBar.open('Enter a valid address!', 'Close', {
@@ -85,9 +77,23 @@ export class RequestRideComponent implements OnInit {
       this.distancePickup = $event.distance;
       this.ETAPickup = $event.ETA;
     } else if ($event.mode === 'destination') {
+      this.pickupLat = $event.pickupLat;
+      this.pickupLng = $event.pickupLng;
       this.distanceDestination = $event.distance;
+      this.destinationLat = $event.destinationLat;
+      this.destinationLng = $event.destinationLng;
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
+      const payload = {
+        clientID: this.user.id,
+        pickupLat: this.pickupLat,
+        pickupLng: this.pickupLng,
+        pickupLocation: this.pickupAddressName,
+        destinationLat: this.destinationLat,
+        destinationLng: this.destinationLng,
+        destinationLocation: this.destinationAddressName
+      };
+      this.rideService.requestRide(payload).subscribe();
     }
   }
 

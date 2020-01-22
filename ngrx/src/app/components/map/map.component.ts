@@ -231,7 +231,6 @@ export class MapComponent implements OnInit {
     } else {
       svg = taxiWhite;
     }
-    console.log(driver);
     const driverIcon = new H.map.Icon(svg);
     const marker = new H.map.Marker(coord, { icon: driverIcon });
     marker.setData(`Car no: ${driver.id} Name: ${driver.firstName} ${driver.lastName}`);
@@ -314,7 +313,11 @@ export class MapComponent implements OnInit {
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
         mode: 'destination',
-        fare: route.summary.distance
+        fare: route.summary.distance,
+        pickupLat: route.waypoint[0].originalPosition.latitude,
+        pickupLng: route.waypoint[0].originalPosition.longitude,
+        destinationLat: route.waypoint[1].originalPosition.latitude,
+        destinationLng: route.waypoint[1].originalPosition.longitude
       };
       this.routeParams.emit(msg);
     }
