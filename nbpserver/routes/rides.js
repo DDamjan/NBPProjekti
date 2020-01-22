@@ -42,7 +42,7 @@ router.post('/create', async (req, res) => {
     Fare:req.body.fare,
     Dist:req.body.distance
 }
-  redisDB.pub.publish("AprovedRide", JSON.stringify(req.body));
+  //redisDB.pub.publish("AprovedRide", JSON.stringify(req.body));
   Neo4jDB.execCreateRide(req,res,payload);
 });
 

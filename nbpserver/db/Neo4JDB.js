@@ -1,6 +1,8 @@
 var neo4j = require('neo4j-driver');
 let conn = require('../constants/connectionConstants');
-const driver = neo4j.driver(conn.NEO4J_URL, neo4j.auth.basic(conn.NEO4J_USER, conn.NEO4J_PASS));
+const driver = neo4j.driver(conn.NEO4J_URL, neo4j.auth.basic(conn.NEO4J_USER, conn.NEO4J_PASS),  {
+  maxTransactionRetryTime: 30000
+});
 const query = require('../constants/queryStrings');
 const sha = require('sha.js');
 const redisDB = require('../db/redisDB.js');
@@ -30,7 +32,7 @@ async function execAllUsersByType(type,res) {
 async function execAuth(username,password,res){
   var session=driver.session();
   session.run(query.USER_AUTH, {user: username , pass: password})
-  .then(result => {
+  .then(result => { 
     if(result.records.length==0){
       const failed = {
         id: -1,
@@ -139,20 +141,46 @@ async function execCheckUser(username,res){
 } 
  
 async function execCreateRide(req,res,payload){
-  var session=driver.session()
+  var session=driver.session();
+  const transaction=session.beginTransaction();
   //console.log(req.body.destinationLocation);
-  session.run(query.CREATE_RIDE,payload)
-  .then(result => {
-    result.records.forEach(record => {
-      let l=record.get('r');
-      res.json(l);
-      res.end();
+  try {
+    let l;
+    const result=await transaction.run(query.CREATE_RIDE,payload);
+     result.records.forEach(record => {
+      l=record.get('r');
     })
-  })
-  .catch(error => {
-    errorHandler(error,res);
-  })
-  .then(() => session.close())
+    console.log('First query completed')
+    const result1=await transaction.run(query.RIDE_DISPACHED,{OID:neo4j.int(req.body.operatorID),RID:neo4j.int(l.identity.low)});
+     result1.records.forEach(record => {
+     console.log(record);
+    })
+    console.log('Second query completed')
+    const result2=await transaction.run(query.RIDE_DRIVEN,{DID:neo4j.int(req.body.driverID),RID:neo4j.int(l.identity.low)});
+     result2.records.forEach(record => {
+     console.log(record);
+    })
+    console.log('Third query completed')
+    const result3=await transaction.run(query.RIDE_REQUESTED,{CID:neo4j.int(req.body.clientID),RID:neo4j.int(l.identity.low)});
+     result3.records.forEach(record => {
+     console.log(record);
+    })
+    console.log('Fourth query completed')
+    await transaction.commit();
+    console.log('committed');
+    let s=l.properties;
+    s.id=l.identity.low;
+    res.json(s);
+    res.end();
+  }
+  catch(error) {
+    console.log(error);
+    await transaction.rollback();
+    console.log('rolled back');
+  }
+  finally { 
+    await session.close();
+  }
 }
 
 async function execFinishRide(req,res,payload){
@@ -255,24 +283,6 @@ async function execDriversWithRides(res)
   .then(() => session.close())
 }
 
-async function execDispatch(req,res,payload){
-  var session=driver.session()
-  //console.log(req.body.destinationLocation);
-  session.run(query.DISPATCH,payload)
-  .then(result => {
-    result.records.forEach(record => {
-      let l=record.get('r');
-      let s=l.properties;
-      s.id=l.identity.low;
-      res.json(s);
-      res.end();
-    })
-  })
-  .catch(error => {
-    errorHandler(error,res);
-  })
-  .then(() => session.close())
-}
 
 async function execClientTopLocations(id,res){
   var session=driver.session()
@@ -281,7 +291,7 @@ async function execClientTopLocations(id,res){
     console.log(result.records);
     let m=[];
     result.records.forEach(record => {
-      let l= { count: record.get('count(r)').low ,location: record.get('r.destLoc')};
+      let l= { count: record.get('count(r)').low ,location: record.get('r.destinationLocation')};
       m.push(l);
     })
     res.json(m);
@@ -314,7 +324,6 @@ module.exports={
     execDriverAllRides: execDriverAllRides,
     execClientAllDestLoc: execClientAllDestLoc,
     execDriversWithRides: execDriversWithRides,
-    execDispatch: execDispatch,
     errorHandler: errorHandler,
     execClientTopLocations: execClientTopLocations 
 }
