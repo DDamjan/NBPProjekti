@@ -12,7 +12,8 @@ import {
     GET_USER_SUCCESS,
     AUTH_USER,
     AUTH_USER_SUCCESS,
-    AUTH_USER_FAIL
+    AUTH_USER_FAIL,
+    CLEAR_USER
 } from 'src/constants/reducers-constants';
 import { Driver } from '../models/driver';
 import { User } from '../models/User';
@@ -79,4 +80,8 @@ export class AuthUserSuccess implements Action {
 export class AuthUserFail implements Action {
     readonly type = AUTH_USER_FAIL;
     constructor(public payload: User) { }
+}
+
+export class ClearUser implements Action {
+    readonly type = CLEAR_USER;
 }

@@ -44,7 +44,12 @@ mat-card-title{
     color: white;
 }
 
-p{
+.error{
     font-size: small;
     color: red;
+}
+
+.register{
+    display: flex;
+    flex-direction: row;
 }

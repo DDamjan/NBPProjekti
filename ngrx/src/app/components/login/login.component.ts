@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   ngDoCheck() {
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length !== 0) {
-        if (currentUser[0].type === 'error') {
+        if (currentUser[currentUser.length - 1].type === 'error') {
           this.error = true;
         }
       }

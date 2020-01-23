@@ -11,3 +11,4 @@ export const reducers: ActionReducerMap<State> = {
     drivers: fromDriver.DriverReducer,
     user: fromUser.UserReducer
 };
+

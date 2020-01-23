@@ -3,6 +3,7 @@ import {
     AUTH_USER_SUCCESS,
     GET_USER_SUCCESS,
     AUTH_USER_FAIL,
+    CLEAR_USER
 } from 'src/constants/reducers-constants';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
@@ -32,12 +33,14 @@ export function UserReducer(
             UserAdapter.removeAll(state);
             return UserAdapter.addOne(action.payload, state);
         case GET_USER_SUCCESS:
+            UserAdapter.removeAll(state);
             return UserAdapter.addOne(action.payload, state);
         default:
             return state;
     }
 }
 
+// UserAdapter.removeOne(action.payload, state);
 export const selectUserState = createFeatureSelector<UserState>('user');
 
 export const { selectAll: selectAllUsers, selectIds } = UserAdapter.getSelectors(
