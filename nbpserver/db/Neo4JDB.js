@@ -119,9 +119,9 @@ async function execCreateClient(req,res,payload){
   .then(() => session.close())
 }
 
-async function execCheckUser(username,res){
+async function execCheckUser(payload,res){
   var session=driver.session();
-  session.run(query.CHECK_USER, {user: username})
+  session.run(query.CHECK_USER, {user: payload.username, type: payload.type})
   .then(result => {
     if(result.records.length==0){
       let l=false;

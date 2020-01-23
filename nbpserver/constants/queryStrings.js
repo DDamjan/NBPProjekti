@@ -12,7 +12,7 @@ const CANCEL_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=
 const DRIVER_ALL_RIDES='match (d:Driver)-[r1]->(r:Ride) where id(d)=$DID return r';
 const CLIENT_ALL_DEST_LOC='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct r.destinationLocation';
 const ALL_DRIVERS_WITH_RIDES='match (n:Driver)-[r1]->(r:Ride) return distinct n';
-const CHECK_USER='match (n) where n.username=$user return n';
+const CHECK_USER='match (n) where n.username=$user and n.type=$type return n';
 const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r),r.destinationLocation order by count(r) desc';
 
 module.exports = {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { APPID, APPCODE } from 'src/constants/map-credentials';
 import { RideService } from 'src/app/service/ride.service';
@@ -39,6 +39,7 @@ export class RequestRideComponent implements OnInit {
               private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
+    console.log('da');
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
         this.store.dispatch(new actions.GetUser(id));
@@ -56,6 +57,10 @@ export class RequestRideComponent implements OnInit {
         duration: 3000
       });
     });
+  }
+
+  update(){
+    this.ngOnInit();
   }
 
   onSubmit(event) {

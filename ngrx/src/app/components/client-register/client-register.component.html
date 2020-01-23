@@ -12,9 +12,10 @@
           <input matInput placeholder="Password" type="password" required>
         </mat-form-field>
         <div class="register">
-          <span>No account? <a routerLink="/client/register">Register</a></span>
+          <span>Have an account? <a routerLink="/login">Log in</a></span>
         </div>
-        <p class="error" *ngIf='error'>Wrong credentials!</p>
+        <p class="error" *ngIf='error'>Username exists!</p>
+        <p class="error" *ngIf="passNotMatched">Passwords do not match!</p>
         <div class="buttons">
           <button mat-raised-button type="submit">Confirm</button>
         </div>

@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { throwToolbarMixedModesError } from '@angular/material';
+import { Store } from '@ngrx/store';
+import * as actions from '../../store/actions';
 
 @Component({
   selector: 'main-nav',
@@ -17,7 +19,7 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private store: Store<any>) {
     const currentType = localStorage.getItem('currentUserType');
     if (currentType === 'operator') {
       this.type = true;

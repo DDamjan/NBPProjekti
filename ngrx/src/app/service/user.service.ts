@@ -56,6 +56,14 @@ export class UserService {
         );
     }
 
+     /* POST: Check the username */
+     checkUsername(data: object): Observable<User> {
+        const url = `${this.serverURL}checkuser`;
+        return this.http.post<User>(url, data, httpOptions).pipe(
+            catchError(this.handleError<User>('authUser'))
+        );
+    }
+
     // /* UPDATE: update driver on the server */
     // updateDriver(driver: Driver): Observable<Driver> {
     //     const url = `${this.serverURL}update`;

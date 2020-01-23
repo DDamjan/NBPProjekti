@@ -21,3 +21,5 @@ export const AUTH_USER_FAIL = 'AUTH_USER_FAIL';
 
 export const GET_USER = 'GET_USER';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
+
+export const CHECK_USERNAME = 'CHECK_USERNAME';
