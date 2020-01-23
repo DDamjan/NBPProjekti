@@ -15,8 +15,6 @@ export const DELETE_DRIVER_SUCCESS = 'DELETE_DRIVER_SUCCESS';
 
 export const SELECT_DRIVER = 'SELECT_DRIVER';
 
-export const CLEAR_USER = 'CLEAR_USER';
-
 export const AUTH_USER = 'AUTH_USER';
 export const AUTH_USER_SUCCESS = 'AUTH_USER_SUCCESS';
 export const AUTH_USER_FAIL = 'AUTH_USER_FAIL';
@@ -24,4 +22,4 @@ export const AUTH_USER_FAIL = 'AUTH_USER_FAIL';
 export const GET_USER = 'GET_USER';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 
-
+export const CHECK_USERNAME = 'CHECK_USERNAME';

@@ -34,9 +34,8 @@ router.get('/all', async (req, res) => {
   //   /all?type=Client,Operator,Driver
 });
 
-router.get('/checkuser', async (req, res) => {
-  let username = req.query.username;
-  Neo4jDB.execCheckUser(username,res);
+router.post('/checkuser', async (req, res) => {
+  Neo4jDB.execCheckUser(req.body,res);
 })
 
 router.post('/create', async (req, res) => {

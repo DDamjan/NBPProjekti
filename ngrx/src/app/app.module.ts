@@ -44,6 +44,7 @@ import { reducers } from './store/reducers';
 import { UserEffects } from './store/effects/user.effects';
 import { UserService } from './service/user.service';
 import { DriverHubComponent } from './components/driver-hub/driver-hub.component';
+import { ClientRegisterComponent } from './components/client-register/client-register.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { DriverHubComponent } from './components/driver-hub/driver-hub.component
     DriverDetailsComponent,
     DataTableComponent,
     LoginComponent,
+    ClientRegisterComponent,
     DriverHubComponent
   ],
   imports: [

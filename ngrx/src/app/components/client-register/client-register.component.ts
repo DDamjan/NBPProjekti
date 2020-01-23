@@ -2,26 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as actions from '../../store/actions';
 import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-register',
+  templateUrl: './client-register.component.html',
+  styleUrls: ['./client-register.component.css']
 })
-export class LoginComponent implements OnInit {
+export class ClientRegisterComponent implements OnInit {
   public error: boolean;
-  constructor(private store: Store<any>, private router: Router) { this.error = false; }
+  public passNotMatched: boolean;
+  constructor(private store: Store<any>) { this.error = false; }
   ngOnInit() {
+    this.passNotMatched = false;
   }
 
   onSubmit($event) {
-    const payload = {
-      username: $event.target[0].value,
-      password: $event.target[1].value
-    };
+    const password = $event.target[1].value;
+    const passwordCheck = $event.target[2].value;
 
-    this.store.dispatch(new actions.AuthUser(payload));
+    if (password !== passwordCheck) {
+      this.passNotMatched = true;
+    }
+
+    //this.store.dispatch(new actions.AuthUser(payload));
   }
 
   ngDoCheck() {
@@ -32,10 +35,5 @@ export class LoginComponent implements OnInit {
         }
       }
     });
-  }
-
-  onClick(){
-    console.log("Klik");
-    this.router.navigate(['client/register']);
   }
 }

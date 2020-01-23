@@ -2,8 +2,7 @@ import { User } from 'src/app/models/User';
 import {
     AUTH_USER_SUCCESS,
     GET_USER_SUCCESS,
-    AUTH_USER_FAIL,
-    CLEAR_USER
+    AUTH_USER_FAIL
 } from 'src/constants/reducers-constants';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
