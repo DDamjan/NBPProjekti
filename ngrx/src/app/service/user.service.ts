@@ -42,9 +42,9 @@ export class UserService {
 
     /* POST: add a new user to the server */
     registerUser(user: User): Observable<User> {
-        const url = `${this.serverURL}register`;
+        const url = `${this.serverURL}create`;
         return this.http.post<User>(url, user, httpOptions).pipe(
-            catchError(this.handleError<User>('addUser'))
+            catchError(this.handleError<User>('registerUser'))
         );
     }
 
@@ -57,10 +57,10 @@ export class UserService {
     }
 
      /* POST: Check the username */
-     checkUsername(data: object): Observable<User> {
+     checkUsername(data: object): Observable<boolean> {
         const url = `${this.serverURL}checkuser`;
-        return this.http.post<User>(url, data, httpOptions).pipe(
-            catchError(this.handleError<User>('authUser'))
+        return this.http.post<boolean>(url, data, httpOptions).pipe(
+            catchError(this.handleError<boolean>('authUser'))
         );
     }
 

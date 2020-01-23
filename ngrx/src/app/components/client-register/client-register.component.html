@@ -6,17 +6,26 @@
     <mat-card-content>
       <form (ngSubmit)="onSubmit($event)">
         <mat-form-field>
+          <input matInput placeholder="First name" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Last name" required>
+        </mat-form-field>
+        <mat-form-field>
           <input matInput placeholder="Username" required>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Password" type="password" required>
         </mat-form-field>
-        <div class="register">
-          <span>Have an account? <a routerLink="/login">Log in</a></span>
-        </div>
+        <mat-form-field>
+          <input matInput placeholder="Repeat password" type="password" required>
+        </mat-form-field>
         <p class="error" *ngIf='error'>Username exists!</p>
         <p class="error" *ngIf="passNotMatched">Passwords do not match!</p>
         <div class="buttons">
+        <div class="register">
+          <span>Have an account? <a routerLink="/login">Log in</a></span>
+        </div>
           <button mat-raised-button type="submit">Confirm</button>
         </div>
       </form>

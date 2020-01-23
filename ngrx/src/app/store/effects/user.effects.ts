@@ -38,6 +38,16 @@ export class UserEffects {
   );
 
   @Effect()
+  registerUser$ = this.update$.pipe(
+    ofAction(userActions.RegisterUser),
+    switchMap(user => this.userService.registerUser(user.payload)),
+    map(response => {
+      this.router.navigate([`${response.type}/home`]);
+      return new userActions.RegisterUserSuccess(response);
+    })
+  );
+
+  @Effect()
   authUser$ = this.update$.pipe(
     ofAction(userActions.AuthUser),
     switchMap(data => this.userService.authUser(data.payload)),

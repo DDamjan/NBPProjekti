@@ -13,7 +13,8 @@ import {
     AUTH_USER,
     AUTH_USER_SUCCESS,
     AUTH_USER_FAIL,
-    CHECK_USERNAME
+    REGISTER_USER,
+    REGISTER_USER_SUCCESS
 } from 'src/constants/reducers-constants';
 import { Driver } from '../models/driver';
 import { User } from '../models/User';
@@ -82,7 +83,12 @@ export class AuthUserFail implements Action {
     constructor(public payload: User) { }
 }
 
-export class CheckUsername implements Action {
-    readonly type = CHECK_USERNAME;
-    constructor(public payload: string) { }
+export class RegisterUser implements Action {
+    readonly type = REGISTER_USER;
+    constructor(public payload: User) { }
+}
+
+export class RegisterUserSuccess implements Action {
+    readonly type = REGISTER_USER_SUCCESS;
+    constructor(public payload: User) { }
 }
