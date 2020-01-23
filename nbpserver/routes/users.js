@@ -67,9 +67,7 @@ else if (req.body.type=="client"){
     Loc:req.body.currentLocation
  }
   Neo4jDB.execCreateClient(req,res,payload);
-
 }
-
 });
 
 router.get('/allLoc', async (req, res) => {
