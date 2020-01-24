@@ -17,7 +17,8 @@ const httpOptions = {
 export class UserService {
 
     //private serverURL = conn.PUBLIC_SERVER + 'users/';
-    private serverURL = conn.LOCAL_SERVER + 'users/';
+    //private serverURL = conn.LOCAL_SERVER + 'users/';
+    private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
 
     constructor(
         private http: HttpClient) { }

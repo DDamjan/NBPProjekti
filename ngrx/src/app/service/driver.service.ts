@@ -14,7 +14,8 @@ const httpOptions = {
 export class DriverService {
 
     //private serverURL = conn.PUBLIC_SERVER + 'users/';
-    private serverURL = conn.LOCAL_SERVER + 'drivers/';
+    //private serverURL = conn.LOCAL_SERVER + 'drivers/';
+    private serverURL = conn.PUBLIC_SERVER_PEDJA + 'drivers/';
 
     constructor(
         private http: HttpClient) { }

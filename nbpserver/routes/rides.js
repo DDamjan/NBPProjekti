@@ -13,8 +13,8 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/request', async (req, res) => {
-  console.log(req.body);
-  // redisDB.execPost(req, res, redisDB.makeRequest);
+  //console.log(req.body);
+  redisDB.execPost(req, res, redisDB.makeRequest);
 });
 
 router.post('/requesttest', async (req, res) => {
