@@ -27,6 +27,8 @@
     <input matInput placeholder="Password check" type="password" required>
   </mat-form-field>
   <div class="buttons">
+    <p class="error" *ngIf='error'>Username exists!</p>
+    <p class="error" *ngIf="passNotMatched">Passwords do not match!</p>
     <button mat-raised-button type="submit">Confirm</button>
     <button mat-raised-button (click)="btnCancel()">Cancel</button>
   </div>

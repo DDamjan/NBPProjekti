@@ -52,6 +52,7 @@ export class DriverRegisterComponent implements OnInit {
     if (password !== passwordCheck) {
       this.passNotMatched = true;
     } else {
+      this.passNotMatched = false;
       const payload = {
         username,
         type: 'driver'
@@ -70,9 +71,10 @@ export class DriverRegisterComponent implements OnInit {
             car,
             phone,
             carColor,
-            licencePlate
+            licencePlate,
+            isActive: false
           };
-          this.store.dispatch(new actions.RegisterUser(user));
+          this.store.dispatch(new actions.AddDriver(user));
         } else {
           this.error = true;
         }

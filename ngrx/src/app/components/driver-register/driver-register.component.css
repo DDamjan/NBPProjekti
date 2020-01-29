@@ -16,3 +16,8 @@ form {
  button{
      margin: 0 1% 0 0;
  }
+
+ .error{
+    font-size: small;
+    color: red;
+}

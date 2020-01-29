@@ -1,10 +1,10 @@
 export interface Driver {
-    id: number;
+    id?: number;
     firstName: string;
     lastName: string;
     phone: string;
     car: string;
-    color: string;
+    carColor: string;
     licencePlate: string;
     currentLat: number;
     currentLng: number;
