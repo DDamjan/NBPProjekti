@@ -43,7 +43,7 @@ export class DriverRegisterComponent implements OnInit {
     const lastName = event$.target[1].value;
     const phone = event$.target[2].value;
     const car = event$.target[3].value;
-    const color = event$.target[4].value;
+    const carColor = event$.target[4].value;
     const licencePlate = event$.target[5].value;
     const username = event$.target[6].value;
     const password = event$.target[7].value;
@@ -66,7 +66,11 @@ export class DriverRegisterComponent implements OnInit {
             type: 'driver',
             currentLat: cons.nisLat,
             currentLng: cons.nisLng,
-            currentLocation: 'Centrala'
+            currentLocation: 'Centrala',
+            car,
+            phone,
+            carColor,
+            licencePlate
           };
           this.store.dispatch(new actions.RegisterUser(user));
         } else {
