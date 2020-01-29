@@ -50,7 +50,7 @@ export class RequestRideComponent implements OnInit {
       }
     });
 
-    this.webSocketService.listen(`user:${id}`).subscribe((data: any) => {
+    this.webSocketService.listen('User:'+id).subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
       this.snackBar.open(`Driver ${data.id} en route`, 'Close', {

@@ -26,11 +26,13 @@ export class DriverHubComponent implements OnInit {
   constructor(private rideService: RideService, private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
     const id = localStorage.getItem('currentUser');
-    this.webSocketService.listen(`user: ${id}`).subscribe((data: any) => {
+    console.log("NGON INITTTTT");
+    console.log(id);
+    this.webSocketService.listen('User:'+id).subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
       this.snackBar.open(` ${data.id} en route`, 'Close', {
-        duration: 3000
+        duration: 5000
       });
     });
   }

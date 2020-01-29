@@ -25,8 +25,17 @@ subClientRequestToDrivers.on("message", function (channel, clientID) {
             if(!driversActivty){
                 console.log("No drivers please try again");
             }else{
+                console.log("DRIVERS AVALIABLE");
+                console.log(driversActivty);
+                console.log(request);
                 Object.keys(driversActivty).forEach(key => {
-                    if(!driversActivty[key]) webSocket.io.emit('User:'+key, JSON.parse(request)); //Emituje se svim slobodnim drijverima nova voznja
+                    console.log(key);
+                    console.log(driversActivty[key]);
+                    if('false' == driversActivty[key]) {
+                        console.log(key);
+                        webSocket.io.emit('User:'+key, JSON.parse(request)); //Emituje se svim slobodnim drijverima nova voznja
+                        console.log(key);
+                    }
                 });
             }
         });
@@ -108,6 +117,7 @@ var subUserAuth = redis.createClient();
 subUserAuth.subscribe("UserAuth");
 subUserAuth.on("message", function (channel, user) {
     user = JSON.parse(user);
+    console.log("USERRRR: "+ user);
     switch(user.type){
         case "operator": 
             client.lpush("notActiveOperators", user.id);
@@ -124,7 +134,7 @@ subUserAuth.on("message", function (channel, user) {
         break;
         default: break;
     }
-    webSocket.io.emit('User:'+user.id, "AUTH USER emit TEST for DAMJAN");
+    //webSocket.io.emit('User:'+user.id, "AUTH USER emit TEST for DAMJAN");
 });
  
 
@@ -147,18 +157,17 @@ function makeRequest(req){
     console.log(req.body);
     client.hmset("client", req.body.clientID, true);
     client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
-    webSocket.io.emit('User:20', {
-        ID: 21,
-        currentLat: 40.20543,
-        currentLng: 23.56378
-    });
+    // webSocket.io.emit('User:20', {
+    //     ID: 21,
+    //     currentLat: 40.20543,
+    //     currentLng: 23.56378
+    // });
     //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.currentLat, req.body.currentLng, "src",  redis.print);
     //geo.addLocation("dest:"+ req.body.clientID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
     geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.currentLat, longitude: req.body.currentLng});
 
     pub.publish("ClientRequestToDrivers", req.body.clientID); //salje svim driverima request za voznju
-    
-    setTimeout(() => {console.log(req.body.clientID); sendOperatorRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
+    setTimeout(() => { sendOperatorRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
 }
 
 function requestAccepted(req){
@@ -177,6 +186,7 @@ function requestDenied(req){
 
 function sendOperatorRequest(clientID){
     let shouldSendRequest = false;
+    console.log("slanje operateru");
     client.llen("requestQ",(err,numRequests)=>{
         client.llen("notActiveOperators",(err,numOperators)=>{        
             if(numOperators == 0){
@@ -194,6 +204,7 @@ function sendOperatorRequest(clientID){
         });
     });
     if(shouldSendRequest){
+        console.log("slanje operateru2");
         NextRequestToNextOperator(clientID);
     }
 }

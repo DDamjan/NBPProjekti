@@ -51,7 +51,7 @@ router.post('/create', async (req, res) => {
       Plate:req.body.licencePlate,
       cLat:req.body.currentLat,
       cLng:req.body.currentLng,
-      cLoc:req.body.currentLoc
+      cLoc:req.body.currentLocation
   }
   Neo4jDB.execCreateDriver(req,res, payload);
 }
@@ -64,7 +64,7 @@ else if (req.body.type=="client"){
     Pass:sha('sha256').update(req.body.password).digest('hex'),
     Lat:req.body.currentLat,
     Lng:req.body.currentLng,
-    Loc:req.body.currentLoc
+    Loc:req.body.currentLocation
  }
   Neo4jDB.execCreateClient(req,res,payload);
 }

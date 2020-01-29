@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as actions from '../../store/actions';
 import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
@@ -34,8 +34,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onClick(){
-    console.log("Klik");
+  onClick() {
     this.router.navigate(['client/register']);
   }
 }
