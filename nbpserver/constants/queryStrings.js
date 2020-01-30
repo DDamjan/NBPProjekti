@@ -1,3 +1,5 @@
+const REPO_PATH = __dirname.substring(0, __dirname.indexOf('\\constants')) + '\\repo\\';
+
 const GET_ALL_USERS_TYPE = 'match (n) where n.type=$Type return n';
 const USER_AUTH = 'match (n) where n.username=$user and n.password=$pass return n';
 const GET_USER_BY_ID = 'MATCH (n) WHERE id(n)=$ID RETURN n';
@@ -31,5 +33,6 @@ module.exports = {
     TOP_LOCATIONS: TOP_LOCATIONS,
     RIDE_DISPACHED: RIDE_DISPACHED,
     RIDE_DRIVEN: RIDE_DRIVEN,
-    RIDE_REQUESTED: RIDE_REQUESTED
+    RIDE_REQUESTED: RIDE_REQUESTED,
+    REPO_PATH: REPO_PATH
 }

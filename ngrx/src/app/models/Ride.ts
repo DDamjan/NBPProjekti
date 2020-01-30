@@ -11,6 +11,6 @@ export interface Ride {
     startTime: string;
     endTime?: string;
     isCanceled: boolean;
-    fare?: number;
+    fare?: any;
     distance?: string;
 }

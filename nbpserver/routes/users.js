@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
-//const queryString = require('../constants/queryConstants');
+const queryString = require('../constants/queryStrings');
 //const query = require('../db/query');
 const sha = require('sha.js');
 const webSocket = require('../socket/web-socket.js');
 const redisDB = require('../db/redisDB.js');
 const Neo4jDB= require('../db/Neo4JDB.js');
+const fs = require('../db/fs');
 
 
 
@@ -79,6 +80,17 @@ router.get('/allLoc', async (req, res) => {
 router.get('/driversWrides', async (req, res) => {
   Neo4jDB.execDriversWithRides(res);
   //   /all?type=Client,Operator,Driver
+});
+
+router.get('/driver/picture', async (req, res) => {
+  let picId = req.query.picId;
+  if (picId === null || picId === undefined) {
+    picId = 'Cab.png';
+  }
+  //console.log(queryString.REPO_PATH+picId);
+  console.log(queryString.REPO_PATH);
+  
+  fs.execFile(res, queryString.REPO_PATH + picId);
 });
 
 
