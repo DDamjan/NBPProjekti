@@ -77,4 +77,10 @@ router.post('/adddistancefare', async (req, res) => {
   console.log(ID + ' ' + distance + ' ' + fare);
 })
 
+router.get('/rideDelete', async (req, res) => {
+  let DriverId = req.query.id;
+  Neo4jDB.execRideDelete(DriverId,res);
+  //   /all?type=Client,Operator,Driver
+});
+
 module.exports = router;

@@ -16,6 +16,7 @@ const CLIENT_ALL_DEST_LOC='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID retu
 const ALL_DRIVERS_WITH_RIDES='match (n:Driver)-[r1]->(r:Ride) return distinct n';
 const CHECK_USER='match (n) where n.username=$user and n.type=$type return n';
 const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r),r.destinationLocation order by count(r) desc';
+const DELETE_RIDE='match (r:Ride) where id(r)=$RID detach delete r';
 
 module.exports = {
     GET_ALL_USERS_TYPE: GET_ALL_USERS_TYPE,
@@ -34,5 +35,6 @@ module.exports = {
     RIDE_DISPACHED: RIDE_DISPACHED,
     RIDE_DRIVEN: RIDE_DRIVEN,
     RIDE_REQUESTED: RIDE_REQUESTED,
-    REPO_PATH: REPO_PATH
+    REPO_PATH: REPO_PATH,
+    DELETE_RIDE: DELETE_RIDE
 }

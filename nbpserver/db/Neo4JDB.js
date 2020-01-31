@@ -303,6 +303,23 @@ async function execClientTopLocations(id,res){
   .then(() => session.close())
 }
 
+async function execRideDelete(id,res){
+  var session=driver.session()
+  session.run(query.DELETE_RIDE,{RID:neo4j.int(id)})
+  .then(result => {
+    if(result.records.length==0){
+      let rideID= Number(id);
+      res.json(rideID);
+      res.end();
+    }
+  })
+  .catch(error => {
+    errorHandler(error,res);
+  })
+  .then(() => session.close())
+
+}
+
 async function errorHandler(err,res)
 {
     res.status(500);
@@ -325,5 +342,6 @@ module.exports={
     execClientAllDestLoc: execClientAllDestLoc,
     execDriversWithRides: execDriversWithRides,
     errorHandler: errorHandler,
-    execClientTopLocations: execClientTopLocations 
+    execClientTopLocations: execClientTopLocations ,
+    execRideDelete: execRideDelete
 }
