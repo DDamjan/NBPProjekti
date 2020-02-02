@@ -17,6 +17,10 @@ const ALL_DRIVERS_WITH_RIDES='match (n:Driver)-[r1]->(r:Ride) return distinct n'
 const CHECK_USER='match (n) where n.username=$user and n.type=$type return n';
 const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r),r.destinationLocation order by count(r) desc';
 const DELETE_RIDE='match (r:Ride) where id(r)=$RID detach delete r';
+const UPDATE_CLIENT_TRUE='match (c:Client) where id(c)=$CID set c.isActive=true,c.pickupLat=$Lat,c.pickupLng=$Lng,c.pickupLocation=$Loc';
+const UPDATE_DRIVER_TRUE='match (d:Driver) where id(d)=$DID set d.isActive=true,d.pickupLat=$SLat,d.pickupLng=$SLng,d.pickupLocation=$SLoc';
+const UPDATE_FINISH='match (d:Driver),(c:Client) where id(d)=$DID and id(c)=$CID set d.isActive=false,c.isActive=false,d.currentLat=$DLat,c.currentLat=$DLat,d.currentLng=$DLng,c.currentLng=$DLng,d.currentLocation=$DLoc,c.currentLocation=$DLoc';
+const UPDATE_CANCEL='match (d:Driver),(c:Client) where id(d)=$DID and id(c)=$CID set d.isActive=false,c.isActive=false';
 
 module.exports = {
     GET_ALL_USERS_TYPE: GET_ALL_USERS_TYPE,
@@ -36,5 +40,9 @@ module.exports = {
     RIDE_DRIVEN: RIDE_DRIVEN,
     RIDE_REQUESTED: RIDE_REQUESTED,
     REPO_PATH: REPO_PATH,
-    DELETE_RIDE: DELETE_RIDE
+    DELETE_RIDE: DELETE_RIDE,
+    UPDATE_CLIENT_TRUE: UPDATE_CLIENT_TRUE,
+    UPDATE_DRIVER_TRUE: UPDATE_DRIVER_TRUE,
+    UPDATE_FINISH: UPDATE_FINISH,
+    UPDATE_CANCEL: UPDATE_CANCEL
 }
