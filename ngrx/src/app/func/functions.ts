@@ -65,5 +65,5 @@ export function calculateFare(distance: number) {
 export function fareDistance(distance: number, rideService: RideService, ID: number) {
     const fare = Math.floor(calculateFare(distance));
     const dst = toKM(distance);
-    rideService.addDistanceFare(dst, fare, ID).subscribe();
+    // rideService.addDistanceFare(dst, fare, ID).subscribe();
 }
