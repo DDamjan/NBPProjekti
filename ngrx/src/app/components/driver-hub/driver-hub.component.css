@@ -24,3 +24,13 @@ tab-container{
 a:hover {
     cursor: pointer;
 }
+
+.buttons-container{
+    display: flex;
+    flex-direction: row;
+    width: 100 vw;
+}
+
+button{
+    flex-grow: 1;
+}

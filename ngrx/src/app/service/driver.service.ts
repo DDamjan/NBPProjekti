@@ -57,7 +57,7 @@ export class DriverService {
     /* DELETE: delete the driver from the server */
     deleteDriver(driver: Driver): Observable<number> {
         const id = driver.id;
-        const url = `${this.serverURL}delete?id=${id}`;
+        const url = `${this.serverURL}driverDelete?id=${id}`;
 
         this.http.get<Driver>(url, httpOptions).subscribe();
 

@@ -14,7 +14,9 @@ import {
     AUTH_USER_SUCCESS,
     AUTH_USER_FAIL,
     REGISTER_USER,
-    REGISTER_USER_SUCCESS
+    REGISTER_USER_SUCCESS,
+    UPDATE_USER,
+    UPDATE_USER_SUCCESS
 } from 'src/constants/reducers-constants';
 import { Driver } from '../models/driver';
 import { User } from '../models/User';
@@ -90,5 +92,15 @@ export class RegisterUser implements Action {
 
 export class RegisterUserSuccess implements Action {
     readonly type = REGISTER_USER_SUCCESS;
+    constructor(public payload: User) { }
+}
+
+export class UpdateUser implements Action {
+    readonly type = UPDATE_USER;
+    constructor(public payload: any) { }
+}
+
+export class UpdateUserSuccess implements Action {
+    readonly type = UPDATE_USER_SUCCESS;
     constructor(public payload: User) { }
 }

@@ -3,7 +3,7 @@
     <div class="tab-container">
       <div class="input-container">
         <div class="container">
-          <form (ngSubmit)="onSubmit($event)" *ngIf="isRequested">
+          <form (ngSubmit)="onSubmit($event)" *ngIf="!isRequested">
             <mat-form-field>
               <input matInput placeholder="Pickup address" name="pickupAddressName"
                 (keyup)="autoCompleteListener($event)" [matAutocomplete]="auto" required>
@@ -26,7 +26,7 @@
           </form>
         </div>
       </div>
-      <div class="container" *ngIf="!isRequested">
+      <div class="container" *ngIf="isRequested">
         <div class="route-params">
           <p>Distance to pick up: {{distancePickup}}</p>
         </div>

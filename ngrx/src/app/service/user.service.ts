@@ -66,7 +66,7 @@ export class UserService {
     }
 
     // /* UPDATE: update driver on the server */
-    // updateDriver(driver: Driver): Observable<Driver> {
+    // updateDriver(driver: User): Observable<Driver> {
     //     const url = `${this.serverURL}update`;
     //     return this.http.post<Driver>(url, driver, httpOptions).pipe(
     //         catchError(this.handleError<Driver>('updateDriver'))
