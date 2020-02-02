@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
 router.post('/request', async (req, res) => {
   //console.log(req.body);
   redisDB.execPost(req, res, redisDB.makeRequest);
+  Neo4jDB.execUpdateClientTrue(req,res);
 });
 
 router.post('/requesttest', async (req, res) => {
