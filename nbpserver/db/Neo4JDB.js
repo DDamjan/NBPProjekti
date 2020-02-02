@@ -188,65 +188,42 @@ async function execCreateRide(req,res,payload){
   }
 }
 
-async function execFinishRide(req,res,payload){
-  var session=driver.session();
-  const transaction=session.beginTransaction();
-  try{
-    let l;
-    const result=await transaction.run(query.FINISH_RIDE,payload);
+async function execFinishRide(req,res,payload)
+{
+  var session=driver.session()
+  session.run(query.FINISH_RIDE,payload)
+  .then(result => {
     result.records.forEach(record => {
-      l=record.get('r');
-    })
-    console.log('First query completed')
-    const result1=await transaction.run(query.UPDATE_FINISH,{DID:neo4j.int(req.body.driverID),CID:neo4j.int(req.body.clientID),DLat:req.body.destinationLat,DLng:req.body.destinationLng,DLoc:req.body.destinationLocation});
-    result1.records.forEach(record => {
-      console.log(record);
-     })
-     console.log('Second query completed')
-     let s=l.properties;
-     s.id=l.identity.low;
-     res.json(s);
-     res.end();
-  }
-  catch(error) {
-    console.log(error);
-    await transaction.rollback();
-    console.log('rolled back');
-  }
-  finally { 
-    await session.close();
-  }
+      let l=record.get('r');
+      let s=l.properties;
+      s.id=l.identity.low;
+      res.json(s);
+      res.end();
+  })
+})
+  .catch(error => {
+    errorHandler(error,res);
+  })
+  .then(() => session.close())
 }
 
 async function execCancelRide(req,res,paylaod)
 {
-  var session=driver.session();
-  const transaction=session.beginTransaction();
-  try{
-    let l;
-    const result=await transaction.run(query.CANCEL_RIDE,payload);
+  var session=driver.session()
+  session.run(query.CANCEL_RIDE,payload)
+  .then(result => {
     result.records.forEach(record => {
-      l=record.get('r');
-    })
-    console.log('First query completed')
-    const result1=await transaction.run(query.UPDATE_CANCEL,{DID:neo4j.int(req.body.driverID),CID:neo4j.int(req.body.clientID)});
-    result1.records.forEach(record => {
-      console.log(record);
-     })
-     console.log('Second query completed')
-     let s=l.properties;
-     s.id=l.identity.low;
-     res.json(s);
-     res.end();
-  }
-  catch(error) {
-    console.log(error);
-    await transaction.rollback();
-    console.log('rolled back');
-  }
-  finally { 
-    await session.close();
-  }
+      let l=record.get('r');
+      let s=l.properties;
+      s.id=l.identity.low;
+      res.json(s);
+      res.end();
+  })
+})
+.catch(error => {
+    errorHandler(error,res);
+  })
+.then(() => session.close())
 }
 
 async function execDriverAllRides(driverID,res){
@@ -372,8 +349,6 @@ async function errorHandler(err,res)
     res.end();
     console.log(err);
 }
-
-
 
 module.exports={
     execAuth: execAuth,
