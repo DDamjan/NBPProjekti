@@ -235,6 +235,7 @@ export class MapComponent implements OnInit {
     const marker = new H.map.Marker(coord, { icon: driverIcon });
     marker.setData(`Car no: ${driver.id} Name: ${driver.firstName} ${driver.lastName}`);
     this.map.addObject(marker);
+    this.map.setCenter(coord);
   }
 
   addDriversToMap(drivers) {

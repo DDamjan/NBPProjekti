@@ -82,64 +82,6 @@ export class DriverDetailsComponent implements OnInit {
     this.mapView.showDetails(this.driver, this.currentRide);
   }
 
-  arrive() {
-    this.driver.currentLat = this.driver.pickupLat;
-    this.driver.currentLng = this.driver.pickupLng;
-    this.driver.currentLocation = this.driver.pickupLocation;
-
-    this.driver.pickupLat = null;
-    this.driver.pickupLng = null;
-    this.driver.pickupLocation = null;
-
-    this.store.dispatch(new actions.UpdateDriver(this.driver));
-    this.mapView.showDetails(this.driver, this.currentRide);
-    this.buttonEndDisabled = false;
-    this.buttonCancelDisabled = true;
-    this.buttonArriveDisabled = true;
-    this.snackBar.open(`Driver has arrived`, 'Close', {
-      duration: 3000
-    });
-  }
-
-  endRide() {
-    const dateTime = new Date();
-    this.currentRide.endTime = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-    this.rideService.updateRide(this.currentRide).subscribe();
-    this.driver.isActive = false;
-    this.driver.currentLat = this.currentRide.destinationLat;
-    this.driver.currentLng = this.currentRide.destinationLng;
-    this.driver.currentLocation = this.currentRide.destinationLocation;
-    this.store.dispatch(new actions.UpdateDriver(this.driver));
-    this.dataTable.onChange(this.currentRide);
-    this.currentRide = null;
-    this.mapView.showDetails(this.driver, this.currentRide);
-
-    this.buttonEndDisabled = true;
-
-    this.snackBar.open(`Current ride has ended`, 'Close', {
-      duration: 3000
-    });
-  }
-
-  cancelRide() {
-    const dateTime = new Date();
-    this.currentRide.endTime = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-    this.currentRide.isCanceled = true;
-    this.rideService.updateRide(this.currentRide).subscribe();
-    this.driver.isActive = false;
-    this.store.dispatch(new actions.UpdateDriver(this.driver));
-    this.dataTable.onChange(this.currentRide);
-    this.currentRide = null;
-    this.mapView.showDetails(this.driver, this.currentRide);
-
-    this.buttonCancelDisabled = true;
-    this.buttonArriveDisabled = true;
-
-    this.snackBar.open(`Current ride has been canceled`, 'Close', {
-      duration: 3000
-    });
-  }
-
   deleteDriver() {
     this.store.dispatch(new actions.DeleteDriver(this.driver));
     this.router.navigateByUrl(`/`);

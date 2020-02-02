@@ -79,7 +79,6 @@ export class DriverRegisterComponent implements OnInit {
           this.error = true;
         }
       });
-      // this.store.dispatch(new driverActions.AddDriver(this.driver));
 
       this.snackBar.open(`Driver registered.`, 'Close', {
         duration: 3000

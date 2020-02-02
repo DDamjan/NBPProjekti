@@ -5,6 +5,12 @@ import { RideService } from 'src/app/service/ride.service';
 import { WebSocketService } from '../../service/web-socket.service';
 import { MatSnackBar } from '@angular/material';
 import { calculateFare } from 'src/app/func/functions';
+import { Driver } from 'src/app/models/Driver';
+import { Store, select } from '@ngrx/store';
+import * as actions from '../../store/actions';
+import { Ride } from 'src/app/models/Ride';
+import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
+import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-driver-hub',
@@ -22,19 +28,51 @@ export class DriverHubComponent implements OnInit {
   private fare: number;
   private options: string[] = [];
   public isDriving = true;
+  private driver: User;
+  private ride: Ride;
+  private buttonEndDisabled: boolean;
+  private buttonCancelDisabled: boolean;
+  private buttonArriveDisabled: boolean;
+  private isActive: boolean;
+  private request: boolean;
 
-  constructor(private rideService: RideService, private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
+
+  constructor(private rideService: RideService, private webSocketService: WebSocketService,
+              private snackBar: MatSnackBar, private store: Store<any>) {
+    this.isActive = false;
+    this.request = false;
+  }
   ngOnInit() {
     const id = localStorage.getItem('currentUser');
-    console.log("NGON INITTTTT");
-    console.log(id);
-    this.webSocketService.listen('User:'+id).subscribe((data: any) => {
-      console.log(data);
-      this.mapView.renderDriver(data, this.pickupAddressName);
-      this.snackBar.open(` ${data.id} en route`, 'Close', {
-        duration: 5000
-      });
+    this.store.select(selectAllUsers).subscribe(user => {
+      if (user.length === 0) {
+        this.store.dispatch(new actions.GetUser(Number(id)));
+      } else {
+        this.driver = user[0];
+      }
     });
+
+    this.webSocketService.listen('User:' + id).subscribe((data: any) => {
+      if (this.isActive === false) {
+        this.ride = data;
+        this.request = true;
+
+        
+      }
+      
+    });
+  }
+
+  showOnMap() {
+    if (this.driver === undefined) {
+      this.store.select(selectAllUsers).subscribe(driver => {
+        this.driver = driver[0];
+        this.mapView.addDriverToMap(this.driver);
+      });
+    } else {
+      this.mapView.addDriverToMap(this.driver);
+    }
+
   }
 
   receiveRouteParams($event) {
@@ -47,4 +85,63 @@ export class DriverHubComponent implements OnInit {
       this.fare = calculateFare($event.fare);
     }
   }
+
+  arrive() {
+    this.driver.currentLat = this.driver.pickupLat;
+    this.driver.currentLng = this.driver.pickupLng;
+    this.driver.currentLocation = this.driver.pickupLocation;
+
+    this.driver.pickupLat = null;
+    this.driver.pickupLng = null;
+    this.driver.pickupLocation = null;
+
+    // this.store.dispatch(new actions.UpdateDriver(this.driver));
+    // this.mapView.showDetails(this.driver, this.ride);
+    this.buttonEndDisabled = false;
+    this.buttonCancelDisabled = true;
+    this.buttonArriveDisabled = true;
+    this.snackBar.open(`Driver has arrived`, 'Close', {
+      duration: 3000
+    });
+  }
+
+  endRide() {
+    const dateTime = new Date();
+    this.ride.endTime = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
+    this.rideService.updateRide(this.ride).subscribe();
+    this.driver.isActive = false;
+    this.driver.currentLat = this.ride.destinationLat;
+    this.driver.currentLng = this.ride.destinationLng;
+    this.driver.currentLocation = this.ride.destinationLocation;
+    // this.store.dispatch(new actions.UpdateDriver(this.driver));
+    // this.dataTable.onChange(this.ride);
+    this.ride = null;
+    // this.mapView.showDetails(this.driver, this.ride);
+
+    this.buttonEndDisabled = true;
+
+    this.snackBar.open(`Current ride has ended`, 'Close', {
+      duration: 3000
+    });
+  }
+
+  cancelRide() {
+    const dateTime = new Date();
+    this.ride.endTime = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
+    this.ride.isCanceled = true;
+    this.rideService.updateRide(this.ride).subscribe();
+    this.driver.isActive = false;
+    // this.store.dispatch(new actions.UpdateDriver(this.driver));
+    // this.dataTable.onChange(this.currentRide);
+    this.ride = null;
+    // this.mapView.showDetails(this.driver, this.ride);
+
+    this.buttonCancelDisabled = true;
+    this.buttonArriveDisabled = true;
+
+    this.snackBar.open(`Current ride has been canceled`, 'Close', {
+      duration: 3000
+    });
+  }
+
 }

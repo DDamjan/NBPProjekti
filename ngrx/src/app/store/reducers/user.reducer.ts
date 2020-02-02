@@ -3,7 +3,8 @@ import {
     AUTH_USER_SUCCESS,
     GET_USER_SUCCESS,
     AUTH_USER_FAIL,
-    REGISTER_USER_SUCCESS
+    REGISTER_USER_SUCCESS,
+    UPDATE_USER_SUCCESS
 } from 'src/constants/reducers-constants';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createFeatureSelector} from '@ngrx/store';
@@ -39,6 +40,9 @@ export function UserReducer(
             localStorage.setItem('currentUser', action.payload.id);
             localStorage.setItem('currentUserType', action.payload.type);
             return UserAdapter.addOne(action.payload, state = UserInitialState);
+        }
+        case UPDATE_USER_SUCCESS: {
+            return UserAdapter.updateOne(action.payload, state = UserInitialState);
         }
         default:
             return state;

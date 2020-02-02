@@ -4,7 +4,6 @@ export interface User {
     lastName: string;
     username: string;
     type: string;
-    // Driver i Operator
     isActive?: boolean;
     // Driver
     phone?: string;

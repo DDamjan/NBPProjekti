@@ -32,7 +32,7 @@ export class RequestRideComponent implements OnInit {
   private ETADestination: string;
   private fare: number;
   private options: string[] = [];
-  public isRequested = true;
+  public isRequested: boolean;
   private user: User;
 
   constructor(private store: Store<any>, private rideService: RideService,
@@ -46,11 +46,12 @@ export class RequestRideComponent implements OnInit {
       } else {
         this.store.select(selectAllUsers).subscribe(current => {
           this.user = current[0];
+          this.isRequested = this.user.isActive;
         });
       }
     });
 
-    this.webSocketService.listen('User:'+id).subscribe((data: any) => {
+    this.webSocketService.listen('User:' + id).subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
       this.snackBar.open(`Driver ${data.id} en route`, 'Close', {
@@ -59,7 +60,7 @@ export class RequestRideComponent implements OnInit {
     });
   }
 
-  update(){
+  update() {
     this.ngOnInit();
   }
 
@@ -68,7 +69,35 @@ export class RequestRideComponent implements OnInit {
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
       this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
-      this.isRequested = false;
+      this.isRequested = true;
+      if (this.user === undefined) {
+        this.store.select(selectAllUsers).subscribe(user => {
+          this.user = user[0];
+          this.user.currentLat = this.pickupLat;
+          this.user.currentLng = this.pickupLng;
+          this.user.currentLocation = this.pickupAddressName;
+          this.user.isActive = true;
+
+          const payload = {
+            id: this.user.id,
+            firstName: this.user.firstName,
+            lastName: this.user.lastName,
+            pickupLat: this.user.currentLat,
+            pickupLng: this.user.currentLng,
+            pickupLocation: this.user.currentLocation,
+            destinationLat: this.destinationLat,
+            destinationLng: this.destinationLng,
+            destinationLocation: this.destinationAddressName
+          };
+
+          this.rideService.requestRide(payload);
+          this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+          this.isRequested = true;
+          this.snackBar.open('Ride requested!', 'Close', {
+            duration: 3000
+          });
+        });
+      }
     } else {
       this.snackBar.open('Enter a valid address!', 'Close', {
         duration: 3000
