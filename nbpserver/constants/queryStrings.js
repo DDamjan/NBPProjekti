@@ -3,8 +3,8 @@ const REPO_PATH = __dirname.substring(0, __dirname.indexOf('\\constants')) + '\\
 const GET_ALL_USERS_TYPE = 'match (n) where n.type=$Type return n';
 const USER_AUTH = 'match (n) where n.username=$user and n.password=$pass return n';
 const GET_USER_BY_ID = 'MATCH (n) WHERE id(n)=$ID RETURN n';
-const CREATE_DRIVER='CREATE(a:Driver {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"driver",isActive:"true",phone:$Tel,car:$Car,carColor:$Color,licencePlate:$Plate,currentLat:$cLat,currentLng:$cLng,currentLocation:$cLoc,pickupLat:null,pickupLng:null,pickupLocation:""}) return a';
-const CREATE_CLIENT='CREATE(a:Client {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"client",pickupLat:$Lat,pickupLng:$Lng,pickupLocation:$Loc}) return a';
+const CREATE_DRIVER='CREATE(a:Driver {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"driver",isActive:false,phone:$Tel,car:$Car,carColor:$Color,licencePlate:$Plate,currentLat:$cLat,currentLng:$cLng,currentLocation:$cLoc,pickupLat:null,pickupLng:null,pickupLocation:""}) return a';
+const CREATE_CLIENT='CREATE(a:Client {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"client",isActive:false,pickupLat:$Lat,pickupLng:$Lng,pickupLocation:$Loc}) return a';
 const CREATE_RIDE='CREATE (r:Ride {pickupLat:$SLat,pickupLng:$SLng,destinationLat:$DLat,destinationLng:$DLng,pickupLocation:$SLoc,destinationLocation:$DLoc,startTime:$STime,endTime:"X",isCanceled:false,fare:$Fare,distance:$Dist}) return r';
 const RIDE_DISPACHED='match (n:Operator),(m:Ride) where id(m)=$RID and id(n)=$OID create (n)-[r:RIDE_DISPACHED {DateTime:datetime()}]->(m) return r';
 const RIDE_DRIVEN='match (n:Driver),(m:Ride) where id(m)=$RID and id(n)=$DID create (n)-[r:RIDE_DRIVEN {DateTime:datetime()}]->(m) return r';
