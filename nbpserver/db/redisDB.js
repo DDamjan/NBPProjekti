@@ -155,8 +155,8 @@ function RequestTest(req){
 
 function makeRequest(req){
     console.log(req.body);
-    client.hmset("client", req.body.id, true);
-    client.hmset("requests", req.body.id, JSON.stringify(req.body));
+    client.hmset("client", req.body.clientID, true);
+    client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
     // webSocket.io.emit('User:20', {
     //     ID: 21,
     //     currentLat: 40.20543,
@@ -164,10 +164,10 @@ function makeRequest(req){
     // });
     //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.currentLat, req.body.currentLng, "src",  redis.print);
     //geo.addLocation("dest:"+ req.body.clientID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
-    geo.addLocation("src:"+ req.body.id, {latitude: req.body.currentLat, longitude: req.body.currentLng});
+    geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.currentLat, longitude: req.body.currentLng});
 
-    pub.publish("ClientRequestToDrivers", req.body.id); //salje svim driverima request za voznju
-    setTimeout(() => { sendOperatorRequest(req.body.id);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
+    pub.publish("ClientRequestToDrivers", req.body.clientID); //salje svim driverima request za voznju
+    setTimeout(() => { sendOperatorRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
 }
 
 function requestAccepted(req){
