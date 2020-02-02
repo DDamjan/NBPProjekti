@@ -39,7 +39,6 @@ export class RequestRideComponent implements OnInit {
               private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
-    console.log('da');
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
         this.store.dispatch(new actions.GetUser(id));
@@ -90,8 +89,9 @@ export class RequestRideComponent implements OnInit {
             destinationLocation: this.destinationAddressName
           };
 
-          this.rideService.requestRide(payload);
-          this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+          console.log("kurac?");
+          // this.rideService.requestRide(payload);
+          // this.store.dispatch(new actions.UpdateUserSuccess(this.user));
           this.isRequested = true;
           this.snackBar.open('Ride requested!', 'Close', {
             duration: 3000
