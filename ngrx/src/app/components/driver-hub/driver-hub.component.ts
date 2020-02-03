@@ -52,7 +52,7 @@ export class DriverHubComponent implements OnInit {
       }
     });
 
-    this.webSocketService.listen('User:' + id).subscribe((data: any) => {
+    this.webSocketService.listen('Driver:' + id).subscribe((data: any) => {
       if (this.isActive === false) {
         this.ride = data;
         this.request = true;

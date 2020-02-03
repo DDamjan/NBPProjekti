@@ -35,7 +35,7 @@ export class ActiveDriversComponent implements OnInit {
       }
     });
 
-    this.webSocketService.listen('User:' + id).subscribe((data: any) => {
+    this.webSocketService.listen('Operator:' + id).subscribe((data: any) => {
       console.log(data);
     });
   }

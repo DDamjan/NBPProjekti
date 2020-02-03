@@ -327,7 +327,7 @@ async function execRideDelete(id,res){
 
 async function execUpdateClientTrue(req,res){
   var session=driver.session()
-  session.run(query.UPDATE_CLIENT_TRUE,{CID:neo4j.int(req.body.id),Lat:req.body.pickupLat,Lng:req.body.pickupLng,Loc:req.body.pickupLocation})
+  session.run(query.UPDATE_CLIENT_TRUE,{CID:neo4j.int(req.body.clientID),Lat:req.body.pickupLat,Lng:req.body.pickupLng,Loc:req.body.pickupLocation})
   .then(result => {
     if(result.records.length==0){
       let l= { clientID: Number(req.body.id),isActive: true};
