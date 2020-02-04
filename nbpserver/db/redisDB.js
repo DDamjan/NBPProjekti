@@ -63,32 +63,15 @@ subAprovedRide.on("message", function (channel, body) {
     client.del("accepted:" + clientID);
     client.del("denied:" + clientID);
     client.hdel("requests", clientID);
-    console.log("DELETED request");
+    console.log("Deleted request");
 
-    client.llen("requestQ",(err,numRequests)=>{
-        client.llen("notActiveOperators",(err,numOperators)=>{        
-            if(numRequests == 0){
-                client.lpush("notActiveOperators", operatorID);
-                client.hmset("operator", operatorID, false);
-            }else{
-                if(numOperators == 0){
-                    //uzmi request
-                    client.lpush("notActiveOperators", operatorID);
-                    client.lpop("requestQ",(err, clientID) => {
-                        NextRequestToNextOperator(clientID);
-                    });
-                }else{
-                   //neka zesca greska pune se liste ali se ne prazne
-                   console.log("greska u AprovedRide")
-                }
-            }
-        });
-    });
+    newOperator(operatorID);
 });
 
 var subRideStatus = redis.createClient();
 subRideStatus.subscribe("RideStatus");
 subRideStatus.on("message", function (channel, body) {
+    if(!body.driverID){console.log('UNDEFINEEEEEEEEEEEED');}
     client.hmset("driver", body.driverID, false); //driver je slobodan za sledecu voznju
     client.hmset("client", body.clientID, false); //klijent je zavrsio svoju voznju
 
@@ -112,9 +95,10 @@ subUserAuth.on("message", function (channel, user) {
     console.log("USERRRR: "+ user);
     switch(user.type){
         case "operator": 
-            client.lpush("notActiveOperators", user.id);
+            //client.lpush("notActiveOperators", user.id);
             client.hmset("operator", user.id, false);
             console.log("Operator authenticated");
+            newOperator(operatorID);
         break;
         case "driver": 
             client.hmset("driver", user.id, false);
@@ -126,7 +110,7 @@ subUserAuth.on("message", function (channel, user) {
         break;
         default: break;
     }
-    //webSocket.io.emit('User:'+user.id, "AUTH USER emit TEST for DAMJAN");
+    webSocket.io.emit('UserConnected', user);
 });
  
 
@@ -210,7 +194,7 @@ function NextRequestToNextOperator(clientID){
             driverList.forEach((element, i) => {
                 driverList[i] = JSON.parse(element);
             });
-            request = {...request, "drivers" : driverList}
+            request = {...request, "drivers" : driverList};
             //request.drivers = driverList;
 
             geo.location("src:"+ clientID, (err, location) => {
@@ -228,6 +212,28 @@ function NextRequestToNextOperator(clientID){
                     });
                 }
             });
+        });
+    });
+}
+
+function newOperator(operatorID){
+    client.llen("requestQ",(err,numRequests)=>{
+        client.llen("notActiveOperators",(err,numOperators)=>{        
+            if(numRequests == 0){
+                client.lpush("notActiveOperators", operatorID);
+                client.hmset("operator", operatorID, false);
+            }else{
+                if(numOperators == 0){
+                    //uzmi request
+                    client.lpush("notActiveOperators", operatorID);
+                    client.lpop("requestQ",(err, newClientID) => {
+                        NextRequestToNextOperator(newClientID);
+                    });
+                }else{
+                   //neka zesca greska pune se liste ali se ne prazne
+                   console.log("greska u AprovedRide")
+                }
+            }
         });
     });
 }
