@@ -15,7 +15,16 @@ router.get('/', async (req, res) => {
 router.post('/request', async (req, res) => {
   console.log(req.body);
   redisDB.execPost(req, res, redisDB.makeRequest);
-  Neo4jDB.execUpdateClientTrue(req,res);
+  const payload={
+    CID:neo4j.int(req.body.id),
+    Lat:req.body.pickupLat,
+    Lng:req.body.pickupLng,
+    Loc:req.body.pickupLocation,
+    DLat:req.body.destinationLat,
+    DLng:req.body.destinationLng,
+    DLoc:req.body.destinationLocation
+  }
+  Neo4jDB.execUpdateClientTrue(payload,res);
 });
 
 router.post('/requesttest', async (req, res) => {
