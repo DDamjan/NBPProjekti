@@ -93,11 +93,7 @@ router.get('/driver/picture', async (req, res) => {
   fs.execFile(res, queryString.REPO_PATH + picId);
 });
 
-router.get('/driverDelete', async (req, res) => {
-  let DriverId = req.query.id;
-  Neo4jDB.execDriverDelete(DriverId,res);
-  //   /all?type=Client,Operator,Driver
-});
+
 
 
 
