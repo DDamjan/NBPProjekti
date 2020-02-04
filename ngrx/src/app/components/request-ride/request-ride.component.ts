@@ -50,7 +50,7 @@ export class RequestRideComponent implements OnInit {
       }
     });
 
-    this.webSocketService.listen('User:' + id).subscribe((data: any) => {
+    this.webSocketService.listen('Client:' + id).subscribe((data: any) => {
       console.log(data);
       this.mapView.renderDriver(data, this.pickupAddressName);
       this.snackBar.open(`Driver ${data.id} en route`, 'Close', {
@@ -72,30 +72,6 @@ export class RequestRideComponent implements OnInit {
       if (this.user === undefined) {
         this.store.select(selectAllUsers).subscribe(user => {
           this.user = user[0];
-          this.user.currentLat = this.pickupLat;
-          this.user.currentLng = this.pickupLng;
-          this.user.currentLocation = this.pickupAddressName;
-          this.user.isActive = true;
-
-          const payload = {
-            id: this.user.id,
-            firstName: this.user.firstName,
-            lastName: this.user.lastName,
-            pickupLat: this.user.currentLat,
-            pickupLng: this.user.currentLng,
-            pickupLocation: this.user.currentLocation,
-            destinationLat: this.destinationLat,
-            destinationLng: this.destinationLng,
-            destinationLocation: this.destinationAddressName
-          };
-
-          console.log("kurac?");
-          // this.rideService.requestRide(payload);
-          // this.store.dispatch(new actions.UpdateUserSuccess(this.user));
-          this.isRequested = true;
-          this.snackBar.open('Ride requested!', 'Close', {
-            duration: 3000
-          });
         });
       }
     } else {
@@ -104,6 +80,32 @@ export class RequestRideComponent implements OnInit {
       });
     }
 
+  }
+
+  updateAndRequest() {
+    this.user.currentLat = this.pickupLat;
+    this.user.currentLng = this.pickupLng;
+    this.user.currentLocation = this.pickupAddressName;
+    this.user.isActive = true;
+
+    const payload = {
+      clientID: this.user.id,
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      pickupLat: this.user.currentLat,
+      pickupLng: this.user.currentLng,
+      pickupLocation: this.user.currentLocation,
+      destinationLat: this.destinationLat,
+      destinationLng: this.destinationLng,
+      destinationLocation: this.destinationAddressName
+    };
+
+    this.rideService.requestRide(payload).subscribe();
+    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+    this.isRequested = true;
+    this.snackBar.open('Ride requested!', 'Close', {
+      duration: 3000
+    });
   }
 
   receiveRouteParams($event) {
@@ -118,16 +120,7 @@ export class RequestRideComponent implements OnInit {
       this.destinationLng = $event.destinationLng;
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
-      const payload = {
-        clientID: this.user.id,
-        pickupLat: this.pickupLat,
-        pickupLng: this.pickupLng,
-        pickupLocation: this.pickupAddressName,
-        destinationLat: this.destinationLat,
-        destinationLng: this.destinationLng,
-        destinationLocation: this.destinationAddressName
-      };
-      this.rideService.requestRide(payload).subscribe();
+      this.updateAndRequest();
     }
   }
 

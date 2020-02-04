@@ -23,18 +23,10 @@ subClientRequestToDrivers.on("message", function (channel, clientID) {
     client.hget("requests", clientID, function (err, request) {
         client.hgetall("driver", function (err, driversActivty) {
             if(!driversActivty){
-                console.log("No drivers please try again");
             }else{
-                console.log("DRIVERS AVALIABLE");
-                console.log(driversActivty);
-                console.log(request);
                 Object.keys(driversActivty).forEach(key => {
-                    console.log(key);
-                    console.log(driversActivty[key]);
                     if('false' == driversActivty[key]) {
-                        console.log(key);
-                        webSocket.io.emit('User:'+key, JSON.parse(request)); //Emituje se svim slobodnim drijverima nova voznja
-                        console.log(key);
+                        webSocket.io.emit('Driver:'+key, JSON.parse(request)); //Emituje se svim slobodnim drijverima nova voznja
                     }
                 });
             }
@@ -54,8 +46,8 @@ subAprovedRide.on("message", function (channel, body) {
     client.hget("requests", clientID, (err, res) => {
         res = JSON.parse(res);
         res.driverID = driverID;
-        webSocket.io.emit('User:'+clientID, res);
-        webSocket.io.emit('User:'+driverID, res);
+        webSocket.io.emit('Client:'+clientID, res);
+        webSocket.io.emit('Driver:'+driverID, res);
     });
 
     client.lrange("accepted:"+clientID, 0, -1, (err, driverList)=>{
@@ -107,10 +99,10 @@ subRideStatus.on("message", function (channel, body) {
     ride.clientID = body.clientID;
     client.hgetall("operator", function (err, operatorsActivty) {
         Object.keys(operatorsActivty).forEach(key => {
-            webSocket.io.emit('User:'+key, JSON.parse(ride)); //Emit svim operaterima
+            webSocket.io.emit('Operator:'+key, JSON.parse(ride)); //Emit svim operaterima
         });
     });
-    webSocket.io.emit('User:'+body.clientID, ride); //Emit clientu kome se upravo zavrsila voznja
+    webSocket.io.emit('Client:'+body.clientID, ride); //Emit clientu kome se upravo zavrsila voznja
 });
 
 var subUserAuth = redis.createClient();
@@ -154,9 +146,9 @@ function RequestTest(req){
 }
 
 function makeRequest(req){
-    console.log(req.body);
-    client.hmset("client", req.body.id, true);
-    client.hmset("requests", req.body.id, JSON.stringify(req.body));
+    //console.log(req.body);
+    client.hmset("client", req.body.clientID, true);
+    client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
     // webSocket.io.emit('User:20', {
     //     ID: 21,
     //     currentLat: 40.20543,
@@ -164,10 +156,10 @@ function makeRequest(req){
     // });
     //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.currentLat, req.body.currentLng, "src",  redis.print);
     //geo.addLocation("dest:"+ req.body.clientID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
-    geo.addLocation("src:"+ req.body.id, {latitude: req.body.currentLat, longitude: req.body.currentLng});
+    geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.currentLat, longitude: req.body.currentLng});
 
-    pub.publish("ClientRequestToDrivers", req.body.id); //salje svim driverima request za voznju
-    setTimeout(() => { sendOperatorRequest(req.body.id);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
+    pub.publish("ClientRequestToDrivers", req.body.clientID); //salje svim driverima request za voznju
+    setTimeout(() => { sendOperatorRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
 }
 
 function requestAccepted(req){
@@ -230,7 +222,7 @@ function NextRequestToNextOperator(clientID){
                         request.closestDriver = locations[0];
                         client.rpop("notActiveOperators", (err, operator)=>{
                             client.hmset("operator", operator, true);
-                            webSocket.io.emit('User:'+operator, request);
+                            webSocket.io.emit('Operator:'+operator, request);
                         });
                         console.error("Operator resolve request");
                     });

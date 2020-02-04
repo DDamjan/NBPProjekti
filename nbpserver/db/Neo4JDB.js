@@ -327,7 +327,7 @@ async function execRideDelete(id,res){
 
 async function execUpdateClientTrue(payload,res){
   var session=driver.session()
-  session.run(query.UPDATE_CLIENT_TRUE,{payload})
+  session.run(query.UPDATE_CLIENT_TRUE,payload)
   .then(result => {
     if(result.records.length==0){
       let l= { clientID: Number(payload.CID),isActive: true};
