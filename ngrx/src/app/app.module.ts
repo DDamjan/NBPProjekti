@@ -18,7 +18,8 @@ import {
   MatOptionModule,
   MatSelectModule,
   MatAutocompleteModule,
-  MatTabsModule
+  MatTabsModule,
+  MatExpansionModule
 } from '@angular/material';
 import { MapComponent } from './components/map/map.component';
 import { MapViewComponent } from './components/map-view/map-view.component';
@@ -32,7 +33,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 import { DriverEffects } from './store/effects/driver.effects';
-import { DriverReducer } from './store/reducers/driver.reducer';
 import { DriverService } from './service/driver.service';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
@@ -78,6 +78,7 @@ import { ClientRegisterComponent } from './components/client-register/client-reg
     MatOptionModule,
     MatSelectModule,
     MatTabsModule,
+    MatExpansionModule,
     StoreDevtoolsModule,
     FormsModule,
     StoreModule.forRoot(reducers),

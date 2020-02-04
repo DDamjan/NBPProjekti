@@ -16,7 +16,7 @@ router.post('/request', async (req, res) => {
   console.log(req.body);
   redisDB.execPost(req, res, redisDB.makeRequest);
   const payload={
-    CID:neo4j.int(req.body.id),
+    CID:req.body.id,
     Lat:req.body.pickupLat,
     Lng:req.body.pickupLng,
     Loc:req.body.pickupLocation,

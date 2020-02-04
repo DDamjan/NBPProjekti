@@ -48,14 +48,8 @@ export class RequestRideComponent implements OnInit {
       } else {
         this.user = currentUser[0];
         this.isRequested = this.user.isActive;
-
-        if (this.destinationLat === 0 && this.destinationLng === 0) {
-          this.destinationLat = Number(this.route.snapshot.paramMap.get('destinationLat'));
-          this.destinationLng = Number(this.route.snapshot.paramMap.get('destinationLng'));
-          this.destinationAddressName = this.route.snapshot.paramMap.get('destinationLocation');
-          if (this.destinationAddressName !== null) {
-            this.mapView.renderRequest(this.user.currentLocation, this.destinationAddressName);
-          }
+        if (this.isRequested) {
+          this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation);
         }
       }
     });
@@ -114,11 +108,11 @@ export class RequestRideComponent implements OnInit {
 
     this.rideService.requestRide(payload).subscribe();
     this.isRequested = true;
+    this.user.isActive = true;
     this.snackBar.open('Ride requested!', 'Close', {
       duration: 3000
     });
     this.store.dispatch(new actions.UpdateUserSuccess(this.user));
-    this.router.navigate([`client/home/${this.destinationLat}/${this.destinationLng}/${this.destinationAddressName}`]);
   }
 
   receiveRouteParams($event) {
@@ -134,17 +128,8 @@ export class RequestRideComponent implements OnInit {
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
 
-      this.getURLParams();
-      // if (this.destinationLat !== 0 && this.destinationLng !== 0 && this.destinationAddressName !== null) {
       this.updateAndRequest();
-      // }
     }
-  }
-
-  getURLParams() {
-    this.destinationLat = Number(this.route.snapshot.paramMap.get('destinationLat'));
-    this.destinationLng = Number(this.route.snapshot.paramMap.get('destinationLng'));
-    this.destinationAddressName = this.route.snapshot.paramMap.get('destinationLocation');
   }
 
   autoCompleteListener(event) {
