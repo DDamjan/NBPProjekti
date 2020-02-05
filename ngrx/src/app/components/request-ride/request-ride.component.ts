@@ -10,6 +10,8 @@ import { Store, select } from '@ngrx/store';
 import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
 import { User } from 'src/app/models/User';
 import { UserService } from 'src/app/service/user.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-request-ride',
@@ -36,17 +38,25 @@ export class RequestRideComponent implements OnInit {
   private user: User;
 
   constructor(private store: Store<any>, private rideService: RideService,
-              private webSocketService: WebSocketService, private snackBar: MatSnackBar) { }
+              private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
+              private route: ActivatedRoute, private router: Router) { }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
         this.store.dispatch(new actions.GetUser(id));
       } else {
-        this.store.select(selectAllUsers).subscribe(current => {
-          this.user = current[0];
-          this.isRequested = this.user.isActive;
-        });
+        this.user = currentUser[0];
+        this.isRequested = this.user.isActive;
+
+        if (this.destinationLat === 0 && this.destinationLng === 0) {
+          this.destinationLat = Number(this.route.snapshot.paramMap.get('destinationLat'));
+          this.destinationLng = Number(this.route.snapshot.paramMap.get('destinationLng'));
+          this.destinationAddressName = this.route.snapshot.paramMap.get('destinationLocation');
+          if (this.destinationAddressName !== null) {
+            this.mapView.renderRequest(this.user.currentLocation, this.destinationAddressName);
+          }
+        }
       }
     });
 
@@ -57,6 +67,8 @@ export class RequestRideComponent implements OnInit {
         duration: 3000
       });
     });
+
+
   }
 
   update() {
@@ -101,11 +113,12 @@ export class RequestRideComponent implements OnInit {
     };
 
     this.rideService.requestRide(payload).subscribe();
-    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
     this.isRequested = true;
     this.snackBar.open('Ride requested!', 'Close', {
       duration: 3000
     });
+    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+    this.router.navigate([`client/home/${this.destinationLat}/${this.destinationLng}/${this.destinationAddressName}`]);
   }
 
   receiveRouteParams($event) {
@@ -120,8 +133,18 @@ export class RequestRideComponent implements OnInit {
       this.destinationLng = $event.destinationLng;
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
+
+      this.getURLParams();
+      // if (this.destinationLat !== 0 && this.destinationLng !== 0 && this.destinationAddressName !== null) {
       this.updateAndRequest();
+      // }
     }
+  }
+
+  getURLParams() {
+    this.destinationLat = Number(this.route.snapshot.paramMap.get('destinationLat'));
+    this.destinationLng = Number(this.route.snapshot.paramMap.get('destinationLng'));
+    this.destinationAddressName = this.route.snapshot.paramMap.get('destinationLocation');
   }
 
   autoCompleteListener(event) {
@@ -140,6 +163,14 @@ export class RequestRideComponent implements OnInit {
     }
     query = event.target.value;
 
+  }
+
+  cancelRide() {
+    this.isRequested = false;
+    this.user.isActive = false;
+    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+    this.rideService.finishRide({ isAssigned: false });
+    this.router.navigate(['/']);
   }
 }
 

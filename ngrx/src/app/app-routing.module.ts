@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'operator/find', component: RequestRideComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'operator/details/:id', component: DriverDetailsComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'client/home', component: RequestRideComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: 'client/home/:destinationLat/:destinationLng/:destinationLocation', component: RequestRideComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'client/register', component: ClientRegisterComponent, canActivate: [LoginGuard] },
   { path: 'driver/home', component: DriverHubComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [LoginGuard] }
