@@ -329,17 +329,19 @@ async function execUpdateClientTrue(payload,res){
   var session=driver.session()
   session.run(query.UPDATE_CLIENT_TRUE,payload)
   .then(result => {
-    if(result.records.length==0){
-      let l= { clientID: Number(payload.CID),isActive: true};
-      res.json(l);
+    result.records.forEach(record => {
+      let l=record.get('c');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
       res.end();
-    }
-  })
+      });
+    })
   .catch(error => {
     errorHandler(error,res);
   })
   .then(() => session.close())
-
 }
 
 async function execCancelRideNC(clientID,res)
