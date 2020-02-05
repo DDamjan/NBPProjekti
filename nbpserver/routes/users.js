@@ -18,9 +18,10 @@ router.post('/auth', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  let id = req.query.id;
-  console.log(id);
-  Neo4jDB.execReturnById(id,res);
+  // let id = req.query.id;
+  // let auth = req.query.auth;
+  // console.log(id);
+  Neo4jDB.execReturnById(req.query,res);
 });
 
 router.get('/topLoc', async (req, res) => {

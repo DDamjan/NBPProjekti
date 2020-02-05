@@ -71,8 +71,7 @@ subAprovedRide.on("message", function (channel, body) {
 var subRideStatus = redis.createClient();
 subRideStatus.subscribe("RideStatus");
 subRideStatus.on("message", function (channel, body) {
-    if(!body.driverID){console.log('UNDEFINEEEEEEEEEEEED');}
-    client.hmset("driver", body.driverID, false); //driver je slobodan za sledecu voznju
+    client.hmset("driver", body.driverID, false); //vozac je slobodan za sledecu voznju
     client.hmset("client", body.clientID, false); //klijent je zavrsio svoju voznju
 
     let ride;
@@ -86,6 +85,7 @@ subRideStatus.on("message", function (channel, body) {
         });
     });
     webSocket.io.emit('Client:'+body.clientID, ride); //Emit clientu kome se upravo zavrsila voznja
+    webSocket.io.emit('Driver:'+body.driverID, ride); //Emit vozacu kome je upravo prekinuta voznja
 });
 
 var subUserAuth = redis.createClient();
@@ -185,6 +185,29 @@ function sendOperatorRequest(clientID){
 }
 
 
+function newOperator(operatorID){
+    client.llen("requestQ",(err,numRequests)=>{
+        client.llen("notActiveOperators",(err,numOperators)=>{        
+            if(numRequests == 0){
+                client.lpush("notActiveOperators", operatorID);
+                client.hmset("operator", operatorID, false);
+            }else{
+                if(numOperators == 0){
+                    //uzmi request
+                    client.lpush("notActiveOperators", operatorID);
+                    client.lpop("requestQ",(err, newClientID) => {
+                        NextRequestToNextOperator(newClientID);
+                    });
+                }else{
+                   //neka zesca greska pune se liste ali se ne prazne
+                   console.log("greska u AprovedRide")
+                }
+            }
+        });
+    });
+}
+
+
 function NextRequestToNextOperator(clientID){
     client.hget("requests", clientID, function (err, request) {
         client.lrange("accepted:"+clientID, 0, -1, (err, driverList)=>{
@@ -211,28 +234,6 @@ function NextRequestToNextOperator(clientID){
                     });
                 }
             });
-        });
-    });
-}
-
-function newOperator(operatorID){
-    client.llen("requestQ",(err,numRequests)=>{
-        client.llen("notActiveOperators",(err,numOperators)=>{        
-            if(numRequests == 0){
-                client.lpush("notActiveOperators", operatorID);
-                client.hmset("operator", operatorID, false);
-            }else{
-                if(numOperators == 0){
-                    //uzmi request
-                    client.lpush("notActiveOperators", operatorID);
-                    client.lpop("requestQ",(err, newClientID) => {
-                        NextRequestToNextOperator(newClientID);
-                    });
-                }else{
-                   //neka zesca greska pune se liste ali se ne prazne
-                   console.log("greska u AprovedRide")
-                }
-            }
         });
     });
 }
