@@ -42,6 +42,8 @@ export class RequestRideComponent implements OnInit {
               private route: ActivatedRoute, private router: Router) { }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
+    const type = localStorage.getItem('currentUserType');
+    this.webSocketService.onConnect(id,type);
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
         this.store.dispatch(new actions.GetUser(id));

@@ -23,6 +23,8 @@ export class ActiveDriversComponent implements OnInit {
 
   ngOnInit() {
     const id = localStorage.getItem('currentUser');
+    const type = localStorage.getItem('currentUserType');
+    this.webSocketService.onConnect(id,type);
     this.store$.select(selectAllUsers).subscribe(user => {
       if (this.again === false) {
         if (user.length === 0) {

@@ -92,13 +92,13 @@ var subUserAuth = redis.createClient();
 subUserAuth.subscribe("UserAuth");
 subUserAuth.on("message", function (channel, user) {
     user = JSON.parse(user);
-    console.log("USERRRR: "+ user);
+    //console.log("USERRRR: "+ user);
     switch(user.type){
         case "operator": 
             //client.lpush("notActiveOperators", user.id);
             client.hmset("operator", user.id, false);
             console.log("Operator authenticated");
-            newOperator(operatorID);
+            newOperator(user.id);
         break;
         case "driver": 
             client.hmset("driver", user.id, false);
@@ -110,7 +110,6 @@ subUserAuth.on("message", function (channel, user) {
         break;
         default: break;
     }
-    webSocket.io.emit('UserConnected', user);
 });
  
 

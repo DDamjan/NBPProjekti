@@ -13,9 +13,15 @@ import * as conn from '../../constants/server-urls';
     readonly uri: string = conn.PUBLIC_WEBSOCKET_PEDJA;
 
     constructor() {
-        this.socket = io(this.uri);
-        console.log('Connecting to server...');
-        this.emit('UserConnected',{socketID:this.socket.id, userID: });
+    }
+
+    onConnect(id, type){
+        // let type = localStorage.getItem('currentUserType');
+        // let id = localStorage.getItem('currentUser');
+        //if (id !== null){
+            this.socket = io(this.uri + `/?id=${id}&type=${type}`);
+            console.log('Connecting to server...');
+        //}
     }
 
     listen(eventName: string) {

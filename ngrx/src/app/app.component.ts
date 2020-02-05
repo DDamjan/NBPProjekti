@@ -16,19 +16,11 @@ export class AppComponent implements OnInit {
   constructor(private store: Store<any>, private webSocketService: WebSocketService) { }
 
   public ngOnInit() {
-    this.webSocketService.listen('ngdispatcher-connection').subscribe((data) => {
-      console.log(data);
-      console.log('Unutar random kompompponente slusa i reaguje na poziv severa');
-      console.log(this.webSocketService.socket.id);
-    });
-
-    this.webSocketService.listen('DIS'+this.webSocketService.socket.id).subscribe((data) => {
-      console.log(data);
-      console.log('WOOP WOOP');
-      const faojfpoais = localStorage.getItem('currentUser');
-      debugger
-      this.webSocketService.emit('DISUSER', faojfpoais);
-    });
+    // this.webSocketService.listen('ngdispatcher-connection').subscribe((data) => {
+    //   console.log(data);
+    //   console.log('Unutar random kompompponente slusa i reaguje na poziv severa');
+    //   console.log(this.webSocketService.socket.id);
+    // });
 
     // this.webSocketService.listen('RequestTest').subscribe((data) => {
     //     console.log(data);

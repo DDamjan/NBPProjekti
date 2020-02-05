@@ -44,6 +44,8 @@ export class DriverHubComponent implements OnInit {
   }
   ngOnInit() {
     const id = localStorage.getItem('currentUser');
+    const type = localStorage.getItem('currentUserType');
+    this.webSocketService.onConnect(id,type);
     this.store.select(selectAllUsers).subscribe(user => {
       if (user.length === 0) {
         this.store.dispatch(new actions.GetUser(Number(id)));
