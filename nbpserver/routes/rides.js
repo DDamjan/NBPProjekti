@@ -15,11 +15,7 @@ router.get('/', async (req, res) => {
 router.post('/request', async (req, res) => {
   console.log(req.body);
   const payload={
-<<<<<<< HEAD
-    CID:req.body.id,
-=======
     CID:req.body.clientID,
->>>>>>> 7bbebf2ec6a4c76fa0d7534759b5ba7c5f5b50b6
     Lat:req.body.pickupLat,
     Lng:req.body.pickupLng,
     Loc:req.body.pickupLocation,

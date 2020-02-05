@@ -8,6 +8,7 @@ import { UserService } from 'src/app/service/user.service';
 import { ofAction } from 'ngrx-actions/dist';
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/User';
+import { RideService } from 'src/app/service/ride.service';
 
 @Injectable()
 export class UserEffects {
@@ -15,6 +16,7 @@ export class UserEffects {
     private store: Store<any>,
     private update$: Actions,
     private userService: UserService,
+    private rideService: RideService,
     private router: Router) { }
 
   //   @Effect()
@@ -58,6 +60,16 @@ export class UserEffects {
       } else {
         return new userActions.AuthUserFail(response);
       }
+    })
+  );
+
+  @Effect()
+  cancelRide$ = this.update$.pipe(
+    ofAction(userActions.RegisterUser),
+    switchMap(user => this.userService.registerUser(user.payload)),
+    map(response => {
+      this.router.navigate([`${response.type}/home`]);
+      return new userActions.RegisterUserSuccess(response);
     })
   );
 
