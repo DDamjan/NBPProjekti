@@ -38,8 +38,8 @@ export class RequestRideComponent implements OnInit {
   private user: User;
 
   constructor(private store: Store<any>, private rideService: RideService,
-              private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
-              private route: ActivatedRoute, private router: Router) { }
+    private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
+    private route: ActivatedRoute, private router: Router) { }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     this.store.select(selectAllUsers).subscribe(currentUser => {
@@ -74,7 +74,6 @@ export class RequestRideComponent implements OnInit {
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
       this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
-      this.isRequested = true;
       if (this.user === undefined) {
         this.store.select(selectAllUsers).subscribe(user => {
           this.user = user[0];
@@ -91,8 +90,7 @@ export class RequestRideComponent implements OnInit {
   updateAndRequest() {
     this.user.currentLat = this.pickupLat;
     this.user.currentLng = this.pickupLng;
-    this.user.currentLocation = this.pickupAddressName;
-    this.user.isActive = true;
+    // this.user.currentLocation = this.pickupAddressName;
 
     const payload = {
       clientID: this.user.id,
@@ -101,18 +99,20 @@ export class RequestRideComponent implements OnInit {
       pickupLat: this.user.currentLat,
       pickupLng: this.user.currentLng,
       pickupLocation: this.user.currentLocation,
-      destinationLat: this.destinationLat,
-      destinationLng: this.destinationLng,
-      destinationLocation: this.destinationAddressName
+      destinationLat: this.user.destinationLat,
+      destinationLng: this.user.destinationLng,
+      destinationLocation: this.user.destinationLocation
     };
 
-    this.rideService.requestRide(payload).subscribe();
-    this.isRequested = true;
-    this.user.isActive = true;
-    this.snackBar.open('Ride requested!', 'Close', {
-      duration: 3000
-    });
-    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+    if (this.isRequested !== true) {
+      this.rideService.requestRide(payload).subscribe();
+      this.isRequested = true;
+      this.user.isActive = true;
+      this.snackBar.open('Ride requested!', 'Close', {
+        duration: 3000
+      });
+      this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+    }
   }
 
   receiveRouteParams($event) {
@@ -154,7 +154,7 @@ export class RequestRideComponent implements OnInit {
     this.isRequested = false;
     this.user.isActive = false;
     this.store.dispatch(new actions.UpdateUserSuccess(this.user));
-    this.rideService.finishRide({ isAssigned: false });
+    this.rideService.finishRide({userID: this.user.id, isAssigned: false, isCanceled: true});
     this.router.navigate(['/']);
   }
 }
