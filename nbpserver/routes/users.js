@@ -21,6 +21,7 @@ router.get('/', async (req, res) => {
   // let id = req.query.id;
   // let auth = req.query.auth;
   // console.log(id);
+  // console.log(req.query);
   Neo4jDB.execReturnById(req.query,res);
 });
 

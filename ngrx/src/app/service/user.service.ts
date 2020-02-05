@@ -27,6 +27,7 @@ export class UserService {
 
     /* GET user by id. */
     getUser(payload: any): Observable<User> {
+        console.log(payload);
         const url = `${this.serverURL}?id=${payload.id}&auth=${payload.auth}`;
         return this.http.get<User>(url).pipe(
             catchError(this.handleError<User>(`getUser id=${payload.id}`))

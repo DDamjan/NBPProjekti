@@ -62,16 +62,16 @@ async function execAuth(username,password,res){
   .then(() => session.close())
 }
 
-async function execReturnById(query,res){
+async function execReturnById(req,res){
   var session=driver.session();
-  session.run(query.GET_USER_BY_ID, {ID: neo4j.int(query.id)})
+  session.run(query.GET_USER_BY_ID, {ID: neo4j.int(req.id)})
   .then(result => {
     result.records.forEach(record => {
       let l=record.get('n');
       let s=l.properties;
       s.id=l.identity.low;
       delete s.password;
-      if(query.auth){
+      if(req.auth){
         redisDB.pub.publish("UserAuth", JSON.stringify(s));//authed user
       }
       res.json(s);
