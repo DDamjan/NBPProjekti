@@ -90,7 +90,7 @@ export class RequestRideComponent implements OnInit {
   updateAndRequest() {
     this.user.currentLat = this.pickupLat;
     this.user.currentLng = this.pickupLng;
-    // this.user.currentLocation = this.pickupAddressName;
+    this.user.currentLocation = this.pickupAddressName;
 
     const payload = {
       clientID: this.user.id,

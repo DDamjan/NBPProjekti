@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { APPID, APPCODE } from '../../../constants/map-credentials';
-import { toMMSS, toKM, createRide, fareDistance } from 'src/app/func/functions';
+import { toMMSS, toKM, fareDistance } from 'src/app/func/functions';
 import { Store } from '@ngrx/store';
-import { selectAllDrivers } from 'src/app/store/reducers/driver.reducer';
 import { taxiBlack, taxiWhite } from 'src/constants/svgs';
 import { Driver } from 'src/app/models/Driver';
-import * as driverActions from '../../store/actions';
 import { MatSnackBar } from '@angular/material';
 import { RideService } from 'src/app/service/ride.service';
 import { Ride } from 'src/app/models/Ride';
+import * as mapConstants from 'src/constants/nis-loc';
 declare var H: any;
 
 @Component({
@@ -99,6 +98,11 @@ export class MapComponent implements OnInit {
 
   public clearMap(){
     this.map.removeObjects(this.map.getObjects());
+    const coord = {
+      lat: mapConstants.konjLat,
+      lng: mapConstants.konjLng
+    };
+    this.map.setCenter(coord);
   }
 
   public renderDriver(driver: any, pickupAddress: any) {
