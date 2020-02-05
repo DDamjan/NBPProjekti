@@ -42,10 +42,10 @@
         <div class="route-params">
           <p>Fare: {{fare}} dinara</p>
         </div>
-        <button mat-raised-button (click)="cancelRide()">Cancel Ride</button>
+        <button mat-raised-button (click)="cancelRide()" class="cancel-button">Cancel Ride</button>
       </div>
 
-      <map-component #mapView width="100%" height="67vh" lat="43.318058" lng="21.891996" zoom="15"
+      <map-component #mapView width="100%" height="67vh" lat="43.318266" lng="21.891813" zoom="15"
         (routeParams)="receiveRouteParams($event)"></map-component>
     </div>
   </mat-tab>

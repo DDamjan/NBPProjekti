@@ -329,17 +329,39 @@ async function execUpdateClientTrue(req,res){
   var session=driver.session()
   session.run(query.UPDATE_CLIENT_TRUE,{CID:neo4j.int(req.body.clientID),Lat:req.body.pickupLat,Lng:req.body.pickupLng,Loc:req.body.pickupLocation})
   .then(result => {
-    if(result.records.length==0){
-      let l= { clientID: Number(req.body.id),isActive: true};
-      res.json(l);
+    result.records.forEach(record => {
+      let l=record.get('c');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
       res.end();
-    }
-  })
+      });
+    })
   .catch(error => {
     errorHandler(error,res);
   })
   .then(() => session.close())
+}
 
+async function execCancelRideNC(clientID,res)
+{
+  var session=driver.session()
+  session.run(query.CANCEL_RIDE_NOT_CREATED,{CID:neo4j.int(clientID)})
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('c');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
+      res.end();
+  })
+})
+.catch(error => {
+    errorHandler(error,res);
+  })
+.then(() => session.close())
 }
 
 async function errorHandler(err,res)
@@ -366,5 +388,6 @@ module.exports={
     errorHandler: errorHandler,
     execClientTopLocations: execClientTopLocations ,
     execRideDelete: execRideDelete,
-    execUpdateClientTrue: execUpdateClientTrue
+    execUpdateClientTrue: execUpdateClientTrue,
+    execCancelRideNC: execCancelRideNC
 }

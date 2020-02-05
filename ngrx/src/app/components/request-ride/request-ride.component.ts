@@ -38,8 +38,8 @@ export class RequestRideComponent implements OnInit {
   private user: User;
 
   constructor(private store: Store<any>, private rideService: RideService,
-              private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
-              private route: ActivatedRoute, private router: Router) { }
+    private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
+    private route: ActivatedRoute, private router: Router) { }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
@@ -50,14 +50,8 @@ export class RequestRideComponent implements OnInit {
       } else {
         this.user = currentUser[0];
         this.isRequested = this.user.isActive;
-
-        if (this.destinationLat === 0 && this.destinationLng === 0) {
-          this.destinationLat = Number(this.route.snapshot.paramMap.get('destinationLat'));
-          this.destinationLng = Number(this.route.snapshot.paramMap.get('destinationLng'));
-          this.destinationAddressName = this.route.snapshot.paramMap.get('destinationLocation');
-          if (this.destinationAddressName !== null) {
-            this.mapView.renderRequest(this.user.currentLocation, this.destinationAddressName);
-          }
+        if (this.isRequested) {
+          this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation);
         }
       }
     });
@@ -82,7 +76,6 @@ export class RequestRideComponent implements OnInit {
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
       this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
-      this.isRequested = true;
       if (this.user === undefined) {
         this.store.select(selectAllUsers).subscribe(user => {
           this.user = user[0];
@@ -100,7 +93,6 @@ export class RequestRideComponent implements OnInit {
     this.user.currentLat = this.pickupLat;
     this.user.currentLng = this.pickupLng;
     this.user.currentLocation = this.pickupAddressName;
-    this.user.isActive = true;
 
     const payload = {
       clientID: this.user.id,
@@ -114,13 +106,15 @@ export class RequestRideComponent implements OnInit {
       destinationLocation: this.destinationAddressName
     };
 
-    this.rideService.requestRide(payload).subscribe();
-    this.isRequested = true;
-    this.snackBar.open('Ride requested!', 'Close', {
-      duration: 3000
-    });
-    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
-    this.router.navigate([`client/home/${this.destinationLat}/${this.destinationLng}/${this.destinationAddressName}`]);
+    if (this.isRequested !== true) {
+      this.isRequested = true;
+      this.user.isActive = true;
+      this.snackBar.open('Ride requested!', 'Close', {
+        duration: 3000
+      });
+      this.store.dispatch(new actions.RequestRide(payload));
+      // window.location.reload();
+    }
   }
 
   receiveRouteParams($event) {
@@ -136,17 +130,8 @@ export class RequestRideComponent implements OnInit {
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
 
-      this.getURLParams();
-      // if (this.destinationLat !== 0 && this.destinationLng !== 0 && this.destinationAddressName !== null) {
       this.updateAndRequest();
-      // }
     }
-  }
-
-  getURLParams() {
-    this.destinationLat = Number(this.route.snapshot.paramMap.get('destinationLat'));
-    this.destinationLng = Number(this.route.snapshot.paramMap.get('destinationLng'));
-    this.destinationAddressName = this.route.snapshot.paramMap.get('destinationLocation');
   }
 
   autoCompleteListener(event) {
@@ -168,11 +153,12 @@ export class RequestRideComponent implements OnInit {
   }
 
   cancelRide() {
-    this.isRequested = false;
-    this.user.isActive = false;
-    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
-    this.rideService.finishRide({ isAssigned: false });
-    this.router.navigate(['/']);
+    this.mapView.clearMap();
+    this.store.dispatch(new actions.CancelRide({clientID: this.user.id, isAssigned: false, isCanceled: true}));
+
+    this.snackBar.open('Ride canceled!', 'Close', {
+      duration: 3000
+    });
   }
 }
 

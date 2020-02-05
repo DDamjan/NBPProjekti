@@ -17,8 +17,10 @@ const httpOptions = {
 export class UserService {
 
     // private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
+    // private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
     // private serverURL = conn.LOCAL_SERVER + 'users/';
     private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
+    private RserverURL = conn.PUBLIC_SERVER_PEDJA + 'rides/';
 
     constructor(
         private http: HttpClient) { }
@@ -62,6 +64,13 @@ export class UserService {
         const url = `${this.serverURL}checkuser`;
         return this.http.post<boolean>(url, data, httpOptions).pipe(
             catchError(this.handleError<boolean>('authUser'))
+        );
+    }
+
+    requestRide(payload: any): Observable<User> {
+        const url = `${this.RserverURL}request`;
+        return this.http.post<User>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<User>('requesttest'))
         );
     }
 

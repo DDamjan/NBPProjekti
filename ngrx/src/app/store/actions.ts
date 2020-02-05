@@ -16,7 +16,11 @@ import {
     REGISTER_USER,
     REGISTER_USER_SUCCESS,
     UPDATE_USER,
-    UPDATE_USER_SUCCESS
+    UPDATE_USER_SUCCESS,
+    CANCEL_RIDE,
+    CANCEL_RIDE_SUCCESS,
+    REQUEST_RIDE,
+    REQUEST_RIDE_SUCCESS
 } from 'src/constants/reducers-constants';
 import { Driver } from '../models/driver';
 import { User } from '../models/User';
@@ -103,4 +107,24 @@ export class UpdateUser implements Action {
 export class UpdateUserSuccess implements Action {
     readonly type = UPDATE_USER_SUCCESS;
     constructor(public payload: User) { }
+}
+
+export class CancelRide implements Action {
+    readonly type = CANCEL_RIDE;
+    constructor(public payload: any) { }
+}
+
+export class CancelRideSuccess implements Action {
+    readonly type = CANCEL_RIDE_SUCCESS;
+    constructor(public payload: any) { }
+}
+
+export class RequestRide implements Action {
+    readonly type = REQUEST_RIDE;
+    constructor(public payload: any) { }
+}
+
+export class RequestRideSuccess implements Action {
+    readonly type = REQUEST_RIDE_SUCCESS;
+    constructor(public payload: any) { }
 }

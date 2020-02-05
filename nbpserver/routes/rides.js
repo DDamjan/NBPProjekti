@@ -14,16 +14,16 @@ router.get('/', async (req, res) => {
 
 router.post('/request', async (req, res) => {
   console.log(req.body);
-  const payload={
-    CID:neo4j.int(req.body.id),
-    Lat:req.body.pickupLat,
-    Lng:req.body.pickupLng,
-    Loc:req.body.pickupLocation,
-    DLat:req.body.destinationLat,
-    DLng:req.body.destinationLng,
-    DLoc:req.body.destinationLocation
+  const payload = {
+    CID: req.body.clientID,
+    Lat: req.body.pickupLat,
+    Lng: req.body.pickupLng,
+    Loc: req.body.pickupLocation,
+    DLat: req.body.destinationLat,
+    DLng: req.body.destinationLng,
+    DLoc: req.body.destinationLocation
   }
-  Neo4jDB.execUpdateClientTrue(payload,res);
+  Neo4jDB.execUpdateClientTrue(payload, res);
   redisDB.makeRequest(req);
 });
 
@@ -75,6 +75,8 @@ router.post('/finish', async (req, res) => {
     } else {
       Neo4jDB.execCancelRide(req, res, payload)
     }
+  } else {
+    Neo4jDB.execCancelRideNC(req.body.clientID, res);
   }
   redisDB.pub.publish("RideStatus", JSON.stringify(req));
 })

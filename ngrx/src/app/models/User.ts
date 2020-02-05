@@ -20,5 +20,5 @@ export interface User {
     // Client
     destinationLat?: number;
     destinationLng?: number;
-    destinationLocation?: number;
+    destinationLocation?: string;
 }

@@ -67,17 +67,10 @@ export class RideService {
         );
     }
 
-    requestRide(payload: any): Observable<Ride> {
-        const url = `${this.serverURL}request`;
-        return this.http.post<Ride>(url, payload, httpOptions).pipe(
-            catchError(this.handleError<Ride>('requesttest'))
-        );
-    }
-
-    finishRide(payload: any): Observable<Ride> {
+    finishRide(payload: any): Observable<any> {
         const url = `${this.serverURL}finish`;
-        return this.http.post<Ride>(url, payload, httpOptions).pipe(
-            catchError(this.handleError<Ride>('requesttest'))
+        return this.http.post<any>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<any>('requesttest'))
         );
     }
 
