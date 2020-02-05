@@ -5,7 +5,7 @@
         <div class="container">
         </div>
       </div>
-      <div class="container" *ngIf="!isDriving">
+      <div class="container" *ngIf="isDriving==true || request==true">
         <div class="route-params">
           <p>Distance to pick up: {{distancePickup}}</p>
         </div>
@@ -22,7 +22,7 @@
           <p>Fare: {{fare}} rsd</p>
         </div>
       </div>
-      <div class="request-container" *ngIf="request">
+      <!-- <div class="request-container" *ngIf="request">
         <div class="route-params">
           <p>Distance to pick up: {{distancePickup}}</p>
         </div>
@@ -38,7 +38,7 @@
         <div class="route-params">
           <p>Fare: {{fare}} rsd</p>
         </div>
-      </div>
+      </div> -->
       <div class="buttons-container">
         <button mat-raised-button (click)="acceptRide()" *ngIf="request">Accept</button>
         <button mat-raised-button (click)="rejectRide()" *ngIf="request">Reject</button>

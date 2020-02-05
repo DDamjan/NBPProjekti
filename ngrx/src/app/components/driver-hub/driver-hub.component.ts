@@ -27,7 +27,7 @@ export class DriverHubComponent implements OnInit {
   private ETADestination: string;
   private fare: number;
   private options: string[] = [];
-  public isDriving = true;
+  public isDriving: boolean;
   private driver: User;
   private ride: Ride;
   private buttonEndDisabled: boolean;
@@ -35,6 +35,7 @@ export class DriverHubComponent implements OnInit {
   private buttonArriveDisabled: boolean;
   private isActive: boolean;
   private request: boolean;
+  private requestedRide: any;
 
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService,
@@ -48,20 +49,17 @@ export class DriverHubComponent implements OnInit {
     this.webSocketService.onConnect(id,type);
     this.store.select(selectAllUsers).subscribe(user => {
       if (user.length === 0) {
-        this.store.dispatch(new actions.GetUser(Number(id)));
+        this.store.dispatch(new actions.GetUser(Number({id, auth: true})));
       } else {
         this.driver = user[0];
       }
     });
 
     this.webSocketService.listen('Driver:' + id).subscribe((data: any) => {
-      if (this.isActive === false) {
-        this.ride = data;
-        this.request = true;
-
-        
+      console.log(data);
+      if (data.isRequest === true) {
+        this.onRequest(data);
       }
-      
     });
   }
 
@@ -144,6 +142,22 @@ export class DriverHubComponent implements OnInit {
     this.snackBar.open(`Current ride has been canceled`, 'Close', {
       duration: 3000
     });
+  }
+
+  onRequest(req) {
+    this.requestedRide = {
+      firstName: req.firstName,
+      lastName: req.lastName,
+      pickupLat: req.pickupLat,
+      pickupLng: req.pickupLng,
+      pickupLocation: req.pickupLocation,
+      destinationLat: req.destinationLat,
+      destinationLng: req.destinationLng,
+      destinationLocation: req.destinationLocation
+    };
+    this.request = true;
+    console.log(this.requestedRide);
+    this.mapView.renderRequest(this.requestedRide.currentLocation, this.requestedRide.destinationLocation);
   }
 
 }

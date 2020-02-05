@@ -43,10 +43,10 @@ export class RequestRideComponent implements OnInit {
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
-    this.webSocketService.onConnect(id,type);
+    this.webSocketService.onConnect(id, type);
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
-        this.store.dispatch(new actions.GetUser(id));
+        this.store.dispatch(new actions.GetUser({id, auth: true}));
       } else {
         this.user = currentUser[0];
         this.isRequested = this.user.isActive;
@@ -103,7 +103,8 @@ export class RequestRideComponent implements OnInit {
       pickupLocation: this.user.currentLocation,
       destinationLat: this.destinationLat,
       destinationLng: this.destinationLng,
-      destinationLocation: this.destinationAddressName
+      destinationLocation: this.destinationAddressName,
+      isRequest: true
     };
 
     if (this.isRequested !== true) {
