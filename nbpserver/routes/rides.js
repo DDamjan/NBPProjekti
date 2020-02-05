@@ -76,6 +76,7 @@ router.post('/finish', async (req, res) => {
       Neo4jDB.execCancelRide(req, res, payload)
     }
   }
+  else Neo4jDB.execCancelRideNC(req.body.clientID,res);
   redisDB.pub.publish("RideStatus", JSON.stringify(req));
 })
 
