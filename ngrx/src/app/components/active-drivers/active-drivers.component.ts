@@ -28,7 +28,7 @@ export class ActiveDriversComponent implements OnInit {
     this.store$.select(selectAllUsers).subscribe(user => {
       if (this.again === false) {
         if (user.length === 0) {
-          this.store$.dispatch(new actions.GetUser(Number(id)));
+          this.store$.dispatch(new actions.GetUser(Number({id, auth: true})));
           this.populateDrivers();
           this.again = true;
         } else {

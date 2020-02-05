@@ -16,20 +16,20 @@ const httpOptions = {
 @Injectable()
 export class UserService {
 
-    // private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
-    // private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
+    private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
+    private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
     // private serverURL = conn.LOCAL_SERVER + 'users/';
-    private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
-    private RserverURL = conn.PUBLIC_SERVER_PEDJA + 'rides/';
+    // private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
+    // private RserverURL = conn.PUBLIC_SERVER_PEDJA + 'rides/';
 
     constructor(
         private http: HttpClient) { }
 
     /* GET user by id. */
-    getUser(id: number): Observable<User> {
-        const url = `${this.serverURL}?id=${id}`;
+    getUser(payload: any): Observable<User> {
+        const url = `${this.serverURL}?id=${payload.id}&auth=${payload.auth}`;
         return this.http.get<User>(url).pipe(
-            catchError(this.handleError<User>(`getUser id=${id}`))
+            catchError(this.handleError<User>(`getUser id=${payload.id}`))
         );
     }
 
