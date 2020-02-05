@@ -66,7 +66,7 @@ export class DeleteDriverSuccess implements Action {
 
 export class GetUser implements Action {
     readonly type = GET_USER;
-    constructor(public payload: number) { }
+    constructor(public payload: any) { }
 }
 
 export class GetUserSuccess implements Action {
