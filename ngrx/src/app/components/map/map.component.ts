@@ -97,6 +97,10 @@ export class MapComponent implements OnInit {
     );
   }
 
+  public clearMap(){
+    this.map.removeObjects(this.map.getObjects());
+  }
+
   public renderDriver(driver: any, pickupAddress: any) {
     const geocoder = this.platform.getGeocodingService();
     const geocodingParameters = {

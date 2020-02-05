@@ -99,19 +99,19 @@ export class RequestRideComponent implements OnInit {
       pickupLat: this.user.currentLat,
       pickupLng: this.user.currentLng,
       pickupLocation: this.user.currentLocation,
-      destinationLat: this.user.destinationLat,
-      destinationLng: this.user.destinationLng,
-      destinationLocation: this.user.destinationLocation
+      destinationLat: this.destinationLat,
+      destinationLng: this.destinationLng,
+      destinationLocation: this.destinationAddressName
     };
 
     if (this.isRequested !== true) {
-      this.rideService.requestRide(payload).subscribe();
       this.isRequested = true;
       this.user.isActive = true;
       this.snackBar.open('Ride requested!', 'Close', {
         duration: 3000
       });
-      this.store.dispatch(new actions.UpdateUserSuccess(this.user));
+      this.store.dispatch(new actions.RequestRide(payload));
+      // window.location.reload();
     }
   }
 
@@ -151,11 +151,12 @@ export class RequestRideComponent implements OnInit {
   }
 
   cancelRide() {
-    this.isRequested = false;
-    this.user.isActive = false;
-    this.store.dispatch(new actions.UpdateUserSuccess(this.user));
-    this.rideService.finishRide({userID: this.user.id, isAssigned: false, isCanceled: true});
-    this.router.navigate(['/']);
+    this.mapView.clearMap();
+    this.store.dispatch(new actions.CancelRide({clientID: this.user.id, isAssigned: false, isCanceled: true}));
+
+    this.snackBar.open('Ride canceled!', 'Close', {
+      duration: 3000
+    });
   }
 }
 

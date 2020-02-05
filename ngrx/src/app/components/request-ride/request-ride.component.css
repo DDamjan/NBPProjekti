@@ -24,3 +24,7 @@ tab-container{
 a:hover {
     cursor: pointer;
 }
+
+.cancel-button{
+    margin-left: 2%;
+}
