@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { throwToolbarMixedModesError } from '@angular/material';
 import { Store } from '@ngrx/store';
+import { WebSocketService } from '../../service/web-socket.service';
 import * as actions from '../../store/actions';
 
 @Component({
@@ -19,7 +20,7 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private store: Store<any>) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private store: Store<any>, private webSocketService: WebSocketService) {
     const currentType = localStorage.getItem('currentUserType');
     if (currentType === 'operator') {
       this.type = true;
@@ -32,6 +33,7 @@ export class MainNavComponent {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('currentUserType');
     this.router.navigate(['/']);
+    this.webSocketService.emit('disconnecting','user logout');
   }
 
 }

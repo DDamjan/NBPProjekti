@@ -13,27 +13,8 @@ export class AppComponent implements OnInit {
   title = 'NGDispatcher';
   loggedIn: boolean;
 
-  constructor(private store: Store<any>, private webSocketService: WebSocketService) { }
-
+  constructor(private store: Store<any>) { }
   public ngOnInit() {
-    // this.webSocketService.listen('ngdispatcher-connection').subscribe((data) => {
-    //   console.log(data);
-    //   console.log('Unutar random kompompponente slusa i reaguje na poziv severa');
-    //   console.log(this.webSocketService.socket.id);
-    // });
-
-    // this.webSocketService.listen('RequestTest').subscribe((data) => {
-    //     console.log(data);
-    //     //this.mapView.renderDriver(data, this.pickupAddressName);
-    //   });
-
-    this.webSocketService.listen('User:0'/*+ USER.ID*/).subscribe((data) => {
-      // Emit za Usere
-      console.log(data);
-    });
-
-    // this.store.dispatch(new actions.GetDrivers());
-    // this.store.select()
   }
 
   public ngDoCheck(){

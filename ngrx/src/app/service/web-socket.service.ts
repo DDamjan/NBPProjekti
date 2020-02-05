@@ -16,12 +16,8 @@ import * as conn from '../../constants/server-urls';
     }
 
     onConnect(id, type){
-        // let type = localStorage.getItem('currentUserType');
-        // let id = localStorage.getItem('currentUser');
-        //if (id !== null){
-            this.socket = io(this.uri + `/?id=${id}&type=${type}`);
-            console.log('Connecting to server...');
-        //}
+        this.socket = io(this.uri + `/?id=${id}&type=${type}`);
+        console.log('Connecting to server...');
     }
 
     listen(eventName: string) {
