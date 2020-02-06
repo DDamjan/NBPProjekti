@@ -41,13 +41,15 @@ subAprovedRide.on("message", function (channel, body) {
     let clientID = body.clientID;
     let driverID = body.driverID;
     let operatorID = body.operatorID;
-    client.hmset("driver", driverID, true);
 
     client.hget("requests", clientID, (err, res) => {
         res = JSON.parse(res);
-        res.driverID = driverID;
-        webSocket.io.emit('Client:'+clientID, res);
-        webSocket.io.emit('Driver:'+driverID, res);
+        if(!res.isCanceled){
+            res.driverID = driverID;
+            webSocket.io.emit('Client:'+clientID, res);
+            webSocket.io.emit('Driver:'+driverID, res);
+            client.hmset("driver", driverID, true);
+        }
     });
 
     client.lrange("accepted:"+clientID, 0, -1, (err, driverList)=>{
@@ -142,7 +144,7 @@ function makeRequest(req){
     geo.addLocation("src:"+ req.body.clientID, {latitude: req.body.currentLat, longitude: req.body.currentLng});
 
     pub.publish("ClientRequestToDrivers", req.body.clientID); //salje svim driverima request za voznju
-    setTimeout(() => { sendOperatorRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
+    setTimeout(() => { newRequest(req.body.clientID);},10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
 }
 
 function requestAccepted(req){
@@ -159,9 +161,7 @@ function requestDenied(req){
     client.lpush("denied:"+req.body.clientID, JSON.stringify(req.body.driverID));
 }
 
-function sendOperatorRequest(clientID){
-    let shouldSendRequest = false;
-    console.log("slanje operateru");
+function newRequest(clientID){
     client.llen("requestQ",(err,numRequests)=>{
         client.llen("notActiveOperators",(err,numOperators)=>{        
             if(numOperators == 0){
@@ -170,7 +170,7 @@ function sendOperatorRequest(clientID){
             }else{
                 if(numRequests == 0){
                     //radi se slanje requesta operateru
-                    shouldSendRequest = true;
+                    NextRequestToNextOperator(clientID);
                 }else{
                    //neka zesca greska pune se liste ali se ne prazne
                    console.log("greska u sendOperatorRequest");
@@ -178,10 +178,6 @@ function sendOperatorRequest(clientID){
             }
         });
     });
-    if(shouldSendRequest){
-        console.log("slanje operateru2");
-        NextRequestToNextOperator(clientID);
-    }
 }
 
 
