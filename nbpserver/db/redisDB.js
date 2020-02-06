@@ -73,21 +73,27 @@ subAprovedRide.on("message", function (channel, body) {
 var subRideStatus = redis.createClient();
 subRideStatus.subscribe("RideStatus");
 subRideStatus.on("message", function (channel, body) {
+    if(body.isAssigned)
     client.hmset("driver", body.driverID, false); //vozac je slobodan za sledecu voznju
     client.hmset("client", body.clientID, false); //klijent je zavrsio svoju voznju
 
-    let ride;
-    ride.ID = body.ID;
-    ride.isCanceled = body.isCanceled;
-    ride.driverID = body.driverID;
-    ride.clientID = body.clientID;
     client.hgetall("operator", function (err, operatorsActivty) {
         Object.keys(operatorsActivty).forEach(key => {
-            webSocket.io.emit('Operator:'+key, JSON.parse(ride)); //Emit svim operaterima
+            webSocket.io.emit('Operator:'+key, JSON.parse(body)); //Emit svim operaterima
         });
     });
-    webSocket.io.emit('Client:'+body.clientID, ride); //Emit clientu kome se upravo zavrsila voznja
-    webSocket.io.emit('Driver:'+body.driverID, ride); //Emit vozacu kome je upravo prekinuta voznja
+
+    client.hget("requests", body.clientID, (err, res) => {
+        res = JSON.parse(res);
+        res.isCanceled = body.isCanceled;
+        res.isAssigned = body.isAssigned;
+        client.hmset("requests", body.clientID, res);
+    });
+
+    if(!body.isCanceled)
+        webSocket.io.emit('Client:'+body.clientID, ride); //Emit clientu kome se upravo zavrsila voznja
+    if(body.isAssigned)
+        webSocket.io.emit('Driver:'+body.driverID, ride); //Emit vozacu kome je upravo prekinuta voznja
 });
 
 var subUserAuth = redis.createClient();
@@ -133,6 +139,7 @@ function RequestTest(req){
 function makeRequest(req){
     //console.log(req.body);
     client.hmset("client", req.body.clientID, true);
+    req.body = {...req.body, isAssigned:false, isCanceled:false};
     client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
     // webSocket.io.emit('User:20', {
     //     ID: 21,
