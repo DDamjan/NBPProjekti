@@ -75,6 +75,13 @@ export class UserService {
         );
     }
 
+    acceptRide(payload: any): Observable<any> {
+        const url = `${this.RserverURL}accept`;
+        return this.http.post<User>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<User>('requesttest'))
+        );
+    }
+
     // /* UPDATE: update driver on the server */
     // updateDriver(driver: User): Observable<Driver> {
     //     const url = `${this.serverURL}update`;

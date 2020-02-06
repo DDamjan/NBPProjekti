@@ -229,6 +229,7 @@ function NextRequestToNextOperator(clientID){
                         client.rpop("notActiveOperators", (err, operator)=>{
                             client.hmset("operator", operator, true);
                             webSocket.io.emit('Operator:'+operator, request);
+                            console.log(request);
                         });
                         console.error("Operator resolve request");
                     });

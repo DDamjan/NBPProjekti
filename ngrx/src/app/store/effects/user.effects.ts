@@ -73,6 +73,16 @@ export class UserEffects {
   );
 
   @Effect()
+  acceptRide$ = this.update$.pipe(
+    ofAction(actions.RequestRide),
+    switchMap(ride => this.userService.requestRide(ride.payload)),
+    map(response => {
+      return new actions.UpdateUserSuccess(response);
+    })
+  );
+
+
+  @Effect()
   cancelRide$ = this.update$.pipe(
     ofAction(actions.CancelRide),
     switchMap(ride => this.rideService.finishRide(ride.payload)),

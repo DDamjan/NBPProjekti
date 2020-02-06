@@ -46,7 +46,7 @@ export class DriverHubComponent implements OnInit {
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
-    this.webSocketService.onConnect(id,type);
+    this.webSocketService.onConnect(id, type);
     this.store.select(selectAllUsers).subscribe(user => {
       if (user.length === 0) {
         this.store.dispatch(new actions.GetUser({id, auth: true}));
@@ -146,6 +146,7 @@ export class DriverHubComponent implements OnInit {
 
   onRequest(req) {
     this.requestedRide = {
+      clientID: req.clientID,
       firstName: req.firstName,
       lastName: req.lastName,
       pickupLat: req.pickupLat,
@@ -157,7 +158,21 @@ export class DriverHubComponent implements OnInit {
     };
     this.request = true;
     console.log(this.requestedRide);
-    this.mapView.renderRequest(this.requestedRide.currentLocation, this.requestedRide.destinationLocation);
+    this.mapView.renderRequest(this.requestedRide.pickupLocation, this.requestedRide.destinationLocation, true, this.driver);
+  }
+
+  acceptRide() {
+    const payload = {
+      clientID: this.requestedRide.clientID,
+      driverID: this.driver.id,
+      currentLat: this.driver.currentLat,
+      currentLng: this.driver.currentLng,
+      currentLocation: this.driver.currentLocation
+    };
+    this.store.dispatch(new actions.AcceptRide(payload));
+
+    this.request = false;
+    this.mapView.clearMap();
   }
 
 }

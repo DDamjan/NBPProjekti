@@ -51,7 +51,7 @@ export class RequestRideComponent implements OnInit {
         this.user = currentUser[0];
         this.isRequested = this.user.isActive;
         if (this.isRequested) {
-          this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation);
+          this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
         }
       }
     });
@@ -75,7 +75,7 @@ export class RequestRideComponent implements OnInit {
     this.pickupAddressName = event.target[0].value;
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
-      this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
+      this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName, false, null);
       if (this.user === undefined) {
         this.store.select(selectAllUsers).subscribe(user => {
           this.user = user[0];

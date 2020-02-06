@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material';
 import { RideService } from 'src/app/service/ride.service';
 import { Ride } from 'src/app/models/Ride';
 import * as mapConstants from 'src/constants/nis-loc';
+import { User } from 'src/app/models/User';
 declare var H: any;
 
 @Component({
@@ -82,7 +83,7 @@ export class MapComponent implements OnInit {
     }, false);
   }
 
-  public renderRequest(pickupAddress: string, destinationAddress: string) {
+  public renderRequest(pickupAddress: string, destinationAddress: string, isDriver: boolean, driver: User) {
     const geocoder = this.platform.getGeocodingService();
     const geocodingParameters = {
       searchText: pickupAddress,
@@ -94,6 +95,10 @@ export class MapComponent implements OnInit {
         this.onSuccess(result, pickupAddress, destinationAddress);
       }, (error) => { console.log(error); }
     );
+
+    if (isDriver){
+      this.renderDriver(driver, pickupAddress);
+    }
   }
 
   public clearMap(){
