@@ -51,7 +51,6 @@ async function execAuth(username,password,res){
       let s=l.properties;
       s.id=l.identity.low;
       delete s.password;
-      redisDB.pub.publish("UserAuth", JSON.stringify(s));//authed user
       res.json(s);
       res.end();
     })}

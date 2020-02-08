@@ -70,19 +70,32 @@ subAprovedRide.on("message", function (channel, body) {
     newOperator(operatorID);
 });
 
-var subRideStatus = redis.createClient();
-subRideStatus.subscribe("RideStatus");
-subRideStatus.on("message", function (channel, body) {
+var subFinishedRide = redis.createClient();
+subFinishedRide.subscribe("FinishedRide");
+subFinishedRide.on("message", function (channel, body) {
     const newBody = JSON.parse(body);
-    if (newBody.isAssigned)
-        client.hmset("driver", newBody.driverID, false); //vozac je slobodan za sledecu voznju
-    client.hmset("client", newBody.clientID, false); //klijent je zavrsio svoju voznju
 
-    client.hgetall("operator", function (err, operatorsActivty) {
-        Object.keys(operatorsActivty).forEach(key => {
-            webSocket.io.emit('Operator:' + key, JSON.parse(body)); //Emit svim operaterima
-        });
+    client.hmset("client", newBody.clientID, false); //klijent je zavrsio svoju voznju
+    client.hmset("driver", newBody.driverID, false); //vozac je slobodan za sledecu voznju
+
+    client.hlen("operator", (err, numOperators) => {
+        console.log("operator: "+ numOperators);
+        if (numOperators != 0) {
+            client.hgetall("operator", function (err, operatorsActivty) {
+                Object.keys(operatorsActivty).forEach(key => {
+                    webSocket.io.emit('Operator:' + key, JSON.parse(newBody)); //Emit svim operaterima
+                });
+            });
+        }
     });
+    webSocket.io.emit('Client:' + newBody.clientID, newBody); //Emit clientu kome se upravo zavrsila voznja
+});
+
+var subCancelRide = redis.createClient();
+subCancelRide.subscribe("CancelRide");
+subCancelRide.on("message", function (channel, body) {
+    const newBody = JSON.parse(body);
+    client.hmset("client", newBody.clientID, false); //klijent je prekinuo svoju voznju
 
     client.hget("requests", newBody.clientID, (err, res) => {
         res = JSON.parse(res);
@@ -90,13 +103,15 @@ subRideStatus.on("message", function (channel, body) {
         res.isAssigned = newBody.isAssigned;
         client.hmset("requests", newBody.clientID, JSON.stringify(res));
     });
+});
 
-    if (!newBody.isCanceled) {
-        webSocket.io.emit('Client:' + newBody.clientID, newBody); //Emit clientu kome se upravo zavrsila voznja
-    }else{
-        if (newBody.isAssigned)
-        webSocket.io.emit('Driver:' + newBody.driverID, newBody); //Emit vozacu kome je upravo prekinuta voznja
-    }
+var subCancelAssignedRide = redis.createClient();
+subCancelAssignedRide.subscribe("CancelAssignedRide");
+subCancelAssignedRide.on("message", function (channel, body) {
+    const newBody = JSON.parse(body);
+    client.hmset("client", newBody.clientID, false); //klijent je prekinuo svoju voznju
+    client.hmset("driver", newBody.driverID, false); //vozac je slobodan za sledecu voznju
+    webSocket.io.emit('Driver:' + newBody.driverID, newBody); //Emit vozacu kome je upravo prekinuta voznja
 });
 
 var subUserAuth = redis.createClient();
@@ -177,6 +192,7 @@ function requestDenied(req) {
 function newRequest(clientID) {
     client.llen("requestQ", (err, numRequests) => {
         client.llen("notActiveOperators", (err, numOperators) => {
+            console.log("notActiveOperators: "+ numOperators);
             if (numOperators == 0) {
                 //NEMA OPERATORA ZA OVAJ REQUEST
                 client.lpush("requestQ", clientID);
@@ -219,32 +235,37 @@ function newOperator(operatorID) {
 
 function NextRequestToNextOperator(clientID) {
     client.hget("requests", clientID, function (err, request) {
-        client.lrange("accepted:" + clientID, 0, -1, (err, driverList) => {
+        if(!request.isCanceled){
+            client.lrange("accepted:" + clientID, 0, -1, (err, driverList) => {
 
-            request = JSON.parse(request);
-            driverList.forEach((element, i) => {
-                driverList[i] = JSON.parse(element);
-            });
-            request = { ...request, "drivers": driverList };
-            //request.drivers = driverList;
+                request = JSON.parse(request);
+                driverList.forEach((element, i) => {
+                    driverList[i] = JSON.parse(element);
+                });
+                request = { ...request, "drivers": driverList };
 
-            geo.location("src:" + clientID, (err, location) => {
-                if (err) console.error(err);
-                else {
-                    geo.removeLocation("src:" + clientID);
-                    //geo.removeLocation("dest:"+ clientID);
-                    geo.nearby({ latitude: location.latitude, longitude: location.longitude }, 10000, options, (err, locations) => {
-                        request.closestDriver = locations[0];
-                        client.rpop("notActiveOperators", (err, operator) => {
-                            client.hmset("operator", operator, true);
-                            webSocket.io.emit('Operator:' + operator, request);
-                            console.log(request);
+                geo.location("src:" + clientID, (err, location) => {
+                    if (err) console.error(err);
+                    else {
+                        geo.removeLocation("src:" + clientID);
+                        //geo.removeLocation("dest:"+ clientID);
+                        geo.nearby({ latitude: location.latitude, longitude: location.longitude }, 10000, options, (err, locations) => {
+                            request.closestDriver = locations[0];
+                            client.rpop("notActiveOperators", (err, operator) => {
+                                client.hmset("operator", operator, true);
+                                webSocket.io.emit('Operator:' + operator, request);
+                                console.log(request);
+                            });
+                            console.error("Operator resolve request");
                         });
-                        console.error("Operator resolve request");
-                    });
-                }
+                    }
+                });
             });
-        });
+        }else{
+            client.del("accepted:" + clientID);
+            client.del("denied:" + clientID);
+            client.hdel("requests", clientID);
+        }
     });
 }
 

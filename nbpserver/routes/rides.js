@@ -71,14 +71,15 @@ router.post('/finish', async (req, res) => {
       Canc: req.body.isCanceled
     }
     if (req.body.isCanceled == false) {
-      Neo4jDB.execFinishRide(req, res, payload)
+      Neo4jDB.execFinishRide(req, res, payload);
+      redisDB.pub.publish("FinishedRide", JSON.stringify(req.body));
     } else {
-      Neo4jDB.execCancelRide(req, res, payload)
+      Neo4jDB.execCancelRide(req, res, payload);
+      redisDB.pub.publish("CancelRide", JSON.stringify(req.body));
     }
   } else {
     Neo4jDB.execCancelRideNC(req.body.clientID, res);
   }
-  redisDB.pub.publish("RideStatus", JSON.stringify(req.body));
 })
 
 router.get('/currentid', async (req, res) => {
