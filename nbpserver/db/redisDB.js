@@ -76,7 +76,7 @@ subRideStatus.on("message", function (channel, body) {
     const newBody = JSON.parse(body);
     if (newBody.isAssigned)
         client.hmset("driver", newBody.driverID, false); //vozac je slobodan za sledecu voznju
-    client.hmset("client", newBody.clientID, false); //klijent je zavrsio svoju voznju
+    client.hmset("client", newBody.client.clientID, false); //klijent je zavrsio svoju voznju
 
     client.hgetall("operator", function (err, operatorsActivty) {
         Object.keys(operatorsActivty).forEach(key => {
@@ -84,10 +84,10 @@ subRideStatus.on("message", function (channel, body) {
         });
     });
 
-    client.hget("requests", newBody.clientID, (err, res) => {
+    client.hget("requests", newBody.client.clientID, (err, res) => {
         res = JSON.parse(res);
-        res.isCanceled = newBody.isCanceled;
-        res.isAssigned = newBody.isAssigned;
+        res.client.isCanceled = newBody.client.isCanceled;
+        res.client.isAssigned = newBody.client.isAssigned;
         client.hmset("requests", newBody.clientID, JSON.stringify(res));
     });
 
@@ -140,12 +140,12 @@ function RequestTest(req) {
 }
 
 function makeRequest(req) {
-    //console.log(req.body);
-    client.hmset("client", req.body.clientID, true);
-    req.body = { ...req.body, isAssigned: false, isCanceled: false };
+    // console.log(req.body);
+    client.hmset("client", req.body.client.clientID, true);
+    req.body.client = { ...req.body.client, isAssigned: false, isCanceled: false };
     // console.log("PEKIII");
     // console.log(req.body);
-    client.hmset("requests", req.body.clientID, JSON.stringify(req.body));
+    client.hmset("requests", req.body.client.clientID, JSON.stringify(req.body));
     // webSocket.io.emit('User:20', {
     //     ID: 21,
     //     currentLat: 40.20543,
@@ -153,10 +153,10 @@ function makeRequest(req) {
     // });
     //client.geopos("requests:"+req.body.clientID, req.body.destinationLng, req.body.destinationLat, "dest", req.body.currentLat, req.body.currentLng, "src",  redis.print);
     //geo.addLocation("dest:"+ req.body.clientID, {latitude: req.body.destinationLat, longitude: req.body.destinationLng});
-    geo.addLocation("src:" + req.body.clientID, { latitude: req.body.pickupLat, longitude: req.body.pickupLng });
+    geo.addLocation("src:" + req.body.client.clientID, { latitude: req.body.client.pickupLat, longitude: req.body.client.pickupLng });
 
-    pub.publish("ClientRequestToDrivers", req.body.clientID); //salje svim driverima request za voznju
-    setTimeout(() => { newRequest(req.body.clientID); }, 10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
+    pub.publish("ClientRequestToDrivers", req.body.client.clientID); //salje svim driverima request za voznju
+    setTimeout(() => { newRequest(req.body.client.clientID); }, 10000); //posle 10 sec salje operateru da prihvati jednog od vozaca
 }
 
 function requestAccepted(req) {

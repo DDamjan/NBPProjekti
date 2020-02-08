@@ -95,23 +95,26 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
     }
 
   }
-  
+
   updateAndRequest() {
     this.user.currentLat = this.pickupLat;
     this.user.currentLng = this.pickupLng;
     this.user.currentLocation = this.pickupAddressName;
 
     const payload = {
-      clientID: this.user.id,
-      firstName: this.user.firstName,
-      lastName: this.user.lastName,
-      pickupLat: this.user.currentLat,
-      pickupLng: this.user.currentLng,
-      pickupLocation: this.user.currentLocation,
-      destinationLat: this.destinationLat,
-      destinationLng: this.destinationLng,
-      destinationLocation: this.destinationAddressName,
-      isRequest: true
+      client: {
+        clientID: this.user.id,
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        pickupLat: this.user.currentLat,
+        pickupLng: this.user.currentLng,
+        pickupLocation: this.user.currentLocation,
+        destinationLat: this.destinationLat,
+        destinationLng: this.destinationLng,
+        destinationLocation: this.destinationAddressName,
+        distanceDestination: this.distanceDestination,
+        isRequest: true
+      }
     };
 
     if (this.isRequested !== true) {
