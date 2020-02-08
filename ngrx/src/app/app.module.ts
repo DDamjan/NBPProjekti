@@ -45,6 +45,8 @@ import { UserEffects } from './store/effects/user.effects';
 import { UserService } from './service/user.service';
 import { DriverHubComponent } from './components/driver-hub/driver-hub.component';
 import { ClientRegisterComponent } from './components/client-register/client-register.component';
+import { DetailExpansionComponent } from './components/detail-expansion/detail-expansion.component';
+import { ApproveRideComponent } from './components/approve-ride/approve-ride.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { ClientRegisterComponent } from './components/client-register/client-reg
     DataTableComponent,
     LoginComponent,
     ClientRegisterComponent,
-    DriverHubComponent
+    DriverHubComponent,
+    DetailExpansionComponent,
+    ApproveRideComponent
   ],
   imports: [
     BrowserModule,

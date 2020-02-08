@@ -11,6 +11,7 @@ import { RouteGuard } from './service/guard/route.guard';
 import { LoginGuard } from './service/guard/login.guard';
 import { DriverHubComponent } from './components/driver-hub/driver-hub.component';
 import { ClientRegisterComponent } from './components/client-register/client-register.component';
+import { ApproveRideComponent } from './components/approve-ride/approve-ride.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
@@ -19,8 +20,8 @@ const routes: Routes = [
   { path: 'operator/register', component: DriverRegisterComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'operator/find', component: RequestRideComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'operator/details/:id', component: DriverDetailsComponent, canActivate: [AuthGuard, RouteGuard] },
+  { path: 'operator/assign', component: ApproveRideComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'client/home', component: RequestRideComponent, canActivate: [AuthGuard, RouteGuard] },
-  { path: 'client/home/:destinationLat/:destinationLng/:destinationLocation', component: RequestRideComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: 'client/register', component: ClientRegisterComponent, canActivate: [LoginGuard] },
   { path: 'driver/home', component: DriverHubComponent, canActivate: [AuthGuard, RouteGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full', canActivate: [LoginGuard] }

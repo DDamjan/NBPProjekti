@@ -57,8 +57,8 @@ export class DriverHubComponent implements OnInit {
 
     this.webSocketService.listen('Driver:' + id).subscribe((data: any) => {
       console.log(data);
-      if (data.isRequest === true) {
-        this.onRequest(data);
+      if (data.client.isRequest === true) {
+        this.onRequest(data.client);
       }
     });
   }
@@ -171,7 +171,8 @@ export class DriverHubComponent implements OnInit {
       driverID: this.driver.id,
       currentLat: this.driver.currentLat,
       currentLng: this.driver.currentLng,
-      currentLocation: this.driver.currentLocation
+      currentLocation: this.driver.currentLocation,
+      distancePickup: this.distancePickup
     };
     this.store.dispatch(new actions.AcceptRide(payload));
 
