@@ -74,8 +74,8 @@ export class UserEffects {
 
   @Effect()
   acceptRide$ = this.update$.pipe(
-    ofAction(actions.RequestRide),
-    switchMap(ride => this.userService.requestRide(ride.payload)),
+    ofAction(actions.AcceptRide),
+    switchMap(ride => this.userService.acceptRide(ride.payload)),
     map(response => {
       return new actions.UpdateUserSuccess(response);
     })

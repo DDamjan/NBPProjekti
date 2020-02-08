@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { APPID, APPCODE } from 'src/constants/map-credentials';
 import { RideService } from 'src/app/service/ride.service';
@@ -18,7 +18,7 @@ import { Location } from '@angular/common';
   templateUrl: './request-ride.component.html',
   styleUrls: ['./request-ride.component.css']
 })
-export class RequestRideComponent implements OnInit {
+export class RequestRideComponent implements OnInit, AfterViewInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   private pickupLat: number;
   private pickupLng: number;
@@ -36,22 +36,25 @@ export class RequestRideComponent implements OnInit {
   private options: string[] = [];
   public isRequested: boolean;
   private user: User;
+  private again: boolean;
 
   constructor(private store: Store<any>, private rideService: RideService,
     private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
-    private route: ActivatedRoute, private router: Router) { }
+    private route: ActivatedRoute, private router: Router) { this.again = false; }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
     this.webSocketService.onConnect(id, type);
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
-        this.store.dispatch(new actions.GetUser({id, auth: true}));
+        this.store.dispatch(new actions.GetUser({ id, auth: true }));
       } else {
         this.user = currentUser[0];
         this.isRequested = this.user.isActive;
         if (this.isRequested) {
-          this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+          if (this.mapView.platform !== undefined) {
+            this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+          }
         }
       }
     });
@@ -63,8 +66,12 @@ export class RequestRideComponent implements OnInit {
         duration: 3000
       });
     });
+  }
 
-
+  ngAfterViewInit() {
+    if (this.isRequested) {
+      this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+    }
   }
 
   update() {
@@ -88,7 +95,7 @@ export class RequestRideComponent implements OnInit {
     }
 
   }
-
+  
   updateAndRequest() {
     this.user.currentLat = this.pickupLat;
     this.user.currentLng = this.pickupLng;
@@ -155,7 +162,8 @@ export class RequestRideComponent implements OnInit {
 
   cancelRide() {
     this.mapView.clearMap();
-    this.store.dispatch(new actions.CancelRide({clientID: this.user.id, isAssigned: false, isCanceled: true}));
+    this.store.dispatch(new actions.CancelRide({ clientID: this.user.id, isAssigned: false, isCanceled: true }));
+    this.isRequested = false;
 
     this.snackBar.open('Ride canceled!', 'Close', {
       duration: 3000

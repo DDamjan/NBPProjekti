@@ -56,13 +56,14 @@ export class MapComponent implements OnInit {
     // this.store.select(selectAllDrivers).subscribe(drivers => {
     //   drivers.forEach(d => {console.log(typeof(d.currentLat)); this.drivers.push(d)});
     // });
-  }
 
-  public async ngAfterViewInit() {
-    this.platform = await new H.service.Platform({
+    this.platform = new H.service.Platform({
       app_id: APPID,
       app_code: APPCODE
     });
+  }
+
+  public async ngAfterViewInit() {
     this.defaultLayers = await this.platform.createDefaultLayers();
     this.map = await new H.Map(
       this.mapElement.nativeElement,
@@ -96,12 +97,13 @@ export class MapComponent implements OnInit {
       }, (error) => { console.log(error); }
     );
 
-    if (isDriver){
+    if (isDriver) {
       this.renderDriver(driver, pickupAddress);
     }
+
   }
 
-  public clearMap(){
+  public clearMap() {
     this.map.removeObjects(this.map.getObjects());
     const coord = {
       lat: mapConstants.konjLat,
@@ -152,9 +154,6 @@ export class MapComponent implements OnInit {
     this.addLocationToMap(pickupCoord, pickupAddressString);
 
     this.findDestination(pickupCoord, destinationAddressString);
-    this.snackBar.open(`Ride requested`, 'Close', {
-      duration: 3000
-    });
   }
 
   findDestination(pickupLocation, destinationAddress: string) {

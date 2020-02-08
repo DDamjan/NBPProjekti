@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/request', async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const payload = {
     CID: req.body.clientID,
     Lat: req.body.pickupLat,

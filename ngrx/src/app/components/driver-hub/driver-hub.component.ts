@@ -159,6 +159,10 @@ export class DriverHubComponent implements OnInit {
     this.request = true;
     console.log(this.requestedRide);
     this.mapView.renderRequest(this.requestedRide.pickupLocation, this.requestedRide.destinationLocation, true, this.driver);
+
+    this.snackBar.open(`Ride request!`, 'Close', {
+      duration: 3000
+    });
   }
 
   acceptRide() {
