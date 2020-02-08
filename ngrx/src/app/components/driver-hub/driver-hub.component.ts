@@ -177,6 +177,19 @@ export class DriverHubComponent implements OnInit {
 
     this.request = false;
     this.mapView.clearMap();
+
+    this.snackBar.open(`Request accepted! Standby`, 'Close', {
+      duration: 3000
+    });
   }
 
+  rejectRide() {
+    this.request = false;
+    this.mapView.clearMap();
+    this.snackBar.open(`Request rejected`, 'Close', {
+      duration: 3000
+    });
+  }
 }
+
+
