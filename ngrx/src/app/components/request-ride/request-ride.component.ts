@@ -113,6 +113,7 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
         destinationLng: this.destinationLng,
         destinationLocation: this.destinationAddressName,
         distanceDestination: this.distanceDestination,
+        fare: this.fare,
         isRequest: true
       }
     };
@@ -124,7 +125,6 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
         duration: 3000
       });
       this.store.dispatch(new actions.RequestRide(payload));
-      // window.location.reload();
     }
   }
 

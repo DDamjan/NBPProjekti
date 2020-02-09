@@ -7,5 +7,7 @@
       Distance to pickup: {{driver.distancePickup}}
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <p>I'm visible because I am open</p>
+  <p>Location: {{driver.currentLocation}}</p>
+  <button mat-raised-button (click)="onMap()">See on map</button>
+  <button mat-raised-button (click)="onAssign()">Assign</button>
 </mat-expansion-panel>

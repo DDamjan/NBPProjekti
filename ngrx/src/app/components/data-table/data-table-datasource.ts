@@ -32,7 +32,7 @@ export class DataTableDataSource extends DataSource<DataTableItem> {
       const r: DataTableItem = {
         rideID: ride.id,
         driverID: ride.driverID,
-        startLocation: ride.startLocation,
+        startLocation: ride.pickupLocation,
         startTime: ride.startTime,
         destinationLocation: ride.destinationLocation,
         endTime: ride.endTime,

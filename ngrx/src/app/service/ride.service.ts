@@ -13,9 +13,9 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    // private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
+    private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
     // private serverURL = cons.LOCAL_SERVER + 'rides/';
-    private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
+    // private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
 
     constructor(
         private http: HttpClient) { }
@@ -25,14 +25,6 @@ export class RideService {
         const url = `${this.serverURL}?id=${id}`;
         return this.http.get<Ride[]>(url).pipe(
             catchError(this.handleError<Ride[]>(`getRide id=${id}`))
-        );
-    }
-
-    /* GET last ID */
-    getLastID(): Observable<any> {
-        const url = `${this.serverURL}currentid`;
-        return this.http.get<any>(url).pipe(
-            catchError(this.handleError<any>('getLastID'))
         );
     }
 

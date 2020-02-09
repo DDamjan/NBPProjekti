@@ -36,10 +36,11 @@ export class DriverHubComponent implements OnInit {
   private isActive: boolean;
   private request: boolean;
   private requestedRide: any;
+  private distanceNum: number;
 
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService,
-              private snackBar: MatSnackBar, private store: Store<any>) {
+    private snackBar: MatSnackBar, private store: Store<any>) {
     this.isActive = false;
     this.request = false;
   }
@@ -49,7 +50,7 @@ export class DriverHubComponent implements OnInit {
     this.webSocketService.onConnect(id, type);
     this.store.select(selectAllUsers).subscribe(user => {
       if (user.length === 0) {
-        this.store.dispatch(new actions.GetUser({id, auth: true}));
+        this.store.dispatch(new actions.GetUser({ id, auth: true }));
       } else {
         this.driver = user[0];
       }
@@ -79,6 +80,7 @@ export class DriverHubComponent implements OnInit {
     if ($event.mode === 'pickup') {
       this.distancePickup = $event.distance;
       this.ETAPickup = $event.ETA;
+      this.distanceNum = $event.distanceNum;
     } else if ($event.mode === 'destination') {
       this.distanceDestination = $event.distance;
       this.ETADestination = $event.ETA;
@@ -154,10 +156,9 @@ export class DriverHubComponent implements OnInit {
       pickupLocation: req.pickupLocation,
       destinationLat: req.destinationLat,
       destinationLng: req.destinationLng,
-      destinationLocation: req.destinationLocation
+      destinationLocation: req.destinationLocation,
     };
     this.request = true;
-    console.log(this.requestedRide);
     this.mapView.renderRequest(this.requestedRide.pickupLocation, this.requestedRide.destinationLocation, true, this.driver);
 
     this.snackBar.open(`Ride request!`, 'Close', {
@@ -169,11 +170,15 @@ export class DriverHubComponent implements OnInit {
     const payload = {
       clientID: this.requestedRide.clientID,
       driverID: this.driver.id,
+      firstName: this.driver.firstName,
+      lastName: this.driver.lastName,
       currentLat: this.driver.currentLat,
       currentLng: this.driver.currentLng,
       currentLocation: this.driver.currentLocation,
-      distancePickup: this.distancePickup
+      distancePickup: this.distancePickup,
+      distanceNum: this.distanceNum
     };
+    console.log(payload);
     this.store.dispatch(new actions.AcceptRide(payload));
 
     this.request = false;

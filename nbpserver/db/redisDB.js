@@ -79,7 +79,7 @@ subFinishedRide.on("message", function (channel, body) {
     client.hmset("driver", newBody.driverID, false); //vozac je slobodan za sledecu voznju
 
     client.hlen("operator", (err, numOperators) => {
-        console.log("operator: "+ numOperators);
+        console.log("operator: " + numOperators);
         if (numOperators != 0) {
             client.hgetall("operator", function (err, operatorsActivty) {
                 Object.keys(operatorsActivty).forEach(key => {
@@ -175,12 +175,17 @@ function makeRequest(req) {
 }
 
 function requestAccepted(req) {
-    console.log(req);
-    let driver = {};
-    driver.driverID = req.body.driverID;
-    driver.destinationLat = req.body.currentLat;
-    driver.destinationLng = req.body.currentLng;
-    driver.destinationLocation = req.body.currentLocation;
+    console.log(req.body);
+    let driver = {
+        driverID: req.body.driverID,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        currentLat: req.body.currentLat,
+        currentLng: req.body.currentLng,
+        currentLocation: req.body.currentLocation,
+        distancePickup: req.body.distancePickup,
+        distanceNum: req.body.distanceNum
+    };
     client.lpush("accepted:" + req.body.clientID, JSON.stringify(driver));
     geo.addLocation(req.body.driverID, { latitude: req.body.currentLat, longitude: req.body.currentLng });
 }
@@ -192,7 +197,7 @@ function requestDenied(req) {
 function newRequest(clientID) {
     client.llen("requestQ", (err, numRequests) => {
         client.llen("notActiveOperators", (err, numOperators) => {
-            console.log("notActiveOperators: "+ numOperators);
+            console.log("notActiveOperators: " + numOperators);
             if (numOperators == 0) {
                 //NEMA OPERATORA ZA OVAJ REQUEST
                 client.lpush("requestQ", clientID);
@@ -235,7 +240,7 @@ function newOperator(operatorID) {
 
 function NextRequestToNextOperator(clientID) {
     client.hget("requests", clientID, function (err, request) {
-        if(!request.isCanceled){
+        if (!request.isCanceled) {
             client.lrange("accepted:" + clientID, 0, -1, (err, driverList) => {
 
                 request = JSON.parse(request);
@@ -261,7 +266,7 @@ function NextRequestToNextOperator(clientID) {
                     }
                 });
             });
-        }else{
+        } else {
             client.del("accepted:" + clientID);
             client.del("denied:" + clientID);
             client.hdel("requests", clientID);

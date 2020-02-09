@@ -316,6 +316,7 @@ export class MapComponent implements OnInit {
     const route = result.response.route[0];
     if (mode === 'driver') {
       const msg = {
+        distanceNum: route.summary.distance,
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
         mode: 'pickup'
@@ -323,6 +324,7 @@ export class MapComponent implements OnInit {
       this.routeParams.emit(msg);
     } else {
       const msg = {
+        // distanceNum: route.summary.distance,
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
         mode: 'destination',
@@ -346,7 +348,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  showDetails(driver: Driver, ride: Ride) {
+  showDetails(driver: any, ride: any) {
     this.map.removeObjects(this.map.getObjects());
     const driverCoord = {
       lat: driver.currentLat,
@@ -364,8 +366,8 @@ export class MapComponent implements OnInit {
       if (driver.pickupLat !== null && driver.pickupLng !== null) {
 
         const pickupCoord = {
-          lat: driver.pickupLat,
-          lng: driver.pickupLng,
+          lat: ride.pickupLat,
+          lng: ride.pickupLng,
           mode: 'location-detail'
         };
 
