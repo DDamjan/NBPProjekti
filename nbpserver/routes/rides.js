@@ -57,6 +57,11 @@ router.post('/create', async (req, res) => {
   Neo4jDB.execCreateRide(req, res, payload);
 });
 
+router.post('/arrive', async (req, res) => {
+  //NEKA FIKIJEVA FUNKCIJA
+  redisDB.driverArived(req.body);
+});
+
 router.post('/finish', async (req, res) => {
   const isAssigned = req.body.isAssigned;
   if (isAssigned) {

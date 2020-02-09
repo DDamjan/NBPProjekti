@@ -242,29 +242,34 @@ function NextRequestToNextOperator(clientID) {
     client.hget("requests", clientID, function (err, request) {
         if (!request.isCanceled) {
             client.lrange("accepted:" + clientID, 0, -1, (err, driverList) => {
+                console.log(driverList);
+                if(driverList.length > 0){
+                    console.log("driver list nije prazan");
+                    request = JSON.parse(request);
+                    driverList.forEach((element, i) => {
+                        driverList[i] = JSON.parse(element);
+                    });
+                    request = { ...request, "drivers": driverList };
 
-                request = JSON.parse(request);
-                driverList.forEach((element, i) => {
-                    driverList[i] = JSON.parse(element);
-                });
-                request = { ...request, "drivers": driverList };
-
-                geo.location("src:" + clientID, (err, location) => {
-                    if (err) console.error(err);
-                    else {
-                        geo.removeLocation("src:" + clientID);
-                        //geo.removeLocation("dest:"+ clientID);
-                        geo.nearby({ latitude: location.latitude, longitude: location.longitude }, 10000, options, (err, locations) => {
-                            request.closestDriver = locations[0];
-                            client.rpop("notActiveOperators", (err, operator) => {
-                                client.hmset("operator", operator, true);
-                                webSocket.io.emit('Operator:' + operator, request);
-                                console.log(request);
+                    geo.location("src:" + clientID, (err, location) => {
+                        if (err) console.error(err);
+                        else {
+                            geo.removeLocation("src:" + clientID);
+                            //geo.removeLocation("dest:"+ clientID);
+                            geo.nearby({ latitude: location.latitude, longitude: location.longitude }, 10000, options, (err, locations) => {
+                                request.closestDriver = locations[0];
+                                client.rpop("notActiveOperators", (err, operator) => {
+                                    client.hmset("operator", operator, true);
+                                    webSocket.io.emit('Operator:' + operator, request);
+                                    console.log(request);
+                                });
+                                console.error("Operator resolve request");
                             });
-                            console.error("Operator resolve request");
-                        });
-                    }
-                });
+                        }
+                    });
+                }else{
+                    console.log("driver list je prazan");
+                }
             });
         } else {
             client.del("accepted:" + clientID);
@@ -272,6 +277,10 @@ function NextRequestToNextOperator(clientID) {
             client.hdel("requests", clientID);
         }
     });
+}
+
+function driverArived(body) {
+    webSocket.io.emit('Client:' + body.clientID, body);
 }
 
 async function execPost(req, res, fun) {
@@ -290,10 +299,12 @@ async function execPost(req, res, fun) {
 module.exports = {
     redis: redis,
     client: client,
-    execPost: execPost,
+    pub: pub,
+    RequestTest: RequestTest,
     makeRequest: makeRequest,
     requestAccepted: requestAccepted,
     requestDenied: requestDenied,
+    driverArived: driverArived,
     pub: pub,
-    RequestTest: RequestTest
+    execPost: execPost
 }
