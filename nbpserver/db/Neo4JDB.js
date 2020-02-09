@@ -63,24 +63,50 @@ async function execAuth(username,password,res){
 
 async function execReturnById(req,res){
   var session=driver.session();
-  session.run(query.GET_USER_BY_ID, {ID: neo4j.int(req.id)})
-  .then(result => {
-    result.records.forEach(record => {
-      let l=record.get('n');
-      let s=l.properties;
-      s.id=l.identity.low;
-      delete s.password;
-      if(req.auth){
-        redisDB.pub.publish("UserAuth", JSON.stringify(s));//authed user
-      }
-      res.json(s);
-      res.end();
+  const transaction=session.beginTransaction();
+  try {
+    let l={};
+    const result1=await transaction.run(query.GET_USER_BY_ID_WAR,{ID: neo4j.int(req.id)});
+     if(result1.records.length!=0){
+    result1.records.forEach(record => {
+      let n=record.get('n');
+      let r=record.get('r');
+      let n1=n.properties;
+      n1.id=n.identity.low;
+      delete n1.password;
+      l.user = n1;
+      let r1=r.properties;
+      r1.id=r.identity.low;
+      l.ride = r1;
+     console.log('First option query completed');
     })
-  })
-  .catch(error => {
-    errorHandler(error,res);
-  })
-  .then(() => session.close())
+     }
+     else{
+      const result2=await transaction.run(query.GET_USER_BY_ID,{ID: neo4j.int(req.id)});
+      result2.records.forEach(record => {
+        let n=record.get('n');
+        let n1=n.properties;
+        n1.id=n.identity.low;
+        delete n1.password;
+        l.user=n1;
+        l.ride={};
+        console.log('Second option query completed');
+      })
+     }
+     if(req.auth){
+      redisDB.pub.publish("UserAuth", JSON.stringify(l));//authed user
+    }
+    res.json(l);
+    res.end();
+  }
+  catch(error){
+    console.log(error);
+    await transaction.rollback();
+    console.log('rolled back');
+  }
+  finally { 
+    await session.close();
+  }
 }
 
 async function execCreateDriver(req,res,payload){
@@ -256,8 +282,18 @@ async function execClientAllDestLoc(clientID,res){
   .then(result => {
       let n=[];
       result.records.forEach(record => {
-      let l=record.get('r.destinationLocation');
-      n.push(l);
+        let r=record.get('r').properties;
+        let l={
+          pickupLat:r.pickupLat,
+          pickupLng:r.pickupLng,
+          pickupLocation:r.pickupLocation,
+          destinationLat:r.destinationLat,
+          destinationLng:r.destinationLng,
+          destinationLocation:r.destinationLocation,
+          fare:r.fare,
+          distance:r.distance
+        }
+        n.push(l);
       });
     res.json(n);
     res.end();
@@ -299,7 +335,18 @@ async function execClientTopLocations(id,res){
     console.log(result.records);
     let m=[];
     result.records.forEach(record => {
-      let l= { count: record.get('count(r)').low ,location: record.get('r.destinationLocation')};
+      let r=record.get('r').properties;
+      let l={
+        pickupLat:r.pickupLat,
+        pickupLng:r.pickupLng,
+        pickupLocation:r.pickupLocation,
+        destinationLat:r.destinationLat,
+        destinationLng:r.destinationLng,
+        destinationLocation:r.destinationLocation,
+        fare:r.fare,
+        distance:r.distance,
+        count:record.get('count(r)').low
+      }
       m.push(l);
     })
     res.json(m);

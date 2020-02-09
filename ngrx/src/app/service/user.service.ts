@@ -16,9 +16,10 @@ const httpOptions = {
 @Injectable()
 export class UserService {
 
-    private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
-    private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
-    // private serverURL = conn.LOCAL_SERVER + 'users/';
+    // private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
+    // private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
+    private serverURL = conn.LOCAL_SERVER + 'users/';
+    private RserverURL = conn.LOCAL_SERVER + 'rides/';
     // private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
     // private RserverURL = conn.PUBLIC_SERVER_PEDJA + 'rides/';
 
