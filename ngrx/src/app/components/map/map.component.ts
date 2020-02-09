@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material';
 import { RideService } from 'src/app/service/ride.service';
 import { Ride } from 'src/app/models/Ride';
 import * as mapConstants from 'src/constants/nis-loc';
+import { User } from 'src/app/models/User';
 declare var H: any;
 
 @Component({
@@ -55,13 +56,14 @@ export class MapComponent implements OnInit {
     // this.store.select(selectAllDrivers).subscribe(drivers => {
     //   drivers.forEach(d => {console.log(typeof(d.currentLat)); this.drivers.push(d)});
     // });
-  }
 
-  public async ngAfterViewInit() {
-    this.platform = await new H.service.Platform({
+    this.platform = new H.service.Platform({
       app_id: APPID,
       app_code: APPCODE
     });
+  }
+
+  public async ngAfterViewInit() {
     this.defaultLayers = await this.platform.createDefaultLayers();
     this.map = await new H.Map(
       this.mapElement.nativeElement,
@@ -82,7 +84,7 @@ export class MapComponent implements OnInit {
     }, false);
   }
 
-  public renderRequest(pickupAddress: string, destinationAddress: string) {
+  public renderRequest(pickupAddress: string, destinationAddress: string, isDriver: boolean, driver: User) {
     const geocoder = this.platform.getGeocodingService();
     const geocodingParameters = {
       searchText: pickupAddress,
@@ -94,9 +96,14 @@ export class MapComponent implements OnInit {
         this.onSuccess(result, pickupAddress, destinationAddress);
       }, (error) => { console.log(error); }
     );
+
+    if (isDriver) {
+      this.renderDriver(driver, pickupAddress);
+    }
+
   }
 
-  public clearMap(){
+  public clearMap() {
     this.map.removeObjects(this.map.getObjects());
     const coord = {
       lat: mapConstants.konjLat,
@@ -147,9 +154,6 @@ export class MapComponent implements OnInit {
     this.addLocationToMap(pickupCoord, pickupAddressString);
 
     this.findDestination(pickupCoord, destinationAddressString);
-    this.snackBar.open(`Ride requested`, 'Close', {
-      duration: 3000
-    });
   }
 
   findDestination(pickupLocation, destinationAddress: string) {
@@ -312,6 +316,7 @@ export class MapComponent implements OnInit {
     const route = result.response.route[0];
     if (mode === 'driver') {
       const msg = {
+        distanceNum: route.summary.distance,
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
         mode: 'pickup'
@@ -319,6 +324,7 @@ export class MapComponent implements OnInit {
       this.routeParams.emit(msg);
     } else {
       const msg = {
+        // distanceNum: route.summary.distance,
         distance: toKM(route.summary.distance),
         ETA: toMMSS(route.summary.travelTime),
         mode: 'destination',
@@ -342,7 +348,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  showDetails(driver: Driver, ride: Ride) {
+  showDetails(driver: any, ride: any) {
     this.map.removeObjects(this.map.getObjects());
     const driverCoord = {
       lat: driver.currentLat,
@@ -360,8 +366,8 @@ export class MapComponent implements OnInit {
       if (driver.pickupLat !== null && driver.pickupLng !== null) {
 
         const pickupCoord = {
-          lat: driver.pickupLat,
-          lng: driver.pickupLng,
+          lat: ride.pickupLat,
+          lng: ride.pickupLng,
           mode: 'location-detail'
         };
 

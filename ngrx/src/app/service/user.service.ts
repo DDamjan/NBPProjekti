@@ -27,10 +27,11 @@ export class UserService {
         private http: HttpClient) { }
 
     /* GET user by id. */
-    getUser(id: number): Observable<User> {
-        const url = `${this.serverURL}?id=${id}`;
+    getUser(payload: any): Observable<User> {
+        console.log(payload);
+        const url = `${this.serverURL}?id=${payload.id}&auth=${payload.auth}`;
         return this.http.get<User>(url).pipe(
-            catchError(this.handleError<User>(`getUser id=${id}`))
+            catchError(this.handleError<User>(`getUser id=${payload.id}`))
         );
     }
 
@@ -70,6 +71,13 @@ export class UserService {
 
     requestRide(payload: any): Observable<User> {
         const url = `${this.RserverURL}request`;
+        return this.http.post<User>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<User>('requesttest'))
+        );
+    }
+
+    acceptRide(payload: any): Observable<any> {
+        const url = `${this.RserverURL}accept`;
         return this.http.post<User>(url, payload, httpOptions).pipe(
             catchError(this.handleError<User>('requesttest'))
         );

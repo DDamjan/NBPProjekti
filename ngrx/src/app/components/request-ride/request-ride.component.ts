@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { APPID, APPCODE } from 'src/constants/map-credentials';
 import { RideService } from 'src/app/service/ride.service';
@@ -18,7 +18,7 @@ import { Location } from '@angular/common';
   templateUrl: './request-ride.component.html',
   styleUrls: ['./request-ride.component.css']
 })
-export class RequestRideComponent implements OnInit {
+export class RequestRideComponent implements OnInit, AfterViewInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   private pickupLat: number;
   private pickupLng: number;
@@ -36,22 +36,25 @@ export class RequestRideComponent implements OnInit {
   private options: string[] = [];
   public isRequested: boolean;
   private user: User;
+  private again: boolean;
 
   constructor(private store: Store<any>, private rideService: RideService,
     private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
-    private route: ActivatedRoute, private router: Router) { }
+    private route: ActivatedRoute, private router: Router) { this.again = false; }
   ngOnInit() {
     const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
-    this.webSocketService.onConnect(id,type);
+    this.webSocketService.onConnect(id, type);
     this.store.select(selectAllUsers).subscribe(currentUser => {
       if (currentUser.length === 0) {
-        this.store.dispatch(new actions.GetUser(id));
+        this.store.dispatch(new actions.GetUser({ id, auth: true }));
       } else {
         this.user = currentUser[0];
         this.isRequested = this.user.isActive;
         if (this.isRequested) {
-          this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation);
+          if (this.mapView.platform !== undefined) {
+            this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+          }
         }
       }
     });
@@ -63,8 +66,12 @@ export class RequestRideComponent implements OnInit {
         duration: 3000
       });
     });
+  }
 
-
+  ngAfterViewInit() {
+    if (this.isRequested) {
+      this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+    }
   }
 
   update() {
@@ -75,7 +82,7 @@ export class RequestRideComponent implements OnInit {
     this.pickupAddressName = event.target[0].value;
     this.destinationAddressName = event.target[1].value;
     if (this.pickupAddressName !== '' && this.destinationAddressName !== '') {
-      this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName);
+      this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName, false, null);
       if (this.user === undefined) {
         this.store.select(selectAllUsers).subscribe(user => {
           this.user = user[0];
@@ -95,15 +102,20 @@ export class RequestRideComponent implements OnInit {
     this.user.currentLocation = this.pickupAddressName;
 
     const payload = {
-      clientID: this.user.id,
-      firstName: this.user.firstName,
-      lastName: this.user.lastName,
-      pickupLat: this.user.currentLat,
-      pickupLng: this.user.currentLng,
-      pickupLocation: this.user.currentLocation,
-      destinationLat: this.destinationLat,
-      destinationLng: this.destinationLng,
-      destinationLocation: this.destinationAddressName
+      client: {
+        clientID: this.user.id,
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        pickupLat: this.user.currentLat,
+        pickupLng: this.user.currentLng,
+        pickupLocation: this.user.currentLocation,
+        destinationLat: this.destinationLat,
+        destinationLng: this.destinationLng,
+        destinationLocation: this.destinationAddressName,
+        distanceDestination: this.distanceDestination,
+        fare: this.fare,
+        isRequest: true
+      }
     };
 
     if (this.isRequested !== true) {
@@ -113,7 +125,6 @@ export class RequestRideComponent implements OnInit {
         duration: 3000
       });
       this.store.dispatch(new actions.RequestRide(payload));
-      // window.location.reload();
     }
   }
 
@@ -154,7 +165,8 @@ export class RequestRideComponent implements OnInit {
 
   cancelRide() {
     this.mapView.clearMap();
-    this.store.dispatch(new actions.CancelRide({clientID: this.user.id, isAssigned: false, isCanceled: true}));
+    this.store.dispatch(new actions.CancelRide({ clientID: this.user.id, isAssigned: false, isCanceled: true }));
+    this.isRequested = false;
 
     this.snackBar.open('Ride canceled!', 'Close', {
       duration: 3000

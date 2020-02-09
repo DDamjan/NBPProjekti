@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as actions from './store/actions';
 import { WebSocketService } from './service/web-socket.service';
@@ -9,7 +9,7 @@ import { WebSocketService } from './service/web-socket.service';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, DoCheck {
   title = 'NGDispatcher';
   loggedIn: boolean;
 
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   public ngOnInit() {
   }
 
-  public ngDoCheck(){
+  public ngDoCheck() {
     localStorage.getItem('currentUser') != null ? this.loggedIn = true : this.loggedIn = false;
   }
 }

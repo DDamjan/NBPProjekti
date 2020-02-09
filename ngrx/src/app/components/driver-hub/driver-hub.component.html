@@ -5,24 +5,7 @@
         <div class="container">
         </div>
       </div>
-      <div class="container" *ngIf="!isDriving">
-        <div class="route-params">
-          <p>Distance to pick up: {{distancePickup}}</p>
-        </div>
-        <div class="route-params">
-          <p>ETA for pick up: {{ETAPickup}}</p>
-        </div>
-        <div class="route-params">
-          <p>Distance to destination: {{distanceDestination}}</p>
-        </div>
-        <div class="route-params">
-          <p>ETA for destination: {{ETADestination}}</p>
-        </div>
-        <div class="route-params">
-          <p>Fare: {{fare}} rsd</p>
-        </div>
-      </div>
-      <div class="request-container" *ngIf="request">
+      <div class="container" *ngIf="isDriving==true || request==true">
         <div class="route-params">
           <p>Distance to pick up: {{distancePickup}}</p>
         </div>
@@ -43,7 +26,7 @@
         <button mat-raised-button (click)="acceptRide()" *ngIf="request">Accept</button>
         <button mat-raised-button (click)="rejectRide()" *ngIf="request">Reject</button>
         <button mat-raised-button (click)="arrive()" [disabled]="buttonArriveDisabled" *ngIf="isActive">Arrive to pick up location</button>
-        <button mat-raised-button (click)="showOnMap()" *ngIf="!isActive">Show on map</button>
+        <button mat-raised-button (click)="showOnMap()" *ngIf="isActive==false && request==false">Show on map</button>
         <button mat-raised-button (click)="endRide()" [disabled]="buttonEndDisabled" *ngIf="isActive">End current ride</button>
         <button mat-raised-button (click)="cancelRide()" [disabled]="buttonCancelDisabled" *ngIf="isActive">Cancel current ride</button>
       </div>

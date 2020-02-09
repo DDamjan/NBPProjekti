@@ -27,7 +27,7 @@ export class DriverHubComponent implements OnInit {
   private ETADestination: string;
   private fare: number;
   private options: string[] = [];
-  public isDriving = true;
+  public isDriving: boolean;
   private driver: User;
   private ride: Ride;
   private buttonEndDisabled: boolean;
@@ -35,33 +35,32 @@ export class DriverHubComponent implements OnInit {
   private buttonArriveDisabled: boolean;
   private isActive: boolean;
   private request: boolean;
+  private requestedRide: any;
+  private distanceNum: number;
 
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService,
-              private snackBar: MatSnackBar, private store: Store<any>) {
+    private snackBar: MatSnackBar, private store: Store<any>) {
     this.isActive = false;
     this.request = false;
   }
   ngOnInit() {
-    const id = localStorage.getItem('currentUser');
+    const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
-    this.webSocketService.onConnect(id,type);
+    this.webSocketService.onConnect(id, type);
     this.store.select(selectAllUsers).subscribe(user => {
       if (user.length === 0) {
-        this.store.dispatch(new actions.GetUser(Number(id)));
+        this.store.dispatch(new actions.GetUser({ id, auth: true }));
       } else {
         this.driver = user[0];
       }
     });
 
     this.webSocketService.listen('Driver:' + id).subscribe((data: any) => {
-      if (this.isActive === false) {
-        this.ride = data;
-        this.request = true;
-
-        
+      console.log(data);
+      if (data.client.isRequest === true) {
+        this.onRequest(data.client);
       }
-      
     });
   }
 
@@ -81,6 +80,7 @@ export class DriverHubComponent implements OnInit {
     if ($event.mode === 'pickup') {
       this.distancePickup = $event.distance;
       this.ETAPickup = $event.ETA;
+      this.distanceNum = $event.distanceNum;
     } else if ($event.mode === 'destination') {
       this.distanceDestination = $event.distance;
       this.ETADestination = $event.ETA;
@@ -146,4 +146,56 @@ export class DriverHubComponent implements OnInit {
     });
   }
 
+  onRequest(req) {
+    this.requestedRide = {
+      clientID: req.clientID,
+      firstName: req.firstName,
+      lastName: req.lastName,
+      pickupLat: req.pickupLat,
+      pickupLng: req.pickupLng,
+      pickupLocation: req.pickupLocation,
+      destinationLat: req.destinationLat,
+      destinationLng: req.destinationLng,
+      destinationLocation: req.destinationLocation,
+    };
+    this.request = true;
+    this.mapView.renderRequest(this.requestedRide.pickupLocation, this.requestedRide.destinationLocation, true, this.driver);
+
+    this.snackBar.open(`Ride request!`, 'Close', {
+      duration: 3000
+    });
+  }
+
+  acceptRide() {
+    const payload = {
+      clientID: this.requestedRide.clientID,
+      driverID: this.driver.id,
+      firstName: this.driver.firstName,
+      lastName: this.driver.lastName,
+      currentLat: this.driver.currentLat,
+      currentLng: this.driver.currentLng,
+      currentLocation: this.driver.currentLocation,
+      distancePickup: this.distancePickup,
+      distanceNum: this.distanceNum
+    };
+    console.log(payload);
+    this.store.dispatch(new actions.AcceptRide(payload));
+
+    this.request = false;
+    this.mapView.clearMap();
+
+    this.snackBar.open(`Request accepted! Standby`, 'Close', {
+      duration: 3000
+    });
+  }
+
+  rejectRide() {
+    this.request = false;
+    this.mapView.clearMap();
+    this.snackBar.open(`Request rejected`, 'Close', {
+      duration: 3000
+    });
+  }
 }
+
+

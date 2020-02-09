@@ -28,14 +28,6 @@ export class RideService {
         );
     }
 
-    /* GET last ID */
-    getLastID(): Observable<any> {
-        const url = `${this.serverURL}currentid`;
-        return this.http.get<any>(url).pipe(
-            catchError(this.handleError<any>('getLastID'))
-        );
-    }
-
     //////// Save methods //////////
 
     /** POST: add a new ride to the server */

@@ -20,28 +20,6 @@ export function toKM(distance: number) {
     }
 }
 
-export function createRide(driver: Driver, route, address: string, rideService: RideService) {
-    rideService.getLastID().subscribe(async ID => {
-        const dateTime = new Date();
-        let startingTime: string = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-        const ride: Ride = {
-            id: ID[0].ID + 1,
-            clientID: 0,
-            driverID: driver.id,
-            startLat: driver.currentLat,
-            startLng: driver.currentLng,
-            destinationLat: route.lat,
-            destinationLng: route.lng,
-            destinationLocation: address,
-            startLocation: driver.pickupLocation,
-            startTime: startingTime,
-            isCanceled: false
-        };
-        rideService.addRide(ride).subscribe();
-    });
-}
-
-
 export function calculateFare(distance: number) {
     let fare = 110;
     const date = new Date();
@@ -65,5 +43,4 @@ export function calculateFare(distance: number) {
 export function fareDistance(distance: number, rideService: RideService, ID: number) {
     const fare = Math.floor(calculateFare(distance));
     const dst = toKM(distance);
-    // rideService.addDistanceFare(dst, fare, ID).subscribe();
 }

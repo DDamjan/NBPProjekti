@@ -6,6 +6,7 @@ import { DriverService } from 'src/app/service/driver.service';
 import { selectAllDrivers } from 'src/app/store/reducers/driver.reducer';
 import * as actions from '../../store/actions';
 import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'active-drivers',
@@ -17,18 +18,19 @@ export class ActiveDriversComponent implements OnInit {
   freeDrivers: Driver[] = [];
   again: boolean;
 
-  constructor(private driverService: DriverService, private webSocketService: WebSocketService, private store$: Store<any>) {
+  constructor(private driverService: DriverService, private webSocketService: WebSocketService, private store$: Store<any>,
+              private router: Router) {
     this.again = false;
   }
 
   ngOnInit() {
-    const id = localStorage.getItem('currentUser');
+    const id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
     this.webSocketService.onConnect(id,type);
     this.store$.select(selectAllUsers).subscribe(user => {
       if (this.again === false) {
         if (user.length === 0) {
-          this.store$.dispatch(new actions.GetUser(Number(id)));
+          this.store$.dispatch(new actions.GetUser({id, auth: true}));
           this.populateDrivers();
           this.again = true;
         } else {
@@ -39,6 +41,7 @@ export class ActiveDriversComponent implements OnInit {
 
     this.webSocketService.listen('Operator:' + id).subscribe((data: any) => {
       console.log(data);
+      this.router.navigateByUrl('/operator/assign', {state: data});
     });
   }
 

@@ -13,15 +13,15 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/request', async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const payload = {
-    CID: req.body.clientID,
-    Lat: req.body.pickupLat,
-    Lng: req.body.pickupLng,
-    Loc: req.body.pickupLocation,
-    DLat: req.body.destinationLat,
-    DLng: req.body.destinationLng,
-    DLoc: req.body.destinationLocation
+    CID: req.body.client.clientID,
+    Lat: req.body.client.pickupLat,
+    Lng: req.body.client.pickupLng,
+    Loc: req.body.client.pickupLocation,
+    DLat: req.body.client.destinationLat,
+    DLng: req.body.client.destinationLng,
+    DLoc: req.body.client.destinationLocation
   }
   Neo4jDB.execUpdateClientTrue(payload, res);
   redisDB.makeRequest(req);
@@ -53,8 +53,13 @@ router.post('/create', async (req, res) => {
     Fare: req.body.fare,
     Dist: req.body.distance
   }
-  //redisDB.pub.publish("AprovedRide", JSON.stringify(req.body));
+  redisDB.pub.publish("AprovedRide", JSON.stringify(req.body));
   Neo4jDB.execCreateRide(req, res, payload);
+});
+
+router.post('/arrive', async (req, res) => {
+  //NEKA FIKIJEVA FUNKCIJA
+  redisDB.driverArived(req.body);
 });
 
 router.post('/finish', async (req, res) => {
@@ -71,15 +76,17 @@ router.post('/finish', async (req, res) => {
       Canc: req.body.isCanceled
     }
     if (req.body.isCanceled == false) {
-      Neo4jDB.execFinishRide(req, res, payload)
+      Neo4jDB.execFinishRide(req, res, payload);
+      redisDB.pub.publish("FinishedRide", JSON.stringify(req.body));
     } else {
-      Neo4jDB.execCancelRide(req, res, payload)
+      Neo4jDB.execCancelRide(req, res, payload);
+      redisDB.pub.publish("CancelAssignedRide", JSON.stringify(req.body));
     }
   } else {
     Neo4jDB.execCancelRideNC(req.body.clientID, res);
+    redisDB.pub.publish("CancelRide", JSON.stringify(req.body));
   }
-  redisDB.pub.publish("RideStatus", JSON.stringify(req));
-})
+});
 
 router.get('/currentid', async (req, res) => {
   //query.execGet(req, res, queryString.CURRENT_ID('rides'));
