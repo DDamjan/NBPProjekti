@@ -38,6 +38,9 @@
 
   </mat-tab>
   <mat-tab label="Recent rides">
-
+    <mat-accordion *ngFor="let ride of recentRides">
+      <detail-expansion [ride]="ride" [client]="client" [isDriver]="false" (mapParams)="receiveMapParams($event)">
+      </detail-expansion>
+    </mat-accordion>
   </mat-tab>
 </mat-tab-group>

@@ -60,6 +60,13 @@ export class DriverHubComponent implements OnInit {
       console.log(data);
       if (data.client.isRequest === true) {
         this.onRequest(data.client);
+      } else {
+        const ride = {
+          destinationLat: data.destinationLat,
+          destinationLng: data.destinationLng,
+          destinationLocation: data.destinationLocation
+        }
+        this.mapView.showDetails(this.driver, ride);
       }
     });
   }

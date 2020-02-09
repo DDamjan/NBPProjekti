@@ -2,6 +2,12 @@ export interface Ride {
     id?: number;
     clientID: number;
     driverID: number;
+    driverFirstName: string;
+    driverLastName: string;
+    driverCurrentLat: number;
+    driverCurrentLng: number;
+    driverLocation: string;
+    operatorID?: number;
     pickupLat: number;
     pickupLng: number;
     destinationLat: number;

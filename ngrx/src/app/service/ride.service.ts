@@ -14,8 +14,13 @@ const httpOptions = {
 export class RideService {
 
     private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
+    private uServerURL = cons.PUBLIC_SERVER_DAMJAN + 'users/';
+
     // private serverURL = cons.LOCAL_SERVER + 'rides/';
+    // private uServerURL = cons.LOCAL_SERVER + 'users/';
+
     // private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
+    // private uSserverURL = cons.PUBLIC_SERVER_PEDJA + 'users/';
 
     constructor(
         private http: HttpClient) { }
@@ -69,6 +74,20 @@ export class RideService {
     findRideAddress(params): Observable<any> {
         const url = cons.HERE_API_AUTOCOMPLETE + params;
         return this.http.get<any>(url);
+    }
+
+    getTopRides(id: number): Observable<Ride[]> {
+        const url = `${this.uServerURL}topLoc?id=${id}`;
+        return this.http.get<Ride[]>(url).pipe(
+            catchError(this.handleError<Ride[]>(`getTopRides id=${id}`))
+        );
+    }
+
+    getRideHistory(id: number): Observable<Ride[]> {
+        const url = `${this.uServerURL}/allLoc?id=${id}`;
+        return this.http.get<Ride[]>(url).pipe(
+            catchError(this.handleError<Ride[]>(`getRideHistory id=${id}`))
+        );
     }
 
     /**
