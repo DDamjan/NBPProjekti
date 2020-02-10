@@ -13,14 +13,14 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
-    private uServerURL = cons.PUBLIC_SERVER_DAMJAN + 'users/';
+    // private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
+    // private uServerURL = cons.PUBLIC_SERVER_DAMJAN + 'users/';
 
     // private serverURL = cons.LOCAL_SERVER + 'rides/';
-    // private uServerURL = cons.LOCAL_SERVER + 'users/';
+   // private uServerURL = cons.LOCAL_SERVER + 'users/';
 
-    // private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
-    // private uSserverURL = cons.PUBLIC_SERVER_PEDJA + 'users/';
+    private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
+    private uServerURL = cons.PUBLIC_SERVER_PEDJA + 'users/';
 
     constructor(
         private http: HttpClient) { }

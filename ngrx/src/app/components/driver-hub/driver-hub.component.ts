@@ -67,17 +67,26 @@ export class DriverHubComponent implements OnInit {
           this.onRequest(data.client);
         }
       } else {
-        const ride = {
-          pickupLat: data.pickupLat,
-          pickupLng: data.pickupLng,
-          destinationLat: data.destinationLat,
-          destinationLng: data.destinationLng,
-          destinationLocation: data.destinationLocation,
-          pickupLocation: data.pickupLocation
-        };
-        this.mapView.showDetails(this.driver, ride);
-        this.isDriving = true;
-        this.isActive = true;
+        if(data.isCanceled === true){
+          this.mapView.clearMap();
+          this.isActive = false;
+          this.driver.isActive = false;
+          this.isDriving = false;
+          this.request = false;
+          this.store.dispatch(new actions.UpdateUserSuccess(this.driver));
+        }else{
+          const ride = {
+            pickupLat: data.pickupLat,
+            pickupLng: data.pickupLng,
+            destinationLat: data.destinationLat,
+            destinationLng: data.destinationLng,
+            destinationLocation: data.destinationLocation,
+            pickupLocation: data.pickupLocation
+          };
+          this.mapView.showDetails(this.driver, ride);
+          this.isDriving = true;
+          this.isActive = true;
+        }
       }
     });
   }
