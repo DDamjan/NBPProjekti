@@ -1,4 +1,4 @@
-<mat-tab-group animationDuration="350ms" mat-align-tabs="left">
+<mat-tab-group animationDuration="350ms" mat-align-tabs="left" [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
   <mat-tab label="Request a taxi">
     <div class="tab-container">
       <div class="input-container">
@@ -50,9 +50,15 @@
     </div>
   </mat-tab>
   <mat-tab label="Favourites">
-
+    <mat-accordion *ngFor="let ride of favouriteRides">
+      <detail-expansion [ride]="ride" [client]="user" [isFavourite]="true" [isDriver]="false" (mapParams)="receiveMapParams($event)">
+      </detail-expansion>
+    </mat-accordion>
   </mat-tab>
   <mat-tab label="History">
-
+    <mat-accordion *ngFor="let ride of rideHistory">
+      <detail-expansion [ride]="ride" [client]="user" [isDriver]="false" [isFavourite]="false" (mapParams)="receiveMapParams($event)">
+      </detail-expansion>
+    </mat-accordion>
   </mat-tab>
 </mat-tab-group>

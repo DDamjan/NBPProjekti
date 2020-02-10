@@ -55,7 +55,7 @@ export class UserEffects {
     switchMap(data => this.userService.authUser(data.payload)),
     map(response => {
       if (response.type !== 'error') {
-        this.router.navigate([`${response.type}/home`]);
+        this.router.navigate([`${response.user.type}/home`]);
         return new actions.AuthUserSuccess(response);
       } else {
         return new actions.AuthUserFail(response);

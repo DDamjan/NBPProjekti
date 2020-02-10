@@ -12,6 +12,17 @@ router.get('/', async (req, res) => {
   Neo4jDB.execDriverAllRides(id, res);
 });
 
+router.post('/arrive', async (req, res) => {
+  const payload={
+    DID:req.body.driverID,
+    Lat:req.body.pickupLat,
+    Lng:req.body.pickupLng,
+    Loc:req.body.pickupLocation,
+  }
+  Neo4jDB.execDriverUpdateArrival(payload, res);
+  redisDB.driverArived(req.body);
+});
+
 router.post('/request', async (req, res) => {
   // console.log(req.body);
   const payload = {
@@ -40,6 +51,7 @@ router.post('/deny', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
+  console.log(req.body);
   const payload = {
     CID: req.body.clientID,
     DID: req.body.driverID,
@@ -57,12 +69,9 @@ router.post('/create', async (req, res) => {
   Neo4jDB.execCreateRide(req, res, payload);
 });
 
-router.post('/arrive', async (req, res) => {
-  //NEKA FIKIJEVA FUNKCIJA
-  redisDB.driverArived(req.body);
-});
-
 router.post('/finish', async (req, res) => {
+  console.log("REEEQ");
+  console.log(req.body);
   const isAssigned = req.body.isAssigned;
   if (isAssigned) {
     const payload = {
@@ -89,7 +98,7 @@ router.post('/finish', async (req, res) => {
 });
 
 router.get('/currentid', async (req, res) => {
-  //query.execGet(req, res, queryString.CURRENT_ID('rides'));
+  query.execGet(req, res, queryString.CURRENT_ID('rides'));
 });
 
 router.post('/adddistancefare', async (req, res) => {

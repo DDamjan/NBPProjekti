@@ -37,6 +37,8 @@ export class DriverHubComponent implements OnInit {
   private request: boolean;
   private requestedRide: any;
   private distanceNum: number;
+  private id: number;
+  private rideHistory: Ride[];
 
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService,
@@ -45,21 +47,37 @@ export class DriverHubComponent implements OnInit {
     this.request = false;
   }
   ngOnInit() {
-    const id = Number(localStorage.getItem('currentUser'));
+    this.id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
-    this.webSocketService.onConnect(id, type);
+    this.webSocketService.onConnect(this.id, type);
     this.store.select(selectAllUsers).subscribe(user => {
       if (user.length === 0) {
-        this.store.dispatch(new actions.GetUser({ id, auth: true }));
+        this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
       } else {
         this.driver = user[0];
       }
     });
 
-    this.webSocketService.listen('Driver:' + id).subscribe((data: any) => {
+    this.populateRideHistory();
+
+    this.webSocketService.listen('Driver:' + this.id).subscribe((data: any) => {
       console.log(data);
-      if (data.client.isRequest === true) {
-        this.onRequest(data.client);
+      if (data.client !== undefined) {
+        if (data.client.isRequest === true) {
+          this.onRequest(data.client);
+        }
+      } else {
+        const ride = {
+          pickupLat: data.pickupLat,
+          pickupLng: data.pickupLng,
+          destinationLat: data.destinationLat,
+          destinationLng: data.destinationLng,
+          destinationLocation: data.destinationLocation,
+          pickupLocation: data.pickupLocation
+        };
+        this.mapView.showDetails(this.driver, ride);
+        this.isDriving = true;
+        this.isActive = true;
       }
     });
   }
@@ -99,8 +117,6 @@ export class DriverHubComponent implements OnInit {
 
     // this.store.dispatch(new actions.UpdateDriver(this.driver));
     // this.mapView.showDetails(this.driver, this.ride);
-    this.buttonEndDisabled = false;
-    this.buttonCancelDisabled = true;
     this.buttonArriveDisabled = true;
     this.snackBar.open(`Driver has arrived`, 'Close', {
       duration: 3000
@@ -127,23 +143,9 @@ export class DriverHubComponent implements OnInit {
     });
   }
 
-  cancelRide() {
-    const dateTime = new Date();
-    this.ride.endTime = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-    this.ride.isCanceled = true;
-    this.rideService.updateRide(this.ride).subscribe();
-    this.driver.isActive = false;
-    // this.store.dispatch(new actions.UpdateDriver(this.driver));
-    // this.dataTable.onChange(this.currentRide);
-    this.ride = null;
-    // this.mapView.showDetails(this.driver, this.ride);
+  populateRideHistory() {
+    this.rideService.getRideHistory(this.id).subscribe(rides => { this.rideHistory = rides; });
 
-    this.buttonCancelDisabled = true;
-    this.buttonArriveDisabled = true;
-
-    this.snackBar.open(`Current ride has been canceled`, 'Close', {
-      duration: 3000
-    });
   }
 
   onRequest(req) {

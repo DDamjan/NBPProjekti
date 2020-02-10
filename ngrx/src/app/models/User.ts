@@ -2,8 +2,8 @@ export interface User {
     id?: number;
     firstName: string;
     lastName: string;
-    username: string;
-    type: string;
+    username?: string;
+    type?: string;
     isActive?: boolean;
     // Driver
     phone?: string;
