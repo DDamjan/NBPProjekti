@@ -23,6 +23,7 @@ const UPDATE_CLIENT_TRUE='match (c:Client) where id(c)=$CID set c.isActive=true,
 const UPDATE_DRIVER_TRUE='match (d:Driver) where id(d)=$DID set d.isActive=true';//d.pickupLat=$SLat,d.pickupLng=$SLng,d.pickupLocation=$SLoc';
 const CANCEL_RIDE_NOT_CREATED='match (c:Client) where id(c)=$CID set c.isActive=false,c.destinationLat=0.0,c.destinationLng=0.0,c.destinationLocation="" return c';
 const DRIVER_UPDATE_ARRIVAL='match (d:Driver) where id(d)=$DID set d.currentLocation=$Loc,d.currentLat=$Lat,d.currentLng=$Lng return d';
+const DRIVER_BT_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(r)=$RID and id(c)=$CID return d';
 
 module.exports = {
     GET_ALL_USERS_TYPE: GET_ALL_USERS_TYPE,
@@ -48,5 +49,6 @@ module.exports = {
     CANCEL_RIDE_NOT_CREATED: CANCEL_RIDE_NOT_CREATED,
     GET_USER_BY_ID_WAR: GET_USER_BY_ID_WAR,
     DRIVER_UPDATE_ARRIVAL: DRIVER_UPDATE_ARRIVAL,
-    USER_AUTH_WAR: USER_AUTH_WAR
+    USER_AUTH_WAR: USER_AUTH_WAR,
+    DRIVER_BT_RIDE: DRIVER_BT_RIDE
 }

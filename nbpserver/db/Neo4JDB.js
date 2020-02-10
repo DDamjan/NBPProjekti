@@ -461,6 +461,27 @@ async function execDriverUpdateArrival(payload,res){
   .then(() => session.close())
 }
 
+async function execDriverByRide(clientID,rideID,res){
+  var session=driver.session()
+  session.run(query.DRIVER_BT_RIDE,{CID:neo4j.int(clientID),RID:neo4j.int(rideID)})
+  .then(result => {
+    console.log(result);
+    result.records.forEach(record => {
+      let l=record.get('d');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
+      res.end();
+      });
+    })
+  .catch(error => {
+    errorHandler(error,res);
+  })
+  .then(() => session.close())
+}
+
+
 async function errorHandler(err,res)
 {
     res.status(500);
@@ -487,5 +508,6 @@ module.exports={
     execRideDelete: execRideDelete,
     execUpdateClientTrue: execUpdateClientTrue,
     execCancelRideNC: execCancelRideNC,
-    execDriverUpdateArrival: execDriverUpdateArrival
+    execDriverUpdateArrival: execDriverUpdateArrival,
+    execDriverByRide: execDriverByRide
 }
