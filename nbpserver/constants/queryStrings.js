@@ -16,7 +16,7 @@ const DRIVER_ALL_RIDES='match (d:Driver)-[r1]->(r:Ride) where id(d)=$DID return 
 const CLIENT_ALL_DEST_LOC='match (c)-[r1]->(r:Ride) where id(c)=$CID return r';
 const ALL_DRIVERS_WITH_RIDES='match (n:Driver)-[r1]->(r:Ride) return distinct n';
 const CHECK_USER='match (n) where n.username=$user and n.type=$type return n';
-const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r.destinationLocation),r order by count(r) desc';
+const TOP_LOCATIONS='match (c:Client)-[r1]->(r:Ride) where id(c)=$CID return distinct count(r),r,r.destinationLocation order by count(r) desc';
 const DELETE_RIDE='match (r:Ride) where id(r)=$RID detach delete r';
 const UPDATE_CLIENT_TRUE='match (c:Client) where id(c)=$CID set c.isActive=true,c.currentLat=$Lat,c.currentLng=$Lng,c.currentLocation=$Loc,c.destinationLat=$DLat,c.destinationLng=$DLng,c.destinationLocation=$DLoc return c';
 const UPDATE_DRIVER_TRUE='match (d:Driver) where id(d)=$DID set d.isActive=true';//d.pickupLat=$SLat,d.pickupLng=$SLng,d.pickupLocation=$SLoc';
