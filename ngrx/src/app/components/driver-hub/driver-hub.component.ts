@@ -62,10 +62,12 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
         this.isActive = this.driver.isActive;
         this.store.select(selectAllRides).subscribe(currentRide => {
           this.ride = currentRide[0];
-          this.mapView.showDetails(this.driver, this.ride);
+          if (this.ride.isActive !== undefined){
+            this.mapView.showDetails(this.driver, this.ride);
+          }
         });
         const clientID = localStorage.getItem('drivenClient');
-        if (clientID !== '') {
+        if (clientID !== null) {
           this.request = false;
           this.userService.getUser({ id: clientID, auth: false }).subscribe(user => {
             this.client = user.user;
