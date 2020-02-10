@@ -25,6 +25,12 @@ router.get('/', async (req, res) => {
   Neo4jDB.execReturnById(req.query,res);
 });
 
+router.get('/driverByRide', async (req, res) => {
+  let clientID=req.query.clientID;
+  let rideID=req.query.rideID;
+  Neo4jDB.execDriverByRide(clientID,rideID,res);
+});
+
 router.get('/topLoc', async (req, res) => {
   let id = req.query.id;
   //console.log(id);
