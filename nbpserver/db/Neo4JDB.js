@@ -407,10 +407,10 @@ async function execUpdateClientTrue(payload,res){
   var session=driver.session()
   session.run(query.UPDATE_CLIENT_TRUE,payload)
   .then(result => {
-    console.log("RESULT");
-    console.log(result);
-    console.log("RESULTRECORDS");
-    console.log(result.records);
+    // console.log("RESULT");
+    // console.log(result);
+    // console.log("RESULTRECORDS");
+    // console.log(result.records);
     result.records.forEach(record => {
       let l=record.get('c');
       let s=l.properties;
