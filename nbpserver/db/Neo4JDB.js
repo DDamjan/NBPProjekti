@@ -264,7 +264,7 @@ async function execFinishRide(req,res,payload)
   .then(() => session.close())
 }
 
-async function execCancelRide(req,res,paylaod)
+async function execCancelRide(req,res,payload)
 {
   var session=driver.session()
   session.run(query.CANCEL_RIDE,payload)

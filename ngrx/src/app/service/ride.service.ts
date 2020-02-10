@@ -84,7 +84,7 @@ export class RideService {
     }
 
     getRideHistory(id: number): Observable<Ride[]> {
-        const url = `${this.uServerURL}/allLoc?id=${id}`;
+        const url = `${this.uServerURL}allLoc?id=${id}`;
         return this.http.get<Ride[]>(url).pipe(
             catchError(this.handleError<Ride[]>(`getRideHistory id=${id}`))
         );

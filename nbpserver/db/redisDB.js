@@ -43,9 +43,13 @@ subAprovedRide.on("message", function (channel, body) {
     let operatorID = body.operatorID;
 
     client.hget("requests", clientID, (err, res) => {
+        console.log("BOOOODY");
+        console.log(body);
         res = JSON.parse(res);
-        if (!res.isCanceled) {
-            res.driverID = driverID;
+        console.log("REEEEEEES");
+        console.log(res);
+        if (!res.client.isCanceled) {
+            //res.driverID = driverID;
             webSocket.io.emit('Client:' + clientID, body);
             webSocket.io.emit('Driver:' + driverID, body);
             client.hmset("driver", driverID, true);

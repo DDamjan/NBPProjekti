@@ -13,6 +13,8 @@ import { UserService } from 'src/app/service/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Ride } from 'src/app/models/Ride';
+import { FormControl } from '@angular/forms';
+import { selectAllRides } from 'src/app/store/reducers/ride.reducer';
 
 @Component({
   selector: 'app-request-ride',
@@ -43,6 +45,8 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
   private favouriteRides: Ride[];
   private rideHistory: Ride[];
   private id: number;
+  selected = new FormControl(0);
+  private isEnroute = false;
 
   constructor(private store: Store<any>, private rideService: RideService,
     private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
@@ -53,18 +57,21 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
     const type = localStorage.getItem('currentUserType');
     this.webSocketService.onConnect(this.id, type);
     this.store.select(selectAllUsers).subscribe(currentUser => {
-      if (currentUser.length === 0) {
-        this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
-      } else {
-        this.user = currentUser[0];
-        this.isRequested = this.user.isActive;
-        if (this.isRequested) {
-          if (this.mapView.platform !== undefined) {
-            this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+        if (currentUser.length === 0) {
+          this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
+        } else {
+          this.user = currentUser[0];
+          this.store.select(selectAllRides).subscribe(currentRide => {
+            this.ride = currentRide[0];
+          });
+          this.isRequested = this.user.isActive;
+          if (this.isRequested) {
+            if (this.mapView.platform !== undefined) {
+              this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+            }
           }
         }
-      }
-    });
+      });
 
     this.populateRideHistory();
 
@@ -78,7 +85,9 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
         currentLng: data.driverCurrentLng,
         currentLocation: data.drvierLocation,
         isActive: true
-      }
+      };
+      this.isEnroute = true;
+      this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
       this.mapView.renderDriver(this.driver, this.pickupAddressName);
       this.snackBar.open(`Driver ${data.driverID} en route`, 'Close', {
         duration: 3000
@@ -89,12 +98,17 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (this.isRequested) {
       this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
+    } else if (this.isEnroute) {
+      this.mapView.showDetails(this.driver, this.ride);
     }
   }
 
   populateRideHistory() {
-    this.rideService.getTopRides(this.id).subscribe(rides => { console.log('Prvi'); console.log(rides); });
-    this.rideService.getRideHistory(this.id).subscribe(rides => { console.log('Drugi'); console.log(rides); });
+    this.rideService.getTopRides(this.id).subscribe(rides => {
+      this.favouriteRides = rides;
+      this.favouriteRides.sort((a, b) => (a.count > b.count) ? 1 : -1);
+    });
+    this.rideService.getRideHistory(this.id).subscribe(rides => { this.rideHistory = rides; });
 
   }
 
@@ -188,43 +202,40 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
   }
 
   cancelRide() {
-    this.mapView.clearMap();
-    this.isRequested = false;
-    let payload;
-    if (this.driver === undefined) {
-      payload = {
-        clientID: this.user.id,
-        isAssigned: false,
-        isCanceled: true
-      };
-    } else {
-      const dateTime = new Date();
-      const endTime: string = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-      payload = {
-        clientID: this.user.id,
-        driverID: this.driver.id,
-        rideID: this.ride.id,
-        destinationLat: this.user.destinationLat,
-        destinationLng: this.user.destinationLng,
-        destinationLocation: this.user.destinationLocation,
-        endTime,
-        isCanceled: true,
-        isAssigned: true
-      };
-    }
-    this.store.dispatch(new actions.CancelRide(payload));
-    this.snackBar.open('Ride canceled!', 'Close', {
-      duration: 3000
-    });
+      this.mapView.clearMap();
+      this.isRequested = false;
+      let payload;
+      if (this.ride.isActive === undefined) {
+        payload = {
+          clientID: this.user.id,
+          isAssigned: false,
+          isCanceled: true
+        };
+      } else {
+        const dateTime = new Date();
+        const endTime: string = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
+        payload = {
+          clientID: this.user.id,
+          rideID: this.ride.id,
+          driverID: -1,
+          destinationLat: this.user.destinationLat,
+          destinationLng: this.user.destinationLng,
+          destinationLocation: this.user.destinationLocation,
+          endTime,
+          isCanceled: true,
+          isAssigned: true
+        };
+      }
+      this.store.dispatch(new actions.CancelRide(payload));
+      this.snackBar.open('Ride canceled!', 'Close', {
+        duration: 3000
+      });
   }
 
   receiveMapParams($event) {
-    this.pickupAddressName = $event.pickupLocation;
-    this.destinationAddressName = $event.destinationAddressName;
+    this.pickupAddressName = this.user.currentLocation;
+    this.destinationAddressName = $event.destinationLocation;
+    this.selected.setValue(0);
     this.mapView.renderRequest(this.pickupAddressName, this.destinationAddressName, false, null);
   }
 }
-
-
-
-

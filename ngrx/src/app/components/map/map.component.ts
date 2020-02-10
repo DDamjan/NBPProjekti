@@ -140,7 +140,7 @@ export class MapComponent implements OnInit {
     };
 
     this.addDriverToMap(driver);
-    this.calculateRouteFromAtoB(driverCoords, extractedCoords);
+    this.calculateRouteFromAtoB(driverCoords, extractedCoords, true);
   }
 
   onSuccess(resultAddress, pickupAddressString: string, destinationAddressString: string) {
@@ -179,7 +179,7 @@ export class MapComponent implements OnInit {
     };
 
     this.addLocationToMap(destinationCoord, destinationAddressString);
-    this.calculateRouteFromAtoB(pickupLocation, destinationCoord);
+    this.calculateRouteFromAtoB(pickupLocation, destinationCoord, true);
 
     // createRide(nearestDriver, destinationCoord, destinationAddressString, this.rideService);
     // this.snackBar.open(`Driver assigned. Car no: ${nearestDriver.id}`, 'Close', {
@@ -256,7 +256,7 @@ export class MapComponent implements OnInit {
     });
   }
 
-  calculateRouteFromAtoB(waypoint1, waypoint2) {
+  calculateRouteFromAtoB(waypoint1, waypoint2, isRender) {
     const router = this.platform.getRoutingService();
     const convertCoordsWP1 = waypoint1.lat + ',' + waypoint1.lng;
     const convertCoordsWP2 = waypoint2.lat + ',' + waypoint2.lng;
@@ -271,10 +271,12 @@ export class MapComponent implements OnInit {
 
     router.calculateRoute(
       routeRequestParams, (success) => {
-        this.addRouteShapeToMap(success, waypoint1.mode);
+        if (isRender === true) {
+          this.addRouteShapeToMap(success, waypoint1.mode);
+        }
         this.alertDispatcher(success, waypoint1.mode);
         if (waypoint1.mode === 'location') {
-          fareDistance(success.response.route[0].summary.distance, this.rideService, waypoint1.driverID);
+          fareDistance(success.response.route[0].summary.distance);
         }
       },
       (error) => { console.log(error); }
@@ -363,36 +365,25 @@ export class MapComponent implements OnInit {
         mode: 'location-detial'
       };
 
-      if (driver.pickupLat !== null && driver.pickupLng !== null) {
+      const pickupCoord = {
+        lat: ride.pickupLat,
+        lng: ride.pickupLng,
+        mode: 'location-detail'
+      };
 
-        const pickupCoord = {
-          lat: ride.pickupLat,
-          lng: ride.pickupLng,
-          mode: 'location-detail'
-        };
+      this.addDriverToMap(driver);
+      const markerPickup = new H.map.Marker(pickupCoord);
+      markerPickup.setData(`Pickup: ${ride.pickupLocation}`);
+      this.map.addObject(markerPickup);
+      this.calculateRouteFromAtoB(driverCoord, pickupCoord, true);
 
-        this.addDriverToMap(driver);
-        const markerPickup = new H.map.Marker(pickupCoord);
-        markerPickup.setData(`Destination: ${driver.pickupLocation}`);
-        this.map.addObject(markerPickup);
-        this.calculateRouteFromAtoB(driverCoord, pickupCoord);
+      const markerDest = new H.map.Marker(destCoord);
+      markerDest.setData(`Destination: ${ride.destinationLocation}`);
+      this.map.addObject(markerDest);
+      this.calculateRouteFromAtoB(pickupCoord, destCoord, true);
 
-        const markerDest = new H.map.Marker(destCoord);
-        markerDest.setData(`Destination: ${driver.pickupLocation}`);
-        this.map.addObject(markerDest);
-        this.calculateRouteFromAtoB(pickupCoord, destCoord);
-
-        this.map.setCenter(destCoord);
-        this.map.setZoom(14);
-      } else {
-        this.addDriverToMap(driver);
-        const marker = new H.map.Marker(destCoord);
-        marker.setData(`Destination: ${ride.destinationLocation}`);
-        this.map.addObject(marker);
-        this.map.setCenter(destCoord);
-        this.map.setZoom(14);
-        this.calculateRouteFromAtoB(driverCoord, destCoord);
-      }
+      this.map.setCenter(destCoord);
+      this.map.setZoom(14);
     } else {
       this.addDriverToMap(driver);
       this.map.setCenter(driverCoord);
