@@ -8,9 +8,9 @@ import * as conn from '../../constants/server-urls';
 })export class WebSocketService {
 
     socket: any;
-    readonly uri: string = conn.PUBLIC_WEBSOCKET_DAMJAN;
+    // readonly uri: string = conn.PUBLIC_WEBSOCKET_DAMJAN;
     // readonly uri: string = conn.LOCAL_WEBSOCKET;
-    // readonly uri: string = conn.PUBLIC_WEBSOCKET_PEDJA;
+    readonly uri: string = conn.PUBLIC_WEBSOCKET_PEDJA;
 
     constructor() {
     }

@@ -150,6 +150,27 @@ export class DriverHubComponent implements OnInit {
     this.snackBar.open(`Current ride has ended`, 'Close', {
       duration: 3000
     });
+
+    // this.mapView.clearMap();
+    // this.isActive = false;
+    // this.driver.isActive = false;
+    // this.isDriving = false;
+    // this.request = false;
+    // const ride = {
+    //   pickupLat: data.pickupLat,
+    //   pickupLng: data.pickupLng,
+    //   destinationLat: data.destinationLat,
+    //   destinationLng: data.destinationLng,
+    //   destinationLocation: data.destinationLocation,
+    //   pickupLocation: data.pickupLocation
+    // };
+
+
+
+
+    this.rideService.finishRide(ride).subscribe(() => {
+
+    });
   }
 
   populateRideHistory() {

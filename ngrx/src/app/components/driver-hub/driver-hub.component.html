@@ -27,7 +27,7 @@
         <button mat-raised-button (click)="rejectRide()" *ngIf="request">Reject</button>
         <button mat-raised-button (click)="arrive()" [disabled]="buttonArriveDisabled" *ngIf="isActive">Arrive to pick up location</button>
         <button mat-raised-button (click)="showOnMap()" *ngIf="isActive==false && request==false">Show on map</button>
-        <button mat-raised-button (click)="endRide()" [disabled]="buttonEndDisabled" *ngIf="isActive">End current ride</button>
+        <button mat-raised-button (click)="endRide()" [disabled]="buttonEndDisabled" *ngIf="isActive">Finish ride</button>
       </div>
       <map-component #mapView width="100%" height="67vh" lat="43.318058" lng="21.891996" zoom="15"
         (routeParams)="receiveRouteParams($event)"></map-component>
