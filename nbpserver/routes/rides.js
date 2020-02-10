@@ -12,6 +12,16 @@ router.get('/', async (req, res) => {
   Neo4jDB.execDriverAllRides(id, res);
 });
 
+router.post('/arrive', async (req, res) => {
+  const payload={
+    DID:req.body.driverID,
+    Lat:req.body.pickupLat,
+    Lng:req.body.pickupLng,
+    Loc:req.body.pickupLocation,
+  }
+  Neo4jDB.execDriverUpdateArrival(payload, res);
+});
+
 router.post('/request', async (req, res) => {
   // console.log(req.body);
   const payload = {

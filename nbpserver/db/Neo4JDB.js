@@ -413,6 +413,25 @@ async function execCancelRideNC(clientID,res)
 .then(() => session.close())
 }
 
+async function execDriverUpdateArrival(payload,res){
+  var session=driver.session()
+  session.run(query.DRIVER_UPDATE_ARRIVAL,payload)
+  .then(result => {
+    result.records.forEach(record => {
+      let l=record.get('d');
+      let s=l.properties;
+      s.id=l.identity.low;
+      delete s.password;
+      res.json(s);
+      res.end();
+      });
+    })
+  .catch(error => {
+    errorHandler(error,res);
+  })
+  .then(() => session.close())
+}
+
 async function errorHandler(err,res)
 {
     res.status(500);
@@ -438,5 +457,6 @@ module.exports={
     execClientTopLocations: execClientTopLocations ,
     execRideDelete: execRideDelete,
     execUpdateClientTrue: execUpdateClientTrue,
-    execCancelRideNC: execCancelRideNC
+    execCancelRideNC: execCancelRideNC,
+    execDriverUpdateArrival: execDriverUpdateArrival
 }
