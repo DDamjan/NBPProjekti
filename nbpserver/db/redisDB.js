@@ -46,8 +46,8 @@ subAprovedRide.on("message", function (channel, body) {
         res = JSON.parse(res);
         if (!res.isCanceled) {
             res.driverID = driverID;
-            webSocket.io.emit('Client:' + clientID, res);
-            webSocket.io.emit('Driver:' + driverID, res);
+            webSocket.io.emit('Client:' + clientID, body);
+            webSocket.io.emit('Driver:' + driverID, body);
             client.hmset("driver", driverID, true);
         }
     });
