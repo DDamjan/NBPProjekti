@@ -86,7 +86,7 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
 
     this.webSocketService.listen('Client:' + this.id).subscribe((data: any) => {
       console.log(data);
-      if (data.hasArrived !== undefined) {
+      if (data.hasArrived !== undefined || data.hasFinished !== undefined) {
         if (data.hasArrived === true) {
           this.mapView.clearMap();
           this.driver.currentLat = data.pickupLat;
@@ -94,6 +94,12 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
           this.driver.currentLocation = data.pickupLocation;
           this.mapView.showDetails(this.driver, this.ride);
           this.cancelDisabled = true;
+        } else if (data.hasFinished === true) {
+          this.driver.currentLat = data.destinationLat;
+          this.driver.currentLng = data.destinationLng;
+          this.driver.currentLocation = data.destinationLocation;
+          this.mapView.clearMap();
+          this.isRequested = false;
         }
       }
       this.driver = {

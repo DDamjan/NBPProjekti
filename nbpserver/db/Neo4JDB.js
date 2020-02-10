@@ -407,6 +407,10 @@ async function execUpdateClientTrue(payload,res){
   var session=driver.session()
   session.run(query.UPDATE_CLIENT_TRUE,payload)
   .then(result => {
+    console.log("RESULT");
+    console.log(result);
+    console.log("RESULTRECORDS");
+    console.log(result.records);
     result.records.forEach(record => {
       let l=record.get('c');
       let s=l.properties;
@@ -424,7 +428,7 @@ async function execUpdateClientTrue(payload,res){
 
 async function execCancelRideNC(clientID,res)
 {
-  var session=driver.session()
+  var session=driver.session();
   session.run(query.CANCEL_RIDE_NOT_CREATED,{CID:neo4j.int(clientID)})
   .then(result => {
     result.records.forEach(record => {

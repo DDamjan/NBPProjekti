@@ -176,36 +176,32 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
     this.driver.currentLat = this.ride.destinationLat;
     this.driver.currentLng = this.ride.destinationLng;
     this.driver.currentLocation = this.ride.destinationLocation;
+    this.isActive = false;
+    this.isDriving = false;
+
     // this.store.dispatch(new actions.UpdateDriver(this.driver));
-    // this.dataTable.onChange(this.ride);
     this.ride = null;
-    // this.mapView.showDetails(this.driver, this.ride);
+    this.mapView.showDetails(this.driver, this.ride);
 
     this.buttonEndDisabled = true;
 
+    const payload = {
+      rideID: this.ride.id,
+      clientID: this.client.id,
+      driverID: this.driver.id,
+      destinationLat: this.ride.destinationLat,
+      destinationLng: this.ride.destinationLng,
+      destinationLocation: this.ride.destinationLocation,
+      endTime: this.ride.endTime,
+      isCanceled: false,
+      isAssigned: true,
+      hasFinished: true
+    }
+
+    this.rideService.finishRide(payload).subscribe();
+
     this.snackBar.open(`Current ride has ended`, 'Close', {
       duration: 3000
-    });
-
-    // this.mapView.clearMap();
-    // this.isActive = false;
-    // this.driver.isActive = false;
-    // this.isDriving = false;
-    // this.request = false;
-    // const ride = {
-    //   pickupLat: data.pickupLat,
-    //   pickupLng: data.pickupLng,
-    //   destinationLat: data.destinationLat,
-    //   destinationLng: data.destinationLng,
-    //   destinationLocation: data.destinationLocation,
-    //   pickupLocation: data.pickupLocation
-    // };
-
-
-
-
-    this.rideService.finishRide(ride).subscribe(() => {
-
     });
   }
 
