@@ -1,0 +1,55 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    width: 100vw;
+    height: 100%;
+    float: left;
+    padding: 0;
+}
+
+.title {
+    width: 100vw;
+    height: 50px;
+    padding-left: 2%;
+    padding-right: 2%;
+    background-color: #388E3C;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+h1 {
+    margin: auto;
+}
+
+h3 {
+    margin: auto;
+    color: white;
+}
+
+.addPlaylist{
+    background-color: #4CAF50;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    padding-right: 2%;
+    padding-left: 3%;
+}
+
+.form-container{
+    margin-left: 83%;
+    
+}
+
+.card-outline{
+    margin: 2%;
+}

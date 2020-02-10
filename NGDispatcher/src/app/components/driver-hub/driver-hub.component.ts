@@ -35,7 +35,6 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
   private buttonEndDisabled: boolean;
   private buttonCancelDisabled: boolean;
   private buttonArriveDisabled: boolean;
-  private isActive: boolean;
   private request: boolean;
   private requestedRide: any;
   private distanceNum: number;
@@ -46,7 +45,6 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService,
     private snackBar: MatSnackBar, private store: Store<any>, private userService: UserService) {
-    this.isActive = false;
     this.request = false;
   }
   ngOnInit() {
@@ -59,10 +57,10 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
       } else {
         this.driver = user[0];
         this.isDriving = this.driver.isActive;
-        this.isActive = this.driver.isActive;
         this.store.select(selectAllRides).subscribe(currentRide => {
           this.ride = currentRide[0];
-          if (this.ride.isActive !== undefined){
+          if (this.ride.isActive !== undefined) {
+            this.isDriving = this.driver.isActive;
             this.mapView.showDetails(this.driver, this.ride);
           }
         });
@@ -86,12 +84,14 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
         }
       } else {
         if (data.isCanceled === true) {
-          this.mapView.clearMap();
-          this.isActive = false;
-          this.driver.isActive = false;
-          this.isDriving = false;
-          this.request = false;
-          this.store.dispatch(new actions.UpdateUserSuccess(this.driver));
+          setTimeout(() => {
+            this.mapView.clearMap();
+            this.isDriving = false;
+            this.driver.isActive = false;
+            this.isDriving = false;
+            this.request = false;
+            this.store.dispatch(new actions.UpdateUser(this.driver));
+          })
         } else {
           const ride = {
             pickupLat: data.pickupLat,
@@ -103,20 +103,22 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
           };
           this.mapView.showDetails(this.driver, ride);
           this.isDriving = true;
-          this.isActive = true;
           this.buttonEndDisabled = true;
           localStorage.setItem('drivenClient', data.clientID);
-          this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
-          this.userService.getUser({ id: data.clientID, auth: false }).subscribe(user => {
-            this.client = user.user;
-          });
+          setTimeout(() => {
+            this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
+            this.userService.getUser({ id: data.clientID, auth: false }).subscribe(user => {
+              this.client = user.user;
+            });
+          }, 1000);
+
         }
       }
     });
   }
 
   ngAfterViewInit() {
-    if (this.isActive || this.request) {
+    if (this.isDriving || this.request) {
       // this.mapView.showDetails(this.driver, this.ride);
     }
   }
@@ -178,12 +180,11 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
     this.driver.currentLat = this.ride.destinationLat;
     this.driver.currentLng = this.ride.destinationLng;
     this.driver.currentLocation = this.ride.destinationLocation;
-    this.isActive = false;
     this.isDriving = false;
 
     // this.store.dispatch(new actions.UpdateDriver(this.driver));
     this.ride = null;
-    this.mapView.showDetails(this.driver, this.ride);
+    this.mapView.clearMap();
 
     this.buttonEndDisabled = true;
 
@@ -198,7 +199,7 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
       isCanceled: false,
       isAssigned: true,
       hasFinished: true
-    }
+    };
 
     this.rideService.finishRide(payload).subscribe();
 

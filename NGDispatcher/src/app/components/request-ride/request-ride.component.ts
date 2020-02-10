@@ -31,7 +31,7 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
   private destinationLng: number;
   private destinationAddressName: string;
 
-  private distancePickup: number;
+  private distancePickup: string;
   private ETAPickup: string;
   private distanceDestination: number;
   private ETADestination: string;
@@ -64,14 +64,27 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
       } else {
         this.user = currentUser[0];
         this.store.select(selectAllRides).subscribe(currentRide => {
-          this.ride = currentRide[0];
-          const payload = {
-            clientID: this.user.id,
-            rideID: this.ride.id
-          };
-          this.userService.getDriverByRide(payload).subscribe(designatedDriver => {
-            this.driverID = designatedDriver.id;
-          });
+          if (Object.keys(currentRide[0]).length !== 0) {
+            this.isEnroute = true;
+            this.ride = currentRide[0];
+            this.driverID = Number(localStorage.getItem('designatedDriver'));
+            this.userService.getUser({ id: this.driverID, auth: false }).subscribe(currentDriver => {
+              this.driver = currentDriver.user;
+              this.mapView.showDetails(this.driver, this.ride);
+            });
+            // const payload = {
+            //   clientID: this.user.id,
+            //   rideID: this.ride.id
+            // };
+            // if (this.ride.id !== undefined) {
+            //   this.userService.getDriverByRide(payload).subscribe(designatedDriver => {
+            //     this.driverID = designatedDriver.id;
+            //   });
+            // } else {
+
+            // }
+
+          }
         });
         this.isRequested = this.user.isActive;
         if (this.isRequested) {
@@ -101,22 +114,26 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
           this.mapView.clearMap();
           this.isRequested = false;
         }
+      } else {
+        this.driver = {
+          id: data.driverID,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          currentLat: data.driverCurrentLat,
+          currentLng: data.driverCurrentLng,
+          currentLocation: data.drvierLocation,
+          isActive: true
+        };
+        this.isEnroute = true;
+        localStorage.setItem('designatedDriver', String(this.driver.id));
+        setTimeout(() => {
+          this.store.dispatch(new actions.GetUser({ id: this.id, auth: false }));
+          this.mapView.renderDriver(this.driver, this.pickupAddressName);
+        }, 1000);
+        this.snackBar.open(`Driver ${data.driverID} en route`, 'Close', {
+          duration: 3000
+        });
       }
-      this.driver = {
-        id: data.driverID,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        currentLat: data.driverCurrentLat,
-        currentLng: data.driverCurrentLng,
-        currentLocation: data.drvierLocation,
-        isActive: true
-      };
-      this.isEnroute = true;
-      this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
-      this.mapView.renderDriver(this.driver, this.pickupAddressName);
-      this.snackBar.open(`Driver ${data.driverID} en route`, 'Close', {
-        duration: 3000
-      });
     });
   }
 
@@ -204,6 +221,9 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
 
+      if (this.distancePickup === '0 m') {
+        this.cancelDisabled = true;
+      }
       this.updateAndRequest();
     }
   }
@@ -230,7 +250,7 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
     this.mapView.clearMap();
     this.isRequested = false;
     let payload;
-    if (this.ride.isActive === undefined) {
+    if (this.driver === undefined || this.ride === undefined) {
       payload = {
         clientID: this.user.id,
         isAssigned: false,

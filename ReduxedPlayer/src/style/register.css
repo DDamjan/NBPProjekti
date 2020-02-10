@@ -1,0 +1,42 @@
+.Register-container{
+    height: 100vh;
+    width: 100%;
+    background-image: url("../repo/Login.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+  .Register {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    height: 350px;
+    margin: auto;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .Register form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+
+  Form.Group{
+      flex-grow: 1;
+  }
+  
+  span{
+    text-align: center;
+    /*color: white;*/
+    font-size: 40pt;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  p{
+      text-align: center;
+  }
