@@ -31,34 +31,63 @@ async function execAllUsersByType(type,res) {
 
 async function execAuth(username,password,res){
   var session=driver.session();
-  session.run(query.USER_AUTH, {user: username , pass: password})
-  .then(result => { 
-    if(result.records.length==0){
-      const failed = {
-        id: -1,
-        firstName: 'error',
-        lastName: 'error',
-        username: 'error',
-        type: 'error'
-      };
-      res.json(failed);
+  const transaction=session.beginTransaction();
+  try {
+    let l={};
+    const result1=await transaction.run(query.USER_AUTH_WAR,{user: username , pass: password});
+     if(result1.records.length!=0){
+    result1.records.forEach(record => {
+      let n=record.get('n');
+      let r=record.get('r');
+      let n1=n.properties;
+      n1.id=n.identity.low;
+      delete n1.password;
+      l.user = n1;
+      let r1=r.properties;
+      r1.id=r.identity.low;
+      l.ride = r1;
+      res.json(l);
       res.end();
+     console.log('First option query completed');
+    })
+     }
+     else{
+      const result2=await transaction.run(query.USER_AUTH,{user: username , pass: password});
+      if(result2.records.length==0)
+      {
+        const failed = {
+          id: -1,
+          firstName: 'error',
+          lastName: 'error',
+          username: 'error',
+          type: 'error'
+        };
+        res.json(failed);
+        res.end();
+      }
+      else{
+      result2.records.forEach(record => {
+        let n=record.get('n');
+        let n1=n.properties;
+        n1.id=n.identity.low;
+        delete n1.password;
+        l.user=n1;
+        l.ride={};
+        res.json(l);
+        res.end();
+        console.log('Second option query completed');
+      })
     }
-    else
-    {
-    result.records.forEach(record => {
-      let l=record.get('n');
-      let s=l.properties;
-      s.id=l.identity.low;
-      delete s.password;
-      res.json(s);
-      res.end();
-    })}
-  })
-  .catch(error => {
-    errorHandler(error,res);
-  })
-  .then(() => session.close())
+  }
+  }
+  catch(error){
+    console.log(error);
+    await transaction.rollback();
+    console.log('rolled back');
+  }
+  finally { 
+    await session.close();
+  }
 }
 
 async function execReturnById(req,res){

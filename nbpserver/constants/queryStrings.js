@@ -2,6 +2,7 @@ const REPO_PATH = __dirname.substring(0, __dirname.indexOf('\\constants')) + '\\
 
 const GET_ALL_USERS_TYPE = 'match (n) where n.type=$Type return n';
 const USER_AUTH = 'match (n) where n.username=$user and n.password=$pass return n';
+const USER_AUTH_WAR='match (n)-[r1]->(r:Ride) where n.username=$user and n.password=$pass and r.isActive=true return n,r';
 const GET_USER_BY_ID = 'MATCH (n) WHERE id(n)=$ID RETURN n';
 const GET_USER_BY_ID_WAR='match (n)-[r1]->(r:Ride) where id(n)=$ID and r.isActive=true return n,r';
 const CREATE_DRIVER='CREATE(a:Driver {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"driver",isActive:false,phone:$Tel,car:$Car,carColor:$Color,licencePlate:$Plate,currentLat:$cLat,currentLng:$cLng,currentLocation:$cLoc,pickupLat:0.0,pickupLng:0.0,pickupLocation:""}) return a';
@@ -46,5 +47,6 @@ module.exports = {
     UPDATE_DRIVER_TRUE: UPDATE_DRIVER_TRUE,
     CANCEL_RIDE_NOT_CREATED: CANCEL_RIDE_NOT_CREATED,
     GET_USER_BY_ID_WAR: GET_USER_BY_ID_WAR,
-    DRIVER_UPDATE_ARRIVAL: DRIVER_UPDATE_ARRIVAL
+    DRIVER_UPDATE_ARRIVAL: DRIVER_UPDATE_ARRIVAL,
+    USER_AUTH_WAR: USER_AUTH_WAR
 }
