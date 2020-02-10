@@ -6,7 +6,7 @@ const GET_USER_BY_ID = 'MATCH (n) WHERE id(n)=$ID RETURN n';
 const GET_USER_BY_ID_WAR='match (n)-[r1]->(r:Ride) where id(n)=$ID and r.isActive=true return n,r';
 const CREATE_DRIVER='CREATE(a:Driver {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"driver",isActive:false,phone:$Tel,car:$Car,carColor:$Color,licencePlate:$Plate,currentLat:$cLat,currentLng:$cLng,currentLocation:$cLoc,pickupLat:0.0,pickupLng:0.0,pickupLocation:""}) return a';
 const CREATE_CLIENT='CREATE(a:Client {firstName:$Ime,lastName:$Prez,username:$User,password:$Pass,type:"client",isActive:false,currentLat:$Lat,currentLng:$Lng,currentLocation:$Loc,destinationLat:0.0,destinationLng:0.0,destinationLocation:""}) return a';
-const CREATE_RIDE='CREATE (r:Ride {pickupLat:$SLat,pickupLng:$SLng,destinationLat:$DLat,destinationLng:$DLng,pickupLocation:$SLoc,destinationLocation:$DLoc,startTime:$STime,endTime:"X",isCanceled:false,fare:$Fare,distance:$Dist}) return r';
+const CREATE_RIDE='CREATE (r:Ride {isActive:true,pickupLat:$SLat,pickupLng:$SLng,destinationLat:$DLat,destinationLng:$DLng,pickupLocation:$SLoc,destinationLocation:$DLoc,startTime:$STime,endTime:"X",isCanceled:false,fare:$Fare,distance:$Dist}) return r';
 const RIDE_DISPACHED='match (n:Operator),(m:Ride) where id(m)=$RID and id(n)=$OID create (n)-[r:RIDE_DISPACHED {DateTime:datetime()}]->(m) return r';
 const RIDE_DRIVEN='match (n:Driver),(m:Ride) where id(m)=$RID and id(n)=$DID create (n)-[r:RIDE_DRIVEN {DateTime:datetime()}]->(m) return r';
 const RIDE_REQUESTED='match (n:Client),(m:Ride) where id(m)=$RID and id(n)=$CID create (n)-[r:RIDE_REQUESTED {DateTime:datetime()}]->(m) return r';
