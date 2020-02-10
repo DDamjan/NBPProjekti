@@ -14,7 +14,7 @@ export interface DataTableItem {
   destinationLocation: string;
   endTime: string;
   distance: string;
-  fare: number;
+  fare: any;
   isCanceled: boolean;
 
 }
@@ -30,14 +30,14 @@ export class DataTableDataSource extends DataSource<DataTableItem> {
     super();
     this.rides.forEach(ride => {
       const r: DataTableItem = {
-        rideID: ride.ID,
+        rideID: ride.id,
         driverID: ride.driverID,
-        startLocation: ride.startLocation,
+        startLocation: ride.pickupLocation,
         startTime: ride.startTime,
         destinationLocation: ride.destinationLocation,
         endTime: ride.endTime,
         distance: ride.distance,
-        fare: ride.fare,
+        fare: ride.fare.low,
         isCanceled: ride.isCanceled
       };
       this.data.push(r);
@@ -96,7 +96,7 @@ export class DataTableDataSource extends DataSource<DataTableItem> {
         case 'destinationLocation': return compare(a.destinationLocation, b.destinationLocation, isAsc);
         case 'endTime': return compare(a.endTime, b.endTime, isAsc);
         case 'distance': return compare(a.distance, b.distance, isAsc);
-        case 'fare': return compare(+a.fare, +b.fare, isAsc);
+        case 'fare': return compare(+a.fare.low, +b.fare.low, isAsc);
         case 'isCanceled': return compare(a.isCanceled, b.isCanceled, isAsc);
         default: return 0;
       }

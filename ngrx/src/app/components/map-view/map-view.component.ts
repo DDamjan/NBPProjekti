@@ -3,6 +3,7 @@ import { Driver } from 'src/app/models/Driver';
 import { Store } from '@ngrx/store';
 import { selectAllDrivers } from 'src/app/store/reducers/driver.reducer';
 import { MapComponent } from '../map/map.component';
+import * as actions from '../../store/actions';
 
 @Component({
   selector: 'map-view',
@@ -12,15 +13,24 @@ import { MapComponent } from '../map/map.component';
 export class MapViewComponent implements OnInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   drivers: Driver[] = [];
-  activeRides: number = 0;
+  activeRides = 0;
 
   constructor(private store$: Store<any>) { }
 
   ngOnInit() {
     this.store$.select(selectAllDrivers).subscribe(drivers => {
-      drivers.forEach(d => this.drivers.push(d));
+      if (drivers.length === 0) {
+        this.store$.dispatch(new actions.GetDrivers());
+        this.populateDrivers(drivers);
+      } else {
+        this.populateDrivers(drivers);
+      }
     });
 
+  }
+
+  populateDrivers(drivers){
+    drivers.forEach(d => this.drivers.push(d));
     this.drivers.forEach(d => {
       if (d.isActive === true) {
         this.activeRides++;

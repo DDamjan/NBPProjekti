@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Driver } from '../models/Driver';
+import * as conn from '../../constants/server-urls';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,14 +13,16 @@ const httpOptions = {
 @Injectable()
 export class DriverService {
 
-    private serverURL = 'http://localhost:8080/drivers/';
+    private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
+    // private serverURL = conn.LOCAL_SERVER + 'users/';
+    // private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
 
     constructor(
         private http: HttpClient) { }
 
     /* GET drivers from the server */
     getDrivers(): Observable<Driver[]> {
-        return this.http.get<Driver[]>(this.serverURL)
+        return this.http.get<Driver[]>(this.serverURL + 'all?type=driver')
             .pipe(
                 catchError(this.handleError('getDrivers', []))
             );
@@ -30,14 +33,6 @@ export class DriverService {
         const url = `${this.serverURL}?id=${id}`;
         return this.http.get<Driver>(url).pipe(
             catchError(this.handleError<Driver>(`getDriver id=${id}`))
-        );
-    }
-
-    /* GET last ID */
-    getLastID(): Observable<any> {
-        const url = `${this.serverURL}currentid`;
-        return this.http.get<any>(url).pipe(
-            catchError(this.handleError<any>('getLastID'))
         );
     }
 
@@ -61,12 +56,12 @@ export class DriverService {
 
     /* DELETE: delete the driver from the server */
     deleteDriver(driver: Driver): Observable<number> {
-        const id = driver.ID;
-        const url = `${this.serverURL}delete?id=${id}`;
+        const id = driver.id;
+        const url = `${this.serverURL}driverDelete?id=${id}`;
 
         this.http.get<Driver>(url, httpOptions).subscribe();
 
-        return of(driver.ID);
+        return of(driver.id);
     }
 
     /*

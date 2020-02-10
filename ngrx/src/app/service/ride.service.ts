@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../models/Ride';
+import * as cons from '../../constants/server-urls';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,8 +13,14 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    private serverURL = 'http://localhost:8080/rides/';
-    private HEREApiURL = 'https://autocomplete.geocoder.api.here.com/6.2/suggest.json';
+    private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
+    private uServerURL = cons.PUBLIC_SERVER_DAMJAN + 'users/';
+
+    // private serverURL = cons.LOCAL_SERVER + 'rides/';
+   // private uServerURL = cons.LOCAL_SERVER + 'users/';
+
+    // private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
+    // private uServerURL = cons.PUBLIC_SERVER_PEDJA + 'users/';
 
     constructor(
         private http: HttpClient) { }
@@ -23,14 +30,6 @@ export class RideService {
         const url = `${this.serverURL}?id=${id}`;
         return this.http.get<Ride[]>(url).pipe(
             catchError(this.handleError<Ride[]>(`getRide id=${id}`))
-        );
-    }
-
-    /* GET last ID */
-    getLastID(): Observable<any> {
-        const url = `${this.serverURL}currentid`;
-        return this.http.get<any>(url).pipe(
-            catchError(this.handleError<any>('getLastID'))
         );
     }
 
@@ -59,15 +58,43 @@ export class RideService {
             distance,
             fare,
             ID
-        }
+        };
         return this.http.post(url, body, httpOptions).pipe(
             catchError(this.handleError<any>('addDistanceFare'))
         );
     }
 
+    arriveToPickup(payload: any): Observable<any> {
+        const url = `${this.serverURL}arrive`;
+        return this.http.post<any>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<any>('requesttest'))
+        );
+    }
+
+    finishRide(payload: any): Observable<any> {
+        const url = `${this.serverURL}finish`;
+        return this.http.post<any>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<any>('requesttest'))
+        );
+    }
+
     findRideAddress(params): Observable<any> {
-        const url = this.HEREApiURL + params;
+        const url = cons.HERE_API_AUTOCOMPLETE + params;
         return this.http.get<any>(url);
+    }
+
+    getTopRides(id: number): Observable<Ride[]> {
+        const url = `${this.uServerURL}topLoc?id=${id}`;
+        return this.http.get<Ride[]>(url).pipe(
+            catchError(this.handleError<Ride[]>(`getTopRides id=${id}`))
+        );
+    }
+
+    getRideHistory(id: number): Observable<Ride[]> {
+        const url = `${this.uServerURL}allLoc?id=${id}`;
+        return this.http.get<Ride[]>(url).pipe(
+            catchError(this.handleError<Ride[]>(`getRideHistory id=${id}`))
+        );
     }
 
     /**

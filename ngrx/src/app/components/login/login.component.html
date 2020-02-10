@@ -9,8 +9,12 @@
           <input matInput placeholder="Username" required>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Password" required>
+          <input matInput placeholder="Password" type="password" required>
         </mat-form-field>
+        <div class="register">
+          <span>No account? <a routerLink="/client/register">Register</a></span>
+        </div>
+        <p class="error" *ngIf='error'>Wrong credentials!</p>
         <div class="buttons">
           <button mat-raised-button type="submit">Confirm</button>
         </div>

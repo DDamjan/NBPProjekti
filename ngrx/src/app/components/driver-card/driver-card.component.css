@@ -10,3 +10,7 @@
   mat-card{
     background-color: rgb(63, 81, 181);
   }
+
+  img{
+    src: '../../../../repo/Cab.png';
+  }

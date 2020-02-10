@@ -1,0 +1,64 @@
+<mat-tab-group animationDuration="350ms" mat-align-tabs="left" [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
+  <mat-tab label="Request a taxi">
+    <div class="tab-container">
+      <div class="input-container">
+        <div class="container">
+          <form (ngSubmit)="onSubmit($event)" *ngIf="!isRequested">
+            <mat-form-field>
+              <input matInput placeholder="Pickup address" name="pickupAddressName"
+                (keyup)="autoCompleteListener($event)" [matAutocomplete]="auto" required>
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of options" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput placeholder="Destination address" name="destinationAddressName"
+                (keyup)="autoCompleteListener($event)" [matAutocomplete]="auto" required>
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of options" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <button mat-raised-button>Request</button>
+          </form>
+        </div>
+      </div>
+      <div class="container" *ngIf="isRequested">
+        <div class="route-params">
+          <p>Distance to pick up: {{distancePickup}}</p>
+        </div>
+        <div class="route-params">
+          <p>ETA for pick up: {{ETAPickup}}</p>
+        </div>
+        <div class="route-params">
+          <p>Distance to destination: {{distanceDestination}}</p>
+        </div>
+        <div class="route-params">
+          <p>ETA for destination: {{ETADestination}}</p>
+        </div>
+        <div class="route-params">
+          <p>Fare: {{fare}} dinara</p>
+        </div>
+        <button mat-raised-button (click)="cancelRide()" type="button" class="cancel-button" [disabled]="cancelDisabled"> Cancel Ride</button>
+      </div>
+
+      <map-component #mapView width="100%" height="67vh" lat="43.318266" lng="21.891813" zoom="15"
+        (routeParams)="receiveRouteParams($event)"></map-component>
+    </div>
+  </mat-tab>
+  <mat-tab label="Favourites">
+    <mat-accordion *ngFor="let ride of favouriteRides">
+      <detail-expansion [ride]="ride" [client]="user" [isFavourite]="true" [isDriver]="false" (mapParams)="receiveMapParams($event)">
+      </detail-expansion>
+    </mat-accordion>
+  </mat-tab>
+  <mat-tab label="History">
+    <mat-accordion *ngFor="let ride of rideHistory">
+      <detail-expansion [ride]="ride" [client]="user" [isDriver]="false" [isFavourite]="false" (mapParams)="receiveMapParams($event)">
+      </detail-expansion>
+    </mat-accordion>
+  </mat-tab>
+</mat-tab-group>

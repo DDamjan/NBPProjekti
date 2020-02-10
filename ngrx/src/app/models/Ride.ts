@@ -1,15 +1,24 @@
-export interface Ride{
-    ID: number;
-    driverID: number;
-    startLat: number;
-    startLng: number;
+export interface Ride {
+    id?: number;
+    clientID?: number;
+    driverID?: number;
+    driverFirstName?: string;
+    driverLastName?: string;
+    driverCurrentLat?: number;
+    driverCurrentLng?: number;
+    driverLocation?: string;
+    operatorID?: number;
+    pickupLat: number;
+    pickupLng: number;
     destinationLat: number;
     destinationLng: number;
-    startLocation: string;
+    pickupLocation: string;
     destinationLocation: string;
     startTime: string;
     endTime?: string;
-    isCanceled: boolean;
-    fare?: number;
+    isCanceled?: boolean;
+    fare?: any;
     distance?: string;
+    count?: number;
+    isActive?: boolean;
 }

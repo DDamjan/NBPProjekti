@@ -6,9 +6,8 @@ var logger = require('morgan');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 
-var driverRouter = require('./routes/drivers');
-// var ridesRouter = require('./routes/rides');
-// var usersRouter = require('./routes/users');
+var ridesRouter = require('./routes/rides');
+var usersRouter = require('./routes/users');
 
 var app = express();
 app.set("view engine", "pug");
@@ -21,9 +20,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use('/drivers', driverRouter);
-// app.use('/rides', ridesRouter);
-// app.use('/users', usersRouter);
+app.use('/rides', ridesRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,0 +1,30 @@
+.input-container {
+    margin-left: 1%;
+    display: flex;
+    flex-direction: row;
+}
+
+.mat-form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex-grow: 1;
+    margin-bottom: 1%;
+}
+
+p {
+    margin-left: 2%;
+}
+
+tab-container{
+    height: 1080px;
+}
+a:hover {
+    cursor: pointer;
+}
+
+.cancel-button{
+    margin-left: 2%;
+}
