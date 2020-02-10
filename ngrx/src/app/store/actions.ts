@@ -22,7 +22,9 @@ import {
     REQUEST_RIDE,
     REQUEST_RIDE_SUCCESS,
     ACCEPT_RIDE,
-    ACCEPT_RIDE_SUCCESS
+    ACCEPT_RIDE_SUCCESS,
+    ARRIVE,
+    ARRIVE_SUCCESS
 } from 'src/constants/reducers-constants';
 import { Driver } from '../models/driver';
 import { User } from '../models/User';
@@ -138,5 +140,15 @@ export class AcceptRide implements Action {
 
 export class AcceptRideSuccess implements Action {
     readonly type = ACCEPT_RIDE_SUCCESS;
+    constructor(public payload: any) { }
+}
+
+export class Arrive implements Action {
+    readonly type = ARRIVE;
+    constructor(public payload: any) { }
+}
+
+export class ArriveSuccess implements Action {
+    readonly type = ARRIVE_SUCCESS;
     constructor(public payload: any) { }
 }
