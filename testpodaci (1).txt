@@ -1,0 +1,59 @@
+CREATE(a:Operator {firstName:"Igor",lastName:"Kandutov",username:"Igor",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"operator",isActive:true})
+CREATE(b:Operator {firstName:"Ajs",lastName:"Nigrutin",username:"Ajs",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"operator",isActive:true})
+
+
+
+CREATE(e1:Driver {firstName:"Pera",lastName:"Peric",username:"Pera",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"driver",isActive:false,phone:"24567",car:"bmw",carColor:"red",licencePlate:"34gh",currentLat:43.318058,currentLng:21.891996,currentLocation:"Blalba",pickupLat:0.0,pickupLng:0.0,pickupLocation:""})
+CREATE(e2:Driver {firstName:"Paja",lastName:"Pajic",username:"Paja",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"driver",isActive:false,phone:"245778",car:"Audi",carColor:"green",licencePlate:"367jh",currentLat:43.318058,currentLng:21.891996,currentLocation:"Blalba",pickupLat:0.0,pickupLng:0.0,pickupLocation:""})
+CREATE(e3:Driver {firstName:"Fedor",lastName:"Gatto",username:"Fedor",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"driver",isActive:false,phone:"267867",car:"Merceders",carColor:"blue",licencePlate:"4gh56",currentLat:43.318058,currentLng:21.891996,currentLocation:"Blalba",pickupLat:0.0,pickupLng:0.0,pickupLocation:""})
+
+
+
+
+
+CREATE(f1:Client {firstName:"Amadeus",lastName:"Mocart",username:"Amadeus",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"client",isActive:false,currentLat:43.318266,currentLng:21.891813,currentLocation:"Trg Kralja Aleksandra Ujedinitelja",destinationLat:0.0,destinationLng:0.0,destinationLocation:""})
+CREATE(f2:Client {firstName:"Geralt",lastName:"Ofrivia",username:"Geralt",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"client",isActive:false,currentLat:43.318266,currentLng:21.891813,currentLocation:"Trg Kralja Aleksandra Ujedinitelja",destinationLat:0.0,destinationLng:0.0,destinationLocation:""})
+CREATE(f3:Client {firstName:"Vejn",lastName:"Brus",username:"Vejn",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"client",isActive:false,currentLat:43.318266,currentLng:21.891813,currentLocation:"Trg Kralja Aleksandra Ujedinitelja",destinationLat:0.0,destinationLng:0.0,destinationLocation:""})
+CREATE(f4:Client {firstName:"Gruja",lastName:"Crni",username:"Gruja",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"client",isActive:false,currentLat:43.322122,currentLng:21.8932092,currentLocation:"Trg kralja Milana",destinationLat:0.0,destinationLng:0.0,destinationLocation:""})
+CREATE(f5:Client {firstName:"Ceda",lastName:"Velja",username:"Ceda",password:"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",type:"client",isActive:false,currentLat:43.322122,currentLng:21.8932092,currentLocation:"Trg kralja Milana",destinationLat:0.0,destinationLng:0.0,destinationLocation:""})
+
+
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"aaa",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="aaa" and n1.firstName="Igor" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1) ;
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="aaa" and n2.firstName="Pera" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="aaa" and n3.firstName="Ceda" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"bbb",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="bbb" and n1.firstName="Igor" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1) ;
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="bbb" and n2.firstName="Pera" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="bbb" and n3.firstName="Gruja" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"ccc",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="ccc" and n1.firstName="Ajs" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1) ;
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="ccc" and n2.firstName="Paja" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="ccc" and n3.firstName="Geralt" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"ddd",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="ddd" and n1.firstName="Ajs" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1) ;
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="ddd" and n2.firstName="Fedor" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="ddd" and n3.firstName="Amadeus" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"eee",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="eee" and n1.firstName="Igor" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1) ;
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="eee" and n2.firstName="Paja" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="eee" and n3.firstName="Gruja" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"ggg",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="ggg" and n1.firstName="Igor" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1) ;
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="ggg" and n2.firstName="Pera" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="ggg" and n3.firstName="Gruja" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+CREATE (r1:Ride {pickupLat:2.55,pickupLng:3.55,destinationLat:5.4,destinationLng:4.66,pickupLocation:"Kutina",destinationLocation:"hhh",startTime:"16:00",endTime:"21:00",isCanceled:false,fare:1000.00,distance:"150",isActive:false});
+match (n1:Operator),(m1:Ride) where m1.destinationLocation="hhh" and n1.firstName="Ajs" create (n1)-[r2:RIDE_DISPACHED {DateTime:datetime()}]->(m1);
+match (n2:Driver),(m2:Ride) where m2.destinationLocation="hhh" and n2.firstName="Fedor" create (n2)-[r3:RIDE_DRIVEN {DateTime:datetime()}]->(m2);
+match (n3:Client),(m3:Ride) where m3.destinationLocation="hhh" and n3.firstName="Gruja" create (n3)-[r4:RIDE_REQUESTED {DateTime:datetime()}]->(m3);
+
+
+
+
