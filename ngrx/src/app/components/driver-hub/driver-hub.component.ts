@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { APPID, APPCODE } from 'src/constants/map-credentials';
 import { RideService } from 'src/app/service/ride.service';
@@ -11,13 +11,15 @@ import * as actions from '../../store/actions';
 import { Ride } from 'src/app/models/Ride';
 import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
 import { User } from 'src/app/models/User';
+import { UserService } from 'src/app/service/user.service';
+import { selectAllRides } from 'src/app/store/reducers/ride.reducer';
 
 @Component({
   selector: 'app-driver-hub',
   templateUrl: './driver-hub.component.html',
   styleUrls: ['./driver-hub.component.css']
 })
-export class DriverHubComponent implements OnInit {
+export class DriverHubComponent implements OnInit, AfterViewInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   private pickupAddressName: string;
   private destinationAddressName: string;
@@ -39,10 +41,11 @@ export class DriverHubComponent implements OnInit {
   private distanceNum: number;
   private id: number;
   private rideHistory: Ride[];
+  private client: any;
 
 
   constructor(private rideService: RideService, private webSocketService: WebSocketService,
-    private snackBar: MatSnackBar, private store: Store<any>) {
+    private snackBar: MatSnackBar, private store: Store<any>, private userService: UserService) {
     this.isActive = false;
     this.request = false;
   }
@@ -55,6 +58,19 @@ export class DriverHubComponent implements OnInit {
         this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
       } else {
         this.driver = user[0];
+        this.isDriving = this.driver.isActive;
+        this.isActive = this.driver.isActive;
+        this.store.select(selectAllRides).subscribe(currentRide => {
+          this.ride = currentRide[0];
+          this.mapView.showDetails(this.driver, this.ride);
+        });
+        const clientID = localStorage.getItem('drivenClient');
+        if (clientID !== '') {
+          this.request = false;
+          this.userService.getUser({ id: clientID, auth: false }).subscribe(user => {
+            this.client = user.user;
+          });
+        }
       }
     });
 
@@ -67,14 +83,14 @@ export class DriverHubComponent implements OnInit {
           this.onRequest(data.client);
         }
       } else {
-        if(data.isCanceled === true){
+        if (data.isCanceled === true) {
           this.mapView.clearMap();
           this.isActive = false;
           this.driver.isActive = false;
           this.isDriving = false;
           this.request = false;
           this.store.dispatch(new actions.UpdateUserSuccess(this.driver));
-        }else{
+        } else {
           const ride = {
             pickupLat: data.pickupLat,
             pickupLng: data.pickupLng,
@@ -86,9 +102,21 @@ export class DriverHubComponent implements OnInit {
           this.mapView.showDetails(this.driver, ride);
           this.isDriving = true;
           this.isActive = true;
+          this.buttonEndDisabled = true;
+          localStorage.setItem('drivenClient', data.clientID);
+          this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
+          this.userService.getUser({ id: data.clientID, auth: false }).subscribe(user => {
+            this.client = user.user;
+          });
         }
       }
     });
+  }
+
+  ngAfterViewInit() {
+    if (this.isActive || this.request) {
+      // this.mapView.showDetails(this.driver, this.ride);
+    }
   }
 
   showOnMap() {
@@ -116,17 +144,25 @@ export class DriverHubComponent implements OnInit {
   }
 
   arrive() {
-    this.driver.currentLat = this.driver.pickupLat;
-    this.driver.currentLng = this.driver.pickupLng;
-    this.driver.currentLocation = this.driver.pickupLocation;
+    this.driver.currentLat = this.ride.pickupLat;
+    this.driver.currentLng = this.ride.pickupLng;
+    this.driver.currentLocation = this.ride.pickupLocation;
 
-    this.driver.pickupLat = null;
-    this.driver.pickupLng = null;
-    this.driver.pickupLocation = null;
+    const payload = {
+      driverID: this.driver.id,
+      clientID: this.client.id,
+      pickupLat: this.ride.pickupLat,
+      pickupLng: this.ride.pickupLng,
+      pickupLocation: this.ride.pickupLocation,
+      hasArrived: true
 
-    // this.store.dispatch(new actions.UpdateDriver(this.driver));
-    // this.mapView.showDetails(this.driver, this.ride);
+    }
+
+    this.store.dispatch(new actions.Arrive(payload));
+    this.mapView.clearMap();
+    this.mapView.showDetails(this.driver, this.ride);
     this.buttonArriveDisabled = true;
+    this.buttonEndDisabled = false;
     this.snackBar.open(`Driver has arrived`, 'Close', {
       duration: 3000
     });

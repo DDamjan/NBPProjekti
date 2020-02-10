@@ -13,14 +13,14 @@ const httpOptions = {
 @Injectable()
 export class RideService {
 
-    // private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
-    // private uServerURL = cons.PUBLIC_SERVER_DAMJAN + 'users/';
+    private serverURL = cons.PUBLIC_SERVER_DAMJAN + 'rides/';
+    private uServerURL = cons.PUBLIC_SERVER_DAMJAN + 'users/';
 
     // private serverURL = cons.LOCAL_SERVER + 'rides/';
    // private uServerURL = cons.LOCAL_SERVER + 'users/';
 
-    private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
-    private uServerURL = cons.PUBLIC_SERVER_PEDJA + 'users/';
+    // private serverURL = cons.PUBLIC_SERVER_PEDJA + 'rides/';
+    // private uServerURL = cons.PUBLIC_SERVER_PEDJA + 'users/';
 
     constructor(
         private http: HttpClient) { }
@@ -61,6 +61,13 @@ export class RideService {
         };
         return this.http.post(url, body, httpOptions).pipe(
             catchError(this.handleError<any>('addDistanceFare'))
+        );
+    }
+
+    arriveToPickup(payload: any): Observable<any> {
+        const url = `${this.serverURL}arrive`;
+        return this.http.post<any>(url, payload, httpOptions).pipe(
+            catchError(this.handleError<any>('requesttest'))
         );
     }
 

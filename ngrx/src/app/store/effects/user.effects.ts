@@ -91,6 +91,15 @@ export class UserEffects {
     })
   );
 
+  @Effect()
+  arriveAtPickup$ = this.update$.pipe(
+    ofAction(actions.Arrive),
+    switchMap(ride => this.rideService.arriveToPickup(ride.payload)),
+    map(response => {
+      return new actions.ArriveSuccess(response);
+    })
+  );
+
   //   @Effect()
   //   updateUser$ = this.update$.pipe(
   //     ofAction(actions.UpdateUser),

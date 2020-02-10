@@ -47,36 +47,55 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
   private id: number;
   selected = new FormControl(0);
   private isEnroute = false;
+  private driverID: number;
+  public cancelDisabled: boolean;
 
   constructor(private store: Store<any>, private rideService: RideService,
     private webSocketService: WebSocketService, private snackBar: MatSnackBar, private location: Location,
-    private route: ActivatedRoute, private router: Router, private userService: RideService) { this.again = false; }
+    private route: ActivatedRoute, private router: Router, private userService: UserService) { this.again = false; }
 
   ngOnInit() {
     this.id = Number(localStorage.getItem('currentUser'));
     const type = localStorage.getItem('currentUserType');
     this.webSocketService.onConnect(this.id, type);
     this.store.select(selectAllUsers).subscribe(currentUser => {
-        if (currentUser.length === 0) {
-          this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
-        } else {
-          this.user = currentUser[0];
-          this.store.select(selectAllRides).subscribe(currentRide => {
-            this.ride = currentRide[0];
+      if (currentUser.length === 0) {
+        this.store.dispatch(new actions.GetUser({ id: this.id, auth: true }));
+      } else {
+        this.user = currentUser[0];
+        this.store.select(selectAllRides).subscribe(currentRide => {
+          this.ride = currentRide[0];
+          const payload = {
+            clientID: this.user.id,
+            rideID: this.ride.id
+          };
+          this.userService.getDriverByRide(payload).subscribe(designatedDriver => {
+            this.driverID = designatedDriver.id;
           });
-          this.isRequested = this.user.isActive;
-          if (this.isRequested) {
-            if (this.mapView.platform !== undefined) {
-              this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
-            }
+        });
+        this.isRequested = this.user.isActive;
+        if (this.isRequested) {
+          if (this.mapView.platform !== undefined) {
+            this.mapView.renderRequest(this.user.currentLocation, this.user.destinationLocation, false, null);
           }
         }
-      });
+      }
+    });
 
     this.populateRideHistory();
 
     this.webSocketService.listen('Client:' + this.id).subscribe((data: any) => {
       console.log(data);
+      if (data.hasArrived !== undefined) {
+        if (data.hasArrived === true) {
+          this.mapView.clearMap();
+          this.driver.currentLat = data.pickupLat;
+          this.driver.currentLng = data.pickupLng;
+          this.driver.currentLocation = data.pickupLocation;
+          this.mapView.showDetails(this.driver, this.ride);
+          this.cancelDisabled = true;
+        }
+      }
       this.driver = {
         id: data.driverID,
         firstName: data.firstName,
@@ -202,34 +221,34 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
   }
 
   cancelRide() {
-      this.mapView.clearMap();
-      this.isRequested = false;
-      let payload;
-      if (this.ride.isActive === undefined) {
-        payload = {
-          clientID: this.user.id,
-          isAssigned: false,
-          isCanceled: true
-        };
-      } else {
-        const dateTime = new Date();
-        const endTime: string = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-        payload = {
-          clientID: this.user.id,
-          rideID: this.ride.id,
-          driverID: -1,
-          destinationLat: this.user.destinationLat,
-          destinationLng: this.user.destinationLng,
-          destinationLocation: this.user.destinationLocation,
-          endTime,
-          isCanceled: true,
-          isAssigned: true
-        };
-      }
-      this.store.dispatch(new actions.CancelRide(payload));
-      this.snackBar.open('Ride canceled!', 'Close', {
-        duration: 3000
-      });
+    this.mapView.clearMap();
+    this.isRequested = false;
+    let payload;
+    if (this.ride.isActive === undefined) {
+      payload = {
+        clientID: this.user.id,
+        isAssigned: false,
+        isCanceled: true
+      };
+    } else {
+      const dateTime = new Date();
+      const endTime: string = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
+      payload = {
+        clientID: this.user.id,
+        rideID: this.ride.id,
+        driverID: this.driverID,
+        destinationLat: this.user.destinationLat,
+        destinationLng: this.user.destinationLng,
+        destinationLocation: this.user.destinationLocation,
+        endTime,
+        isCanceled: true,
+        isAssigned: true
+      };
+    }
+    this.store.dispatch(new actions.CancelRide(payload));
+    this.snackBar.open('Ride canceled!', 'Close', {
+      duration: 3000
+    });
   }
 
   receiveMapParams($event) {

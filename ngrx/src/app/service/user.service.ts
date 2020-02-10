@@ -34,6 +34,13 @@ export class UserService {
         );
     }
 
+    getDriverByRide(payload: any): Observable<any> {
+        const url = `${this.serverURL}driverByRide?clientID=${payload.clientID}&rideID=${payload.rideID}`;
+        return this.http.get<any>(url).pipe(
+            catchError(this.handleError<any>(`getUser id=${payload.id}`))
+        );
+    }
+
     // /* GET last ID */
     // getLastID(): Observable<any> {
     //     const url = `${this.serverURL}currentid`;
