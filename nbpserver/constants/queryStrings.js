@@ -12,7 +12,7 @@ const RIDE_DISPACHED='match (n:Operator),(m:Ride) where id(m)=$RID and id(n)=$OI
 const RIDE_DRIVEN='match (n:Driver),(m:Ride) where id(m)=$RID and id(n)=$DID create (n)-[r:RIDE_DRIVEN {DateTime:datetime()}]->(m) return r';
 const RIDE_REQUESTED='match (n:Client),(m:Ride) where id(m)=$RID and id(n)=$CID create (n)-[r:RIDE_REQUESTED {DateTime:datetime()}]->(m) return r';
 const FINISH_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(d)=$DID and id(r)=$RID set d.isActive=false,c.isActive=false,d.currentLat=$DLat,d.currentLng=$DLng,d.currentLocation=$DLoc,c.currentLat=$DLat,c.currentLng=$DLng,c.currentLocation=$DLoc,c.destinationLat=0.0,c.destinationLng=0.0,c.destinationLocation="",r.endTime=$ETime,r.isCanceled=$Canc,r.isActive=false return r';
-const CANCEL_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(d)=$DID and id(r)=$RID set d.isActive=false,c.isActive=false,c.destinationLat=0.0,c.destinationLng=0.0,c.destinationLocation="",r.endTime=$ETime,r.isCanceled=$Canc,r.isActive=false return r';
+const CANCEL_RIDE='match (d:Driver)-[r1]->(r:Ride)<-[r2]-(c:Client) where id(c)=$CID and id(r)=$RID set d.isActive=false,c.isActive=false,c.destinationLat=0.0,c.destinationLng=0.0,c.destinationLocation="",r.endTime=$ETime,r.isCanceled=$Canc,r.isActive=false return r';
 const DRIVER_ALL_RIDES='match (d:Driver)-[r1]->(r:Ride) where id(d)=$DID return r';
 const CLIENT_ALL_DEST_LOC='match (c)-[r1]->(r:Ride) where id(c)=$CID return r';
 const ALL_DRIVERS_WITH_RIDES='match (n:Driver)-[r1]->(r:Ride) return distinct n';
