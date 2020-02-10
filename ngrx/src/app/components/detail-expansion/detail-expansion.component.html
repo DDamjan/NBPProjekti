@@ -10,12 +10,15 @@
       Distance to pickup: {{driver.distancePickup}}
     </mat-panel-description>
     <mat-panel-description *ngIf='!isDriver'>
-      Fare: {{ride.fare}}
+      Fare: {{isFavourite ? fare : ride.fare}}
     </mat-panel-description>
   </mat-expansion-panel-header>
   <p *ngIf='isDriver'>Location: {{driver.currentLocation}}</p>
   <button mat-raised-button (click)="onMap()" *ngIf='isDriver'>See on map</button>
   <button mat-raised-button (click)="onAssign()" *ngIf='isDriver'>Assign</button>
-  <p *ngIf='!isDriver'>Pickup location: {{ride.pickupLocation}}</p>
-  <button mat-raised-button (click)="onRequest()" *ngIf='!isDriver'>Request again</button>
+  <p *ngIf='!isDriver'>Pickup location: {{isFavourite ? client.currentLocation : ride.pickupLocation}}</p>
+  <p *ngIf='!isDriver'>Distance: {{isFavourite ? distance : ride.distance}}</p>
+  <button mat-raised-button (click)="onRequest()" *ngIf='!isDriver || requestable'>Request again</button>
 </mat-expansion-panel>
+
+<map-component #mapView width="0%" height="0vh" lat="43.318266" lng="21.891813" zoom="15" (routeParams)="receiveRouteParams($event)"></map-component>

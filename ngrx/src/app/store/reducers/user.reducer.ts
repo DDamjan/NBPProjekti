@@ -26,15 +26,16 @@ export function UserReducer(
     console.log(action.type);
     switch (action.type) {
         case AUTH_USER_SUCCESS: {
-            localStorage.setItem('currentUser', action.payload.id);
-            localStorage.setItem('currentUserType', action.payload.type);
-            return UserAdapter.addOne(action.payload, state = UserInitialState);
+            console.log(action.payload.user);
+            localStorage.setItem('currentUser', action.payload.user.id);
+            localStorage.setItem('currentUserType', action.payload.user.type);
+            return UserAdapter.addOne(action.payload.user, state = UserInitialState);
         }
         case AUTH_USER_FAIL: {
             return UserAdapter.addOne(action.payload, state = UserInitialState);
         }
         case GET_USER_SUCCESS: {
-            return UserAdapter.addOne(action.payload, state = UserInitialState);
+            return UserAdapter.addOne(action.payload.user, state = UserInitialState);
         }
         case REGISTER_USER_SUCCESS: {
             localStorage.setItem('currentUser', action.payload.id);

@@ -40,7 +40,7 @@ export function calculateFare(distance: number) {
     return fare;
 }
 
-export function fareDistance(distance: number, rideService: RideService, ID: number) {
+export function fareDistance(distance: number) {
     const fare = Math.floor(calculateFare(distance));
     const dst = toKM(distance);
 }

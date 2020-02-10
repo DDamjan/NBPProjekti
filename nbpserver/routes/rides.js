@@ -20,6 +20,7 @@ router.post('/arrive', async (req, res) => {
     Loc:req.body.pickupLocation,
   }
   Neo4jDB.execDriverUpdateArrival(payload, res);
+  redisDB.driverArived(req.body);
 });
 
 router.post('/request', async (req, res) => {
@@ -68,12 +69,9 @@ router.post('/create', async (req, res) => {
   Neo4jDB.execCreateRide(req, res, payload);
 });
 
-router.post('/arrive', async (req, res) => {
-  //NEKA FIKIJEVA FUNKCIJA
-  redisDB.driverArived(req.body);
-});
-
 router.post('/finish', async (req, res) => {
+  console.log("REEEQ");
+  console.log(req.body);
   const isAssigned = req.body.isAssigned;
   if (isAssigned) {
     const payload = {
@@ -100,7 +98,7 @@ router.post('/finish', async (req, res) => {
 });
 
 router.get('/currentid', async (req, res) => {
-  //query.execGet(req, res, queryString.CURRENT_ID('rides'));
+  query.execGet(req, res, queryString.CURRENT_ID('rides'));
 });
 
 router.post('/adddistancefare', async (req, res) => {

@@ -16,10 +16,10 @@ const httpOptions = {
 @Injectable()
 export class UserService {
 
-    // private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
-    // private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
-    private serverURL = conn.LOCAL_SERVER + 'users/';
-    private RserverURL = conn.LOCAL_SERVER + 'rides/';
+    private serverURL = conn.PUBLIC_SERVER_DAMJAN + 'users/';
+    private RserverURL = conn.PUBLIC_SERVER_DAMJAN + 'rides/';
+    // private serverURL = conn.LOCAL_SERVER + 'users/';
+    // private RserverURL = conn.LOCAL_SERVER + 'rides/';
     // private serverURL = conn.PUBLIC_SERVER_PEDJA + 'users/';
     // private RserverURL = conn.PUBLIC_SERVER_PEDJA + 'rides/';
 
@@ -27,11 +27,10 @@ export class UserService {
         private http: HttpClient) { }
 
     /* GET user by id. */
-    getUser(payload: any): Observable<User> {
-        console.log(payload);
+    getUser(payload: any): Observable<any> {
         const url = `${this.serverURL}?id=${payload.id}&auth=${payload.auth}`;
-        return this.http.get<User>(url).pipe(
-            catchError(this.handleError<User>(`getUser id=${payload.id}`))
+        return this.http.get<any>(url).pipe(
+            catchError(this.handleError<any>(`getUser id=${payload.id}`))
         );
     }
 
@@ -54,10 +53,10 @@ export class UserService {
     }
 
     /* POST: Authenticate a user */
-    authUser(data: object): Observable<User> {
+    authUser(data: object): Observable<any> {
         const url = `${this.serverURL}auth`;
-        return this.http.post<User>(url, data, httpOptions).pipe(
-            catchError(this.handleError<User>('authUser'))
+        return this.http.post<any>(url, data, httpOptions).pipe(
+            catchError(this.handleError<any>('authUser'))
         );
     }
 
