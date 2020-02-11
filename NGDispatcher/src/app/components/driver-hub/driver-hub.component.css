@@ -29,6 +29,7 @@ a:hover {
     display: flex;
     flex-direction: row;
     width: 100 vw;
+    margin-bottom: 1%;
 }
 
 button{

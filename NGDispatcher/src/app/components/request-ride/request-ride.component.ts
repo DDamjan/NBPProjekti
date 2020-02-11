@@ -223,6 +223,8 @@ export class RequestRideComponent implements OnInit, AfterViewInit {
 
       if (this.distancePickup === '0 m') {
         this.cancelDisabled = true;
+      }else if (this.distancePickup !== undefined) {
+        this.cancelDisabled = false;
       }
       this.updateAndRequest();
     }

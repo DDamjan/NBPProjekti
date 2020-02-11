@@ -43,11 +43,7 @@ subAprovedRide.on("message", function (channel, body) {
     let operatorID = body.operatorID;
 
     client.hget("requests", clientID, (err, res) => {
-        console.log("BOOOODY");
-        console.log(body);
         res = JSON.parse(res);
-        console.log("REEEEEEES");
-        console.log(res);
         if (!res.client.isCanceled) {
             //res.driverID = driverID;
             webSocket.io.emit('Client:' + clientID, body);
@@ -78,7 +74,6 @@ var subFinishedRide = redis.createClient();
 subFinishedRide.subscribe("FinishedRide");
 subFinishedRide.on("message", function (channel, body) {
     const newBody = JSON.parse(body);
-
     client.hmset("client", newBody.clientID, false); //klijent je zavrsio svoju voznju
     client.hmset("driver", newBody.driverID, false); //vozac je slobodan za sledecu voznju
 
@@ -87,7 +82,7 @@ subFinishedRide.on("message", function (channel, body) {
         if (numOperators != 0) {
             client.hgetall("operator", function (err, operatorsActivty) {
                 Object.keys(operatorsActivty).forEach(key => {
-                    webSocket.io.emit('Operator:' + key, JSON.parse(newBody)); //Emit svim operaterima
+                    webSocket.io.emit('Operator:' + key, newBody); //Emit svim operaterima
                 });
             });
         }
@@ -162,8 +157,6 @@ function makeRequest(req) {
     // console.log(req.body);
     client.hmset("client", req.body.client.clientID, true);
     req.body.client = { ...req.body.client, isAssigned: false, isCanceled: false };
-    // console.log("PEKIII");
-    // console.log(req.body);
     client.hmset("requests", req.body.client.clientID, JSON.stringify(req.body));
     // webSocket.io.emit('User:20', {
     //     ID: 21,
@@ -289,7 +282,6 @@ function driverArived(body) {
 
 async function execPost(req, res, fun) {
     try {
-        //console.log(fun);
         fun(req);
         res.json("Post successful");
         res.end();

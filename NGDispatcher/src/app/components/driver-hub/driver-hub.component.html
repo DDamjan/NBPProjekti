@@ -29,7 +29,7 @@
         <button mat-raised-button (click)="showOnMap()" *ngIf="isDriving==false && request==false">Show on map</button>
         <button mat-raised-button (click)="endRide()" [disabled]="buttonEndDisabled" *ngIf="isDriving">Finish ride</button>
       </div>
-      <map-component #mapView width="100%" height="67vh" lat="43.318058" lng="21.891996" zoom="15"
+      <map-component #mapView width="100%" height="80vh" lat="43.318058" lng="21.891996" zoom="15"
         (routeParams)="receiveRouteParams($event)"></map-component>
     </div>
   </mat-tab>

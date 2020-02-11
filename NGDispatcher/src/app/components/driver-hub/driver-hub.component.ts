@@ -19,11 +19,11 @@ import { selectAllRides } from 'src/app/store/reducers/ride.reducer';
   templateUrl: './driver-hub.component.html',
   styleUrls: ['./driver-hub.component.css']
 })
-export class DriverHubComponent implements OnInit, AfterViewInit {
+export class DriverHubComponent implements OnInit {
   @ViewChild('mapView', null) mapView: MapComponent;
   private pickupAddressName: string;
   private destinationAddressName: string;
-  private distancePickup: number;
+  private distancePickup: string;
   private ETAPickup: string;
   private distanceDestination: number;
   private ETADestination: string;
@@ -84,14 +84,15 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
         }
       } else {
         if (data.isCanceled === true) {
+
+          this.mapView.clearMap();
+          this.isDriving = false;
+          this.driver.isActive = false;
+          this.isDriving = false;
+          this.request = false;
           setTimeout(() => {
-            this.mapView.clearMap();
-            this.isDriving = false;
-            this.driver.isActive = false;
-            this.isDriving = false;
-            this.request = false;
-            this.store.dispatch(new actions.UpdateUser(this.driver));
-          })
+            this.store.dispatch(new actions.GetUser({ id: this.driver.id, auth: false }));
+          }, 1000);
         } else {
           const ride = {
             pickupLat: data.pickupLat,
@@ -117,11 +118,6 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    if (this.isDriving || this.request) {
-      // this.mapView.showDetails(this.driver, this.ride);
-    }
-  }
 
   showOnMap() {
     if (this.driver === undefined) {
@@ -144,6 +140,14 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
       this.distanceDestination = $event.distance;
       this.ETADestination = $event.ETA;
       this.fare = calculateFare($event.fare);
+    }
+
+    if (this.distancePickup === '0 m') {
+      this.buttonArriveDisabled = true;
+      this.buttonEndDisabled = false;
+    } else if (this.distancePickup !== undefined) {
+      this.buttonArriveDisabled = false;
+      this.buttonEndDisabled = true;
     }
   }
 
@@ -175,7 +179,6 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
   endRide() {
     const dateTime = new Date();
     this.ride.endTime = `${dateTime.getFullYear()}-${dateTime.getMonth() + 1}-${dateTime.getDay()} ${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}`;
-    this.rideService.updateRide(this.ride).subscribe();
     this.driver.isActive = false;
     this.driver.currentLat = this.ride.destinationLat;
     this.driver.currentLng = this.ride.destinationLng;
@@ -183,7 +186,6 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
     this.isDriving = false;
 
     // this.store.dispatch(new actions.UpdateDriver(this.driver));
-    this.ride = null;
     this.mapView.clearMap();
 
     this.buttonEndDisabled = true;
@@ -201,8 +203,11 @@ export class DriverHubComponent implements OnInit, AfterViewInit {
       hasFinished: true
     };
 
-    this.rideService.finishRide(payload).subscribe();
-
+    this.rideService.finishRide(payload).subscribe(ride => {
+      console.log('Ride');
+      console.log(ride);
+    });
+    this.ride = null;
     this.snackBar.open(`Current ride has ended`, 'Close', {
       duration: 3000
     });

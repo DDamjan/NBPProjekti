@@ -13,15 +13,10 @@ const fs = require('../db/fs');
 router.post('/auth', async (req, res) => {
   let username = req.body.username;
   let password = sha('sha256').update(req.body.password).digest('hex');
-  //console.log("username:"+username+", password: "+password);
   Neo4jDB.execAuth(username,password,res);
 });
 
 router.get('/', async (req, res) => {
-  // let id = req.query.id;
-  // let auth = req.query.auth;
-  // console.log(id);
-  // console.log(req.query);
   Neo4jDB.execReturnById(req.query,res);
 });
 
@@ -33,7 +28,6 @@ router.get('/driverByRide', async (req, res) => {
 
 router.get('/topLoc', async (req, res) => {
   let id = req.query.id;
-  //console.log(id);
   Neo4jDB.execClientTopLocations(id,res);
 });
 
@@ -95,7 +89,6 @@ router.get('/driver/picture', async (req, res) => {
   if (picId === null || picId === undefined) {
     picId = 'Cab.png';
   }
-  //console.log(queryString.REPO_PATH+picId);
   console.log(queryString.REPO_PATH);
   
   fs.execFile(res, queryString.REPO_PATH + picId);

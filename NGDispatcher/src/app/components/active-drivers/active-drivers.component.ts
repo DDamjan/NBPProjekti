@@ -45,6 +45,10 @@ export class ActiveDriversComponent implements OnInit {
     });
   }
 
+  update(){
+    this.ngOnInit();
+  }
+
   populateDrivers() {
     this.store$.select(selectAllDrivers).subscribe(drivers => {
       if (drivers.length === 0) {

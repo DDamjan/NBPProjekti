@@ -72,6 +72,7 @@ export class RideService {
     }
 
     finishRide(payload: any): Observable<any> {
+        console.log(payload);
         const url = `${this.serverURL}finish`;
         return this.http.post<any>(url, payload, httpOptions).pipe(
             catchError(this.handleError<any>('requesttest'))

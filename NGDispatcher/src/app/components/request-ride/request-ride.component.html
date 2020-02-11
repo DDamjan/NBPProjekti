@@ -51,13 +51,13 @@
   </mat-tab>
   <mat-tab label="Favourites">
     <mat-accordion *ngFor="let ride of favouriteRides">
-      <detail-expansion [ride]="ride" [client]="user" [isFavourite]="true" [isDriver]="false" (mapParams)="receiveMapParams($event)">
+      <detail-expansion [ride]="ride" [client]="user" [isFavourite]="true" [isDriver]="false" [requestable]="true" (mapParams)="receiveMapParams($event)">
       </detail-expansion>
     </mat-accordion>
   </mat-tab>
   <mat-tab label="History">
     <mat-accordion *ngFor="let ride of rideHistory">
-      <detail-expansion [ride]="ride" [client]="user" [isDriver]="false" [isFavourite]="false" (mapParams)="receiveMapParams($event)">
+      <detail-expansion [ride]="ride" [client]="user" [isDriver]="false" [isFavourite]="false" [requestable]="true" (mapParams)="receiveMapParams($event)">
       </detail-expansion>
     </mat-accordion>
   </mat-tab>

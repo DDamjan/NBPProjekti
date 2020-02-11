@@ -18,7 +18,7 @@
   <button mat-raised-button (click)="onAssign()" *ngIf='isDriver'>Assign</button>
   <p *ngIf='!isDriver'>Pickup location: {{isFavourite ? client.currentLocation : ride.pickupLocation}}</p>
   <p *ngIf='!isDriver'>Distance: {{isFavourite ? distance : ride.distance}}</p>
-  <button mat-raised-button (click)="onRequest()" *ngIf='!isDriver || requestable'>Request again</button>
+  <button mat-raised-button (click)="onRequest()" *ngIf='requestable'>Request again</button>
 </mat-expansion-panel>
 
 <map-component #mapView width="0%" height="0vh" lat="43.318266" lng="21.891813" zoom="15" (routeParams)="receiveRouteParams($event)"></map-component>

@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const webSocket = require('../socket/web-socket.js');
 const redisDB = require('../db/redisDB.js');
-//const queryString = require('../constants/queryConstants');
-//const query = require('../db/query');
 const Neo4jDB = require('../db/Neo4JDB.js');
 
 
@@ -13,7 +10,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/request', async (req, res) => {
-  // console.log(req.body);
   const payload = {
     CID: req.body.client.clientID,
     Lat: req.body.client.pickupLat,
@@ -40,7 +36,6 @@ router.post('/deny', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-  console.log(req.body);
   const payload = {
     CID: req.body.clientID,
     DID: req.body.driverID,
@@ -70,8 +65,6 @@ router.post('/arrive', async (req, res) => {
 });
 
 router.post('/finish', async (req, res) => {
-  console.log("REEEQ");
-  console.log(req.body);
   const isAssigned = req.body.isAssigned;
   if (isAssigned) {
     const payload = {
@@ -101,12 +94,12 @@ router.get('/currentid', async (req, res) => {
   query.execGet(req, res, queryString.CURRENT_ID('rides'));
 });
 
-router.post('/adddistancefare', async (req, res) => {
-  let ID = req.body.ID;
-  let distance = req.body.distance;
-  let fare = req.body.fare;
-  console.log(ID + ' ' + distance + ' ' + fare);
-})
+// router.post('/adddistancefare', async (req, res) => {
+//   let ID = req.body.ID;
+//   let distance = req.body.distance;
+//   let fare = req.body.fare;
+//   console.log(ID + ' ' + distance + ' ' + fare);
+// })
 
 router.get('/rideDelete', async (req, res) => {
   let DriverId = req.query.id;

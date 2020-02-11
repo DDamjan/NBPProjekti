@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Driver } from 'src/app/models/Driver';
 import { Store } from '@ngrx/store';
-import { getSelectedDriver } from 'src/app/store/reducers/driver.reducer';
+import { getSelectedDriver, selectAllDrivers } from 'src/app/store/reducers/driver.reducer';
 import { Ride } from 'src/app/models/Ride';
 import { RideService } from 'src/app/service/ride.service';
 import { MapComponent } from '../map/map.component';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as actions from '../../store/actions';
 import { MatSnackBar } from '@angular/material';
 import { DataTableComponent } from '../data-table/data-table.component';
+import { selectAllUsers } from 'src/app/store/reducers/user.reducer';
 
 @Component({
   selector: 'app-driver-details',
@@ -37,6 +38,20 @@ export class DriverDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const id = Number(localStorage.getItem('currentUser'));
+    const type = localStorage.getItem('currentUserType');
+    this.store.select(selectAllUsers).subscribe(users => {
+      if (users.length === 0) {
+        this.store.dispatch(new actions.GetUser({ id, auth: false }));
+      }
+    });
+
+    this.store.select(selectAllDrivers).subscribe(drivers => {
+      if (drivers.length === 0){
+        this.store.dispatch(new actions.GetDrivers());
+      }
+    });
+
     this.gatherDriverInfo();
   }
 
@@ -58,23 +73,12 @@ export class DriverDetailsComponent implements OnInit {
       this.rides = rides;
       this.rides.forEach(ride => {
         if (ride.isCanceled !== true) {
-          this.fareSum += ride.fare.low;
+          this.fareSum += ride.fare;
         }
         if (ride.endTime === null && ride.isCanceled === false) {
           this.currentRide = ride;
         }
       });
-      if (this.currentRide !== undefined) {
-        if (this.driver.pickupLat === null && this.driver.pickupLng === null) {
-          this.buttonArriveDisabled = true;
-          this.buttonEndDisabled = false;
-          this.buttonCancelDisabled = true;
-        } else {
-          this.buttonArriveDisabled = false;
-          this.buttonEndDisabled = true;
-          this.buttonCancelDisabled = false;
-        }
-      }
     });
   }
 

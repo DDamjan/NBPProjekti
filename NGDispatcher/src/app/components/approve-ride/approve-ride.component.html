@@ -9,6 +9,6 @@
 <map-component #mapView width="70%" height="80%" lat="43.318058" lng="21.891996" zoom="15" float="left"></map-component>
 <div class="expansion-container">
   <mat-accordion *ngFor="let driver of drivers">
-    <detail-expansion [driver]="driver" [client]="client" [isDriver]="true" (mapParams)="receiveMapParams($event)"></detail-expansion>
+    <detail-expansion [driver]="driver" [client]="client" [isDriver]="true" [requestable]="false" (mapParams)="receiveMapParams($event)"></detail-expansion>
   </mat-accordion>
 </div>
