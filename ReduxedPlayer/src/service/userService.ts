@@ -1,7 +1,7 @@
 
 import { User } from '../models/user';
 
-const baseURL = 'http://localhost:8080/users/';
+const baseURL = 'http://localhost:8080/mongousers/';
 
 export function dbRegisterUser(username: string, password: string) {
     const url = baseURL + 'register';
@@ -35,5 +35,5 @@ export function dbGetUserByID(ID: number) {
 export function dbCheckUsername(username: string) {
     const url = `${baseURL}checkuser/?username=${username}`;
 
-    return fetch(url).then(res=> res.json());
+    return fetch(url).then(res=> {res.json();});
 }

@@ -16,6 +16,7 @@ export function* sAuthUser(user: AuthUser) {
 
 export function* sRegisterUser(user: RegisterUser) {
     const username = yield dbCheckUsername(user.user.Username);
+    console.log(username); 
     if (username.length === 0) {
         if (user.user.Password === user.user.confirmPassword) {
             debugger;
