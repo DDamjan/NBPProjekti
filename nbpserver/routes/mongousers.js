@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const queryString = require('../constants/queryConstants');
-const query = require('../db/query');
+//const queryString = require('../constants/queryConstants');
+//const query = require('../db/query');
 const sha = require('sha.js');
 
 router.post('/register', async (req, res) => {

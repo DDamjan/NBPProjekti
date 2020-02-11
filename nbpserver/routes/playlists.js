@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const queryString = require('../constants/queryConstants');
-const query = require('../db/query');
-const sha = require('sha.js');
+//const queryString = require('../constants/queryConstants');
+//const query = require('../db/query');
+//const sha = require('sha.js');
 
 router.post('/add', async (req, res) => {
   let name = req.body.name;

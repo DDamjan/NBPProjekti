@@ -6,6 +6,9 @@ var logger = require('morgan');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 
+const mongoDB = require('./db/mongoDB.js');
+mongoDB.conectToDB();
+
 var ridesRouter = require('./routes/rides');
 var usersRouter = require('./routes/users');
 
