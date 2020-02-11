@@ -95,21 +95,21 @@ async function REGISTER_USER(body){
     });
 }
 
-async function CHECK_USERNAME(body){
-    console.log(body);
-    return User.find({Username: body.username}, function (err, users) {
+async function CHECK_USERNAME(query){
+    console.log(query);
+    return User.find({Username: query.username}, function (err, users) {
         console.log("ime Usera");
         console.log({"users": users});
         return JSON.stringify({"users": users});
     });
 }
 
-async function exec(req, res, fun) {
+async function execGet(req, res, fun) {
     try {
-        var result = await fun(req.body);
+        var result = await fun(req.query);
         console.log(result);
         if (result== undefined){
-          res.json(req);
+          res.json(req.query);
           res.send();
         }
         else{
@@ -123,43 +123,21 @@ async function exec(req, res, fun) {
       res.end();
     }
   }
-
-async function execGet(req, res, query) {
-    try {
-      const pool = await poolPromise;
-      const result = await pool.request()
-        .input('input_parameter', sql.Int, req.query.input_parameter)
-        .query(query);
-        if (result.recordset== undefined){
-          res.json(req.query);
-          res.send();
-        }
-        else{
-          res.json(result.recordset);
-          res.end();
-        }
-    } catch (err) {
-      res.status(500);
-      res.send(err.message);
-      res.end();
-    }
-  }
   
-  async function execPost(req, res, query) {
+  async function execPost(req, res, fun) {
     try {
-      const pool = await poolPromise;
-      const result = await pool.request()
-        .input('input_parameter', sql.Int, req.query.input_parameter)
-        .query(query);
-        if (result.recordset== undefined){
+        var result = await fun(req.body);
+        console.log(result);
+        if (result== undefined){
           res.json(req.body);
           res.send();
         }
         else{
-          res.json(result.recordset);
+          res.json(result);
           res.end();
         }
     } catch (err) {
+      console.log("ERROR");
       res.status(500);
       res.send(err.message);
       res.end();
@@ -170,6 +148,7 @@ async function execGet(req, res, query) {
     try {
       res.sendFile(path);
     } catch (err) {
+      console.log("ERROR");
       res.status(500);
       res.send(err.message);
     }
@@ -217,7 +196,6 @@ async function execGet(req, res, query) {
   
   module.exports = {
     conectToDB: conectToDB,
-    exec: exec,
     execGet: execGet,
     execPost: execPost,
     execFile: execFile,
