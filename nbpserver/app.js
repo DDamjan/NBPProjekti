@@ -9,6 +9,9 @@ const bodyParser = require('body-parser');
 var ridesRouter = require('./routes/rides');
 var usersRouter = require('./routes/users');
 
+var playlistsRouter = require('./routes/playlists');
+var mongousersRouter = require('./routes/mongousers');
+
 var app = express();
 app.set("view engine", "pug");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,8 +23,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use('/rides', ridesRouter);
+app.use('/rides', playlistsRouter);
 app.use('/users', usersRouter);
+
+app.use('/playlists', ridesRouter);
+app.use('/mongousers', mongousersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
