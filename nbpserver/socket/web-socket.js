@@ -2,7 +2,8 @@ const app = require('../app.js');
 const www = require('../bin/www');
 var redis = require("redis");
 var client = redis.createClient();
-const redisDB = require('../db/redisDB.js');
+// const redisDB = require('../db/redisDB');
+// var pub = redis.createClient();
 
 var http = require('http').createServer(app);
 var io = require('socket.io')(http, {cookie:false});
@@ -19,7 +20,7 @@ io.on('connection', function (socket) {
   let user = { id: "", type: "" };
   user.id = socket.handshake.query.id;
   user.type = socket.handshake.query.type;
-  redisDB.pub.publish("UserAuth", JSON.stringify(user));//authed user
+  client.publish("UserAuth", JSON.stringify(user));//authed user
 
   socket.on('disconnecting', (reason) => {
     console.log(reason);

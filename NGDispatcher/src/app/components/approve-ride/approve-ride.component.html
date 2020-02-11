@@ -1,0 +1,14 @@
+<div class="ride-info">
+  <p>Client Name: {{client.firstName}} {{client.lastName}}</p>
+  <p>PickupLocation: {{client.pickupLocation}}</p>
+  <p>DestinationLocation: {{client.destinationLocation}}</p>
+  <p>Distance: {{client.distanceDestination}}</p>
+  <p>Fare: {{client.fare}} rsd</p>
+</div>
+
+<map-component #mapView width="70%" height="80%" lat="43.318058" lng="21.891996" zoom="15" float="left"></map-component>
+<div class="expansion-container">
+  <mat-accordion *ngFor="let driver of drivers">
+    <detail-expansion [driver]="driver" [client]="client" [isDriver]="true" [requestable]="false" (mapParams)="receiveMapParams($event)"></detail-expansion>
+  </mat-accordion>
+</div>

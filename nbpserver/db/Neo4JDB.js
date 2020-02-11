@@ -48,7 +48,6 @@ async function execAuth(username,password,res){
       l.ride = r1;
       res.json(l);
       res.end();
-     console.log('First option query completed');
     })
      }
      else{
@@ -75,7 +74,6 @@ async function execAuth(username,password,res){
         l.ride={};
         res.json(l);
         res.end();
-        console.log('Second option query completed');
       })
     }
   }
@@ -107,7 +105,6 @@ async function execReturnById(req,res){
       let r1=r.properties;
       r1.id=r.identity.low;
       l.ride = r1;
-     console.log('First option query completed');
     })
      }
      else{
@@ -119,7 +116,6 @@ async function execReturnById(req,res){
         delete n1.password;
         l.user=n1;
         l.ride={};
-        console.log('Second option query completed');
       })
      }
      if(req.auth){
@@ -200,36 +196,25 @@ async function execCheckUser(payload,res){
 async function execCreateRide(req,res,payload){
   var session=driver.session();
   const transaction=session.beginTransaction();
-  //console.log(req.body.destinationLocation);
   try {
     let l;
     const result=await transaction.run(query.CREATE_RIDE,payload);
      result.records.forEach(record => {
       l=record.get('r');
     })
-    console.log('First query completed')
     const result1=await transaction.run(query.RIDE_DISPACHED,{OID:neo4j.int(req.body.operatorID),RID:neo4j.int(l.identity.low)});
      result1.records.forEach(record => {
-     console.log(record);
     })
-    console.log('Second query completed')
     const result2=await transaction.run(query.RIDE_DRIVEN,{DID:neo4j.int(req.body.driverID),RID:neo4j.int(l.identity.low)});
      result2.records.forEach(record => {
-     console.log(record);
     })
-    console.log('Third query completed')
     const result3=await transaction.run(query.RIDE_REQUESTED,{CID:neo4j.int(req.body.clientID),RID:neo4j.int(l.identity.low)});
      result3.records.forEach(record => {
-     console.log(record);
     })
-    console.log('Fourth query completed')
     const result4=await transaction.run(query.UPDATE_DRIVER_TRUE,{DID:neo4j.int(req.body.driverID),SLat:req.body.pickupLat,SLng:req.body.pickupLng,SLoc:req.body.pickupLocation});
      result4.records.forEach(record => {
-     console.log(record);
     })
-    console.log('Fifth query completed')
     await transaction.commit();
-    console.log('committed');
     let s=l.properties;
     s.id=l.identity.low;
     res.json(s);
@@ -254,7 +239,7 @@ async function execFinishRide(req,res,payload)
       let l=record.get('r');
       let s=l.properties;
       s.id=l.identity.low;
-      res.json(s);
+      // res.json(s);
       res.end();
   })
 })
@@ -288,7 +273,6 @@ var session=driver.session();
   session.run(query.DRIVER_ALL_RIDES, {DID:neo4j.int(driverID)})
   .then(result => {
       let n=[];
-      console.log(result.records);
       result.records.forEach(record => {
       let l=record.get('r');
       let s=l.properties;
@@ -346,7 +330,6 @@ async function execDriversWithRides(res)
       delete s.password;
       n.push(s);
       });
-    // console.log(n);
     res.json(n);
     res.end();
   })
@@ -361,7 +344,6 @@ async function execClientTopLocations(id,res){
   var session=driver.session()
   session.run(query.TOP_LOCATIONS,{CID:neo4j.int(id)})
   .then(result => {
-    console.log(result.records);
     let m=[];
     result.records.forEach(record => {
       let r=record.get('r').properties;
@@ -407,10 +389,6 @@ async function execUpdateClientTrue(payload,res){
   var session=driver.session()
   session.run(query.UPDATE_CLIENT_TRUE,payload)
   .then(result => {
-    // console.log("RESULT");
-    // console.log(result);
-    // console.log("RESULTRECORDS");
-    // console.log(result.records);
     result.records.forEach(record => {
       let l=record.get('c');
       let s=l.properties;
@@ -469,7 +447,6 @@ async function execDriverByRide(clientID,rideID,res){
   var session=driver.session()
   session.run(query.DRIVER_BT_RIDE,{CID:neo4j.int(clientID),RID:neo4j.int(rideID)})
   .then(result => {
-    console.log(result);
     result.records.forEach(record => {
       let l=record.get('d');
       let s=l.properties;

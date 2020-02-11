@@ -1,0 +1,42 @@
+<mat-tab-group animationDuration="350ms" mat-align-tabs="center">
+  <mat-tab label="Map">
+    <div class="tab-container">
+      <div class="input-container">
+        <div class="container">
+        </div>
+      </div>
+      <div class="container" *ngIf="isDriving==true || request==true">
+        <div class="route-params">
+          <p>Distance to pick up: {{distancePickup}}</p>
+        </div>
+        <div class="route-params">
+          <p>ETA for pick up: {{ETAPickup}}</p>
+        </div>
+        <div class="route-params">
+          <p>Distance to destination: {{distanceDestination}}</p>
+        </div>
+        <div class="route-params">
+          <p>ETA for destination: {{ETADestination}}</p>
+        </div>
+        <div class="route-params">
+          <p>Fare: {{fare}} rsd</p>
+        </div>
+      </div>
+      <div class="buttons-container">
+        <button mat-raised-button (click)="acceptRide()" *ngIf="request">Accept</button>
+        <button mat-raised-button (click)="rejectRide()" *ngIf="request">Reject</button>
+        <button mat-raised-button (click)="arrive()" [disabled]="buttonArriveDisabled" *ngIf="isDriving">Arrive to pick up location</button>
+        <button mat-raised-button (click)="showOnMap()" *ngIf="isDriving==false && request==false">Show on map</button>
+        <button mat-raised-button (click)="endRide()" [disabled]="buttonEndDisabled" *ngIf="isDriving">Finish ride</button>
+      </div>
+      <map-component #mapView width="100%" height="80vh" lat="43.318058" lng="21.891996" zoom="15"
+        (routeParams)="receiveRouteParams($event)"></map-component>
+    </div>
+  </mat-tab>
+  <mat-tab label="History">
+    <mat-accordion *ngFor="let ride of rideHistory">
+      <detail-expansion [ride]="ride" [client]="client" [isDriver]="false" [requestable]="false" (mapParams)="receiveMapParams($event)">
+      </detail-expansion>
+    </mat-accordion>
+  </mat-tab>
+</mat-tab-group>
