@@ -9,7 +9,7 @@ router.post('/register', async (req, res) => {
   let username = req.body.username;
   let password = sha('sha256').update(req.body.password).digest('hex');
 
-  mongoDB.exec(req, res, mongoDB.REGISTER_USER(username, password));
+  mongoDB.exec(req, res, mongoDB.REGISTER_USER);
 });
 
 router.post('/auth', async (req, res) => {
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
 router.get('/checkuser', async (req, res) => {
   let username = req.query.username;
 
-  mongoDB.exec(req, res, mongoDB.CHECK_USERNAME(username));
+  mongoDB.exec(req, res, mongoDB.CHECK_USERNAME);
 })
 
 module.exports = router;

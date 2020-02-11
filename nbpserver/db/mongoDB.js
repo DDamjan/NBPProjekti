@@ -81,13 +81,13 @@ instanceU.save(function (err) {
     });
 });
 
-async function REGISTER_USER(username, password){
+async function REGISTER_USER(body){
     //return `insert into reduxedUsers (Username, Password) 
     //values ('${Username}', '${Password}'); 
     //Select ID, Username from reduxedUsers where Username like '${Username}'`;
     const instanceU = new User();
-    instanceU.Username = username;
-    instanceU.Username = password;
+    instanceU.Username = body.username;
+    instanceU.Username = body.password;
     instanceU.save(function (err) {
         console.log("User registerd");
         console.log(err);
@@ -95,9 +95,9 @@ async function REGISTER_USER(username, password){
     });
 }
 
-async function CHECK_USERNAME(username){
-    console.log(username);
-    return User.find({Username: username}, function (err, users) {
+async function CHECK_USERNAME(body){
+    console.log(body);
+    return User.find({Username: body.username}, function (err, users) {
         console.log("ime Usera");
         console.log({"users": users});
         return JSON.stringify({"users": users});
@@ -106,7 +106,7 @@ async function CHECK_USERNAME(username){
 
 async function exec(req, res, fun) {
     try {
-        var result = await fun(req);
+        var result = await fun(req.body);
         console.log(result);
         if (result== undefined){
           res.json(req);
