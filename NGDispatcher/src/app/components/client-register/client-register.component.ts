@@ -19,11 +19,11 @@ export class ClientRegisterComponent implements OnInit, DoCheck {
   }
 
   onSubmit($event) {
+    const firstName = $event.target[0].value;
+    const lastName = $event.target[1].value;
     const username = $event.target[2].value;
     const password = $event.target[3].value;
     const passwordCheck = $event.target[4].value;
-    const firstName = $event.target[1].value;
-    const lastName = $event.target[2].value;
 
     if (password !== passwordCheck) {
       this.passNotMatched = true;

@@ -75,7 +75,7 @@ export class DriverDetailsComponent implements OnInit {
         if (ride.isCanceled !== true) {
           this.fareSum += ride.fare;
         }
-        if (ride.endTime === null && ride.isCanceled === false) {
+        if (ride.endTime === 'X' && ride.isCanceled === false) {
           this.currentRide = ride;
         }
       });
