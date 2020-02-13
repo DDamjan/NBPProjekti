@@ -14,36 +14,12 @@ async function conectToDB(){
     useUnifiedTopology: true
     });
 
-    
-  // const instanceC = new Counter();
-  // instanceC.Name = 'UserCounter';
-  // instanceC.save(function (err) {
-  //     console.log("UserCounter");
-  // });
-// const instanceU = new User();
-// instanceU.Username = 'Pedja';
-// instanceU.ID = await getNextSequence("UserCounter");
-// instanceU.save(function (err) {
-//     console.log("saved Pedja");
-//     User.find({}, function (err, users) {
-//         console.log("ima Usera");
-//         console.log(users);
-//     });
-// });
+    // User.find({}, function (err, users) {
+    //     console.log("ima users");
+    //     console.log(users);
+    // });
 }
 
-// async function getNextSequence(name) {
-//   return await Counter.findOneAndUpdate({Name: name},(err, C)=>{
-//     console.log(C);
-//     return C.counter++;
-//   })
-// }
-
-// const counterSchema = new Schema({
-//   counter: { type: Number, default: -1 },
-//   Name: { type: String, default: '' }
-// });
-// const Counter = mongoose.model('Counter', counterSchema);
 
 const trackSchema = new Schema({
     ID: Number,
@@ -94,18 +70,22 @@ const User = mongoose.model('User', userSchema);
 // });
 
 async function REGISTER_USER(body){
+  console.log("REGISTER_USER");
+  console.log(body);
     const instanceU = new User();
     instanceU.Username = body.username;
     instanceU.Password = body.password;
-    instanceU.save(function (err) {
+    return await instanceU.save(function (err, user) {
         console.log("User registerd");
+        console.log(user);
         console.log(err);
-        return err;
-    });
+        return user;
+    })
 }
 
 
 async function AUTH_USER(body){
+  console.log("AUTH_USER");
     console.log(body);
     return User.findOne({ Username: body.username }, function(err, user) {
         if (err) throw err;  
@@ -116,18 +96,69 @@ async function AUTH_USER(body){
 }
 
 async function USER_BY_ID(query){
+  console.log("USER_BY_ID");
+  console.log(query);
   return User.find({_id: query.id}, function (err, user) {
-    console.log("{user:user}");
     console.log(user);
     return {"user":user};
   });
 }
 
 async function CHECK_USERNAME(query){
+  console.log("CHECK_USERNAME");
     console.log(query);
-    return User.find({Username: query.username}, function (err, users) {
+    return User.find({_id: query.id}, function (err, users) {
         return {"users":users};
     });
+}
+
+async function ADD_PLAYLIST(body){
+        const instancePL=new Playlist();
+        instancePL.Name=body.name;
+        instancePL.OwnerID=body.ownerID;
+        instancePL.save(function (err){
+                console.log("Playlist added!");
+                console.log(err);
+                return err;
+        });
+}
+
+async function ADD_TRACK(body){
+  const instanceT=new Track();
+  //instanceT.Name=body.track;
+  //instanceT.OwnerID=body.playlistID;
+  instanceT.save(function (err){
+          console.log("Track added!");
+          console.log(err);
+          return err;
+  });
+}
+
+async function GET_PLAYLISTS(query){
+    console.log("WTFFFF");
+    return Playlist.find({OwnerID: query.id}, function (err, playlists) {
+        console.log("Playliste");
+        console.log({"playlists": playlists});
+        return JSON.stringify({"playlists": playlists});
+    });
+}
+
+async function DELETE_PLAYLIST(body){
+  console.log("WTFFFF");
+  return Playlist.deleteOne({_id: body.id}, function (err, playlists) {
+      console.log("Playliste");
+      console.log({"playlists": playlists});
+      return JSON.stringify({"playlists": playlists});
+  });
+}
+
+async function GET_DETAILS(query){
+  console.log("WTFFFF");
+  return Playlist.find({_id: query.id}, function (err, playlists) {
+      console.log("Playliste");
+      console.log({"playlists": playlists});
+      return JSON.stringify({"playlists": playlists});
+  });
 }
 
 async function execGet(req, res, fun) {
@@ -234,5 +265,10 @@ async function execGet(req, res, fun) {
     REGISTER_USER: REGISTER_USER,
     AUTH_USER: AUTH_USER,
     USER_BY_ID: USER_BY_ID,
-    CHECK_USERNAME: CHECK_USERNAME
+    CHECK_USERNAME: CHECK_USERNAME,
+    ADD_PLAYLIST: ADD_PLAYLIST,
+    GET_PLAYLISTS: GET_PLAYLISTS,
+    DELETE_PLAYLIST: DELETE_PLAYLIST,
+    GET_DETAILS: GET_DETAILS,
+    ADD_TRACK: ADD_TRACK
   }

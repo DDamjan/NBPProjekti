@@ -26,10 +26,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use('/rides', playlistsRouter);
+app.use('/rides', ridesRouter);
 app.use('/users', usersRouter);
 
-app.use('/playlists', ridesRouter);
+app.use('/playlists', playlistsRouter);
 app.use('/mongousers', mongousersRouter);
 
 // catch 404 and forward to error handler
