@@ -11,7 +11,8 @@ export function dbGetPlaylists(ID: number) {
 
 export function dbAddPlaylist(payload: any) {
     const url = baseURL + "add";
-
+    console.log("payload");
+    console.log(payload);
     return fetch(url, { method: "POST", body: JSON.stringify(payload.payload), headers: { "Content-Type": "application/json" } }).
         then(res => res.json());
 }

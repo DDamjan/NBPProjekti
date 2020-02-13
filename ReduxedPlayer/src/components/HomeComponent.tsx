@@ -37,9 +37,9 @@ class HomeComponent extends Component<Props, any>{
     componentDidMount() {
         const cookies = new Cookies();
         let id = cookies.get('logedIn');
-
+        console.log("id");
+        console.log(id);
         this.props.fetchUser(id);
-
     }
 
     renderRedirect() {
@@ -121,6 +121,8 @@ class HomeComponent extends Component<Props, any>{
             name: this.state.playlistName,
             ownerID: this.props.currentUser.user.ID
         }
+        console.log("payload");
+        console.log(payload);
 
         this.props.addPlaylist(payload);
         this.forceUpdate();

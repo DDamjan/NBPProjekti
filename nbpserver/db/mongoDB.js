@@ -13,15 +13,13 @@ async function conectToDB(){
     useNewUrlParser: true,
     useUnifiedTopology: true
     });
+
+    // User.find({}, function (err, users) {
+    //     console.log("ima users");
+    //     console.log(users);
+    // });
 }
 
-// const mySchema = new Schema({
-//     name: { type: String, default: 'hahaha' },
-//     age: { type: Number, min: 18, index: true },
-//     bio: { type: String, match: /[a-z]/ },
-//     date: { type: Date, default: Date.now },
-//     buff: Buffer
-// });
 
 const trackSchema = new Schema({
     ID: Number,
@@ -51,56 +49,66 @@ const userSchema = new Schema({
 const User = mongoose.model('User', userSchema);
 
 
-const instanceT = new Track();
-instanceT.Title = 'In the air';
-instanceT.save(function (err) {
-    console.log("saved Tracks");
-    Track.find({}, function (err, playlists) {
-        console.log("ima Tracks");
-        console.log(playlists);
-    });
-});
+// const instanceT = new Track();
+// instanceT.Title = 'In the air';
+// instanceT.save(function (err) {
+//     console.log("saved Tracks");
+//     Track.find({}, function (err, playlists) {
+//         console.log("ima Tracks");
+//         console.log(playlists);
+//     });
+// });
 
-const instanceP = new Playlist();
-instanceP.Name = 'PLAYLISTAAAAAAA';
-instanceP.save(function (err) {
-    console.log("saved playlistu");
-    Playlist.find({}, function (err, playlists) {
-        console.log("ima playlista");
-        console.log(playlists);
-    });
-});
-
-const instanceU = new User();
-instanceU.Username = 'hello';
-instanceU.save(function (err) {
-    console.log("saved users");
-    User.find({}, function (err, users) {
-        console.log("ima Usera");
-        console.log(users);
-    });
-});
+// const instanceP = new Playlist();
+// instanceP.Name = 'PLAYLISTAAAAAAA';
+// instanceP.save(function (err) {
+//     console.log("saved playlistu");
+//     Playlist.find({}, function (err, playlists) {
+//         console.log("ima playlista");
+//         console.log(playlists);
+//     });
+// });
 
 async function REGISTER_USER(body){
-    //return `insert into reduxedUsers (Username, Password) 
-    //values ('${Username}', '${Password}'); 
-    //Select ID, Username from reduxedUsers where Username like '${Username}'`;
+  console.log("REGISTER_USER");
+  console.log(body);
     const instanceU = new User();
     instanceU.Username = body.username;
-    instanceU.Username = body.password;
-    instanceU.save(function (err) {
+    instanceU.Password = body.password;
+    return await instanceU.save(function (err, user) {
         console.log("User registerd");
+        console.log(user);
         console.log(err);
-        return err;
+        return user;
+    })
+}
+
+
+async function AUTH_USER(body){
+  console.log("AUTH_USER");
+    console.log(body);
+    return User.findOne({ Username: body.username }, function(err, user) {
+        if (err) throw err;  
+        if(user.Password === body.password){
+            return {"user":user};
+        }else return {"user": {}}
     });
 }
 
+async function USER_BY_ID(query){
+  console.log("USER_BY_ID");
+  console.log(query);
+  return User.find({_id: query.id}, function (err, user) {
+    console.log(user);
+    return {"user":user};
+  });
+}
+
 async function CHECK_USERNAME(query){
+  console.log("CHECK_USERNAME");
     console.log(query);
-    return User.find({Username: query.username}, function (err, users) {
-        console.log("ime Usera");
-        console.log({"users": users});
-        return JSON.stringify({"users": users});
+    return User.find({_id: query.id}, function (err, users) {
+        return {"users":users};
     });
 }
 
@@ -156,14 +164,18 @@ async function GET_DETAILS(query){
 async function execGet(req, res, fun) {
     try {
         var result = await fun(req.query);
-        console.log(result);
+
         if (result== undefined){
-          res.json(req.query);
-          res.send();
+            console.log("req.query");
+            console.log(req.query);
+            res.json(req.query);
+            res.send();
         }
         else{
-          res.json(result);
-          res.end();
+            console.log("result");
+            console.log(result);
+            res.json(result);
+            res.end();
         }
     } catch (err) {
       console.log("ERROR");
@@ -251,6 +263,8 @@ async function execGet(req, res, fun) {
     execUser: execUser,
     execPlaylists:execPlaylists,
     REGISTER_USER: REGISTER_USER,
+    AUTH_USER: AUTH_USER,
+    USER_BY_ID: USER_BY_ID,
     CHECK_USERNAME: CHECK_USERNAME,
     ADD_PLAYLIST: ADD_PLAYLIST,
     GET_PLAYLISTS: GET_PLAYLISTS,
