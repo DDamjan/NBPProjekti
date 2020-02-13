@@ -38,7 +38,7 @@ const playlistSchema = new Schema({
     ID: Number,
     Name: { type: String, default: 'hahaha' },
     OwnerID: Number,
-    Tracks: trackSchema
+    Tracks: [trackSchema]
 });
 const Playlist = mongoose.model('Playlist', playlistSchema);
 
@@ -46,7 +46,7 @@ const userSchema = new Schema({
     ID: Number,
     Username: { type: String, default: 'hahaha' },
     Password: { type: String, default: 'hahaha' },
-    playlists: playlistSchema
+    playlists: [playlistSchema]
 });
 const User = mongoose.model('User', userSchema);
 
@@ -117,13 +117,13 @@ async function ADD_PLAYLIST(body){
 
 async function ADD_TRACK(body){
   const instanceT=new Track();
-  //instanceT.Name=body.track;
-  //instanceT.OwnerID=body.playlistID;
-  instanceT.save(function (err){
-          console.log("Track added!");
-          console.log(err);
-          return err;
-  });
+  instanceT.DeezerID=body.track.DeezerID;
+  instanceT.Artist=body.track.Artist;
+  instanceT.Title=body.track.Title;
+  instanceT.AlbumCover=body.track.AlbumCover;
+  instanceT.Album=body.track.Album;
+  instanceT.URL=body.track.URL;
+
 }
 
 async function GET_PLAYLISTS(query){
