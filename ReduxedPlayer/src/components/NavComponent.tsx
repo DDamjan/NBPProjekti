@@ -21,7 +21,9 @@ class NavComponent extends Component<Props, State>{
     componentDidMount() {
         const cookies = new Cookies();
         let id = cookies.get('logedIn');
-
+        console.log("NavComponent");
+        console.log("id");
+        console.log(id);
         this.props.fetchUser(id);
 
     }

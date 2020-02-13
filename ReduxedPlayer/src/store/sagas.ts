@@ -15,14 +15,17 @@ export function* sAuthUser(user: AuthUser) {
 }
 
 export function* sRegisterUser(user: RegisterUser) {
+    console.log("sRegisterUser");
     const username = yield dbCheckUsername(user.user.Username);
+    console.log("username");
+    console.log(username);
     if (username.length === 0) {
         if (user.user.Password === user.user.confirmPassword) {
             const dbUser = yield dbRegisterUser(user.user.Username, user.user.Password);
+            console.log("dbUser");
             console.log(dbUser);
             const cookies = new Cookies();
-            cookies.set('logedIn', dbUser[0].ID, { path: '/' });
-            console.log(cookies);
+            cookies.set('logedIn', dbUser._id, { path: '/' });
             yield put(registerUserSuccess(dbUser));
         }
         else {
@@ -35,6 +38,9 @@ export function* sRegisterUser(user: RegisterUser) {
 }
 
 export function* sGetUserByID(user: GetUserByID) {
+    console.log("sGetUserByID");
+    console.log("user");
+    console.log(user);
     const dbUser = yield dbGetUserByID(user.ID);
     console.log("dbUser");
     console.log(dbUser);

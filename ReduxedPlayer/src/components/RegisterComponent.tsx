@@ -48,7 +48,9 @@ class RegisterComponent extends Component<Props, any> {
     handleSubmit = (event: any) => {
         event.preventDefault();
         this.props.registerUser(this.state.username, this.state.password, this.state.passwordConfirm);
+        console.log("zavrsio register user")
         if (this.loggedIn()) {
+            console.log("uso u logged in")
             this.setState({
                 redirect: true
             });
