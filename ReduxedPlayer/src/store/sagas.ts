@@ -25,6 +25,7 @@ export function* sRegisterUser(user: RegisterUser) {
             console.log("dbUser");
             console.log(dbUser);
             const cookies = new Cookies();
+            debugger;
             cookies.set('logedIn', dbUser._id, { path: '/' });
             yield put(registerUserSuccess(dbUser));
         }
