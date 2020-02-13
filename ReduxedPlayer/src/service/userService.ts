@@ -35,5 +35,5 @@ export function dbGetUserByID(ID: number) {
 export function dbCheckUsername(username: string) {
     const url = `${baseURL}checkuser/?username=${username}`;
 
-    return fetch(url).then(res=> {res.json();});
+    return fetch(url).then(res=> res.json());
 }

@@ -53,8 +53,7 @@ class LoginComponent extends Component<Props, any> {
             } else {
                 this.props.authUser(user);
                 const cookies = new Cookies();
-                cookies.set('logedIn', user[0].ID, { path: '/' });
-
+                cookies.set('logedIn', user._id, { path: '/' });
                 this.setState({
                     redirect: true
                 });

@@ -48,7 +48,6 @@ class RegisterComponent extends Component<Props, any> {
     handleSubmit = (event: any) => {
         event.preventDefault();
         this.props.registerUser(this.state.username, this.state.password, this.state.passwordConfirm);
-        debugger;
         if (this.loggedIn()) {
             this.setState({
                 redirect: true
