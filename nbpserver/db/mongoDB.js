@@ -104,6 +104,55 @@ async function CHECK_USERNAME(query){
     });
 }
 
+async function ADD_PLAYLIST(body){
+        const instancePL=new Playlist();
+        instancePL.Name=body.name;
+        instancePL.OwnerID=body.ownerID;
+        instancePL.save(function (err){
+                console.log("Playlist added!");
+                console.log(err);
+                return err;
+        });
+}
+
+async function ADD_TRACK(body){
+  const instanceT=new Track();
+  //instanceT.Name=body.track;
+  //instanceT.OwnerID=body.playlistID;
+  instanceT.save(function (err){
+          console.log("Track added!");
+          console.log(err);
+          return err;
+  });
+}
+
+async function GET_PLAYLISTS(query){
+    console.log("WTFFFF");
+    return Playlist.find({OwnerID: query.id}, function (err, playlists) {
+        console.log("Playliste");
+        console.log({"playlists": playlists});
+        return JSON.stringify({"playlists": playlists});
+    });
+}
+
+async function DELETE_PLAYLIST(body){
+  console.log("WTFFFF");
+  return Playlist.deleteOne({_id: body.id}, function (err, playlists) {
+      console.log("Playliste");
+      console.log({"playlists": playlists});
+      return JSON.stringify({"playlists": playlists});
+  });
+}
+
+async function GET_DETAILS(query){
+  console.log("WTFFFF");
+  return Playlist.find({_id: query.id}, function (err, playlists) {
+      console.log("Playliste");
+      console.log({"playlists": playlists});
+      return JSON.stringify({"playlists": playlists});
+  });
+}
+
 async function execGet(req, res, fun) {
     try {
         var result = await fun(req.query);
@@ -202,5 +251,10 @@ async function execGet(req, res, fun) {
     execUser: execUser,
     execPlaylists:execPlaylists,
     REGISTER_USER: REGISTER_USER,
-    CHECK_USERNAME: CHECK_USERNAME
+    CHECK_USERNAME: CHECK_USERNAME,
+    ADD_PLAYLIST: ADD_PLAYLIST,
+    GET_PLAYLISTS: GET_PLAYLISTS,
+    DELETE_PLAYLIST: DELETE_PLAYLIST,
+    GET_DETAILS: GET_DETAILS,
+    ADD_TRACK: ADD_TRACK
   }
