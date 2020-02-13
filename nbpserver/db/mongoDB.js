@@ -86,31 +86,37 @@ function REGISTER_USER(body){
 
 
 async function AUTH_USER(body){
-  console.log("AUTH_USER");
+  return new Promise((resolve, reject) => {
+    console.log("AUTH_USER");
     console.log(body);
-    return User.findOne({ Username: body.username }, function(err, user) {
-        if (err) throw err;  
+    User.findOne({ Username: body.username }, function(err, user) {
+      if (err) throw err;  
         if(user.Password === body.password){
-            return {"user":user};
-        }else return {"user": {}}
-    });
+          resolve(user);
+        }else resolve({});
+      });
+  });
 }
 
 async function USER_BY_ID(query){
-  console.log("USER_BY_ID");
-  console.log(query);
-  return User.find({_id: query.id}, function (err, user) {
-    console.log(user);
-    return {"user":user};
+  return new Promise((resolve, reject) => {
+    console.log("USER_BY_ID");
+    console.log(query);
+    User.find({_id: query.id}, function (err, user) {
+      console.log(user);
+      resolve(user);
+    });
   });
 }
 
 async function CHECK_USERNAME(query){
-  console.log("CHECK_USERNAME");
+  return new Promise((resolve, reject) => {
+    console.log("CHECK_USERNAME");
     console.log(query);
-    return User.find({_id: query.id}, function (err, users) {
-        return {"users":users};
+    User.find({_id: query.id}, function (err, users) {
+      resolve(users);
     });
+  });
 }
 
 async function ADD_PLAYLIST(body){
@@ -164,8 +170,7 @@ async function GET_DETAILS(query){
 
 async function execGet(req, res, fun) {
     try {
-        var result = await fun(req.query);
-
+      fun(req.query).then((result)=>{
         if (result== undefined){
             console.log("req.query");
             console.log(req.query);
@@ -178,6 +183,7 @@ async function execGet(req, res, fun) {
             res.json(result);
             res.end();
         }
+      });
     } catch (err) {
       console.log("ERROR");
       res.status(500);
