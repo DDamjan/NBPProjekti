@@ -2,7 +2,7 @@ import { Track } from '../models/Track';
 
 const baseURL = 'http://localhost:8080/playlists/';
 
-export function dbGetPlaylists(ID: number) {
+export function dbGetPlaylists(ID: string) {
     const url = baseURL + `?ID=${ID}`;
 
     return fetch(url).
@@ -17,7 +17,7 @@ export function dbAddPlaylist(payload: any) {
         then(res => res.json());
 }
 
-export function dbDeletePlaylist(ID: number) {
+export function dbDeletePlaylist(ID: string) {
     const url = baseURL + "delete";
 
     const payload = {
@@ -29,7 +29,7 @@ export function dbDeletePlaylist(ID: number) {
         then(res => res.json());
 }
 
-export function dbAddTrack(track: Track, playlistID: number) {
+export function dbAddTrack(track: Track, playlistID: string) {
     const url = baseURL + "addtrack";
     const data = {
         track,
@@ -40,7 +40,7 @@ export function dbAddTrack(track: Track, playlistID: number) {
         then(res => res.json());
 }
 
-export function dbRemoveTrack(ID: number) {
+export function dbRemoveTrack(ID: string) {
     const url = baseURL + "removetrack";
     const data = {
         ID
@@ -50,7 +50,7 @@ export function dbRemoveTrack(ID: number) {
         then(res => res.json());
 }
 
-export function dbFetchCurrentPlaylist(ID: number) {
+export function dbFetchCurrentPlaylist(ID: string) {
     const url = baseURL + "details/?id=" + ID;
 
     return fetch(url).

@@ -1,7 +1,7 @@
 import { Playlist } from "./playlist";
 
 export interface User{
-    ID: number;
+    _id: string;
     Username: string;
     Password?: string;
     playlists: Playlist[];

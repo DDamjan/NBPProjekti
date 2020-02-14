@@ -14,10 +14,10 @@ async function conectToDB(){
     useUnifiedTopology: true
     });
 
-    // User.find({}, function (err, users) {
-    //     console.log("ima users");
-    //     console.log(users);
-    // });
+    User.find({}, function (err, users) {
+        console.log("ima users");
+        console.log(users);
+    });
 }
 
 
@@ -93,7 +93,7 @@ async function AUTH_USER(body){
       if (err) throw err;  
         if(user.Password === body.password){
           resolve(user);
-        }else resolve({});
+        }else resolve([]);
       });
   });
 }

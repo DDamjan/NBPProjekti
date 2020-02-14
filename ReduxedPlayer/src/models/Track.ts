@@ -1,5 +1,5 @@
 export interface Track{
-    ID: number;
+    _id: string;
     DeezerID: number;
     Artist: string;
     Duration: number;

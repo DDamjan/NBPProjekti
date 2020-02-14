@@ -13,9 +13,9 @@ export interface playlistState {
 }
 
 const initialState: playlistState = {
-    currentPlaylist: { ID: 1, OwnerID: 1, Name: "Name", Tracks: [{ DeezerID: 1, ID: 1, URL: "/", AlbumCover: "/", Album: "Album", Artist: "Artist", Duration: 0, Title: "title" }] },
-    playlists: [{ ID: 1, OwnerID: 1, Name: "Name", Tracks: [{ DeezerID: 1, ID: 1, URL: "/", AlbumCover: "/", Album: "Album", Artist: "Artist", Duration: 0, Title: "title" }] }],
-    currentTrack: { DeezerID: 1, ID: 1, URL: "/", AlbumCover: "/", Album: "Album", Artist: "Artist", Duration: 0, Title: "title" }
+    currentPlaylist: { _id: "1", OwnerID: "1", Name: "Name", Tracks: [{ DeezerID: 1, _id: "1", URL: "/", AlbumCover: "/", Album: "Album", Artist: "Artist", Duration: 0, Title: "title" }] },
+    playlists: [{ _id: "1", OwnerID: "1", Name: "Name", Tracks: [{ DeezerID: 1, _id: "1", URL: "/", AlbumCover: "/", Album: "Album", Artist: "Artist", Duration: 0, Title: "title" }] }],
+    currentTrack: { DeezerID: 1, _id: "1", URL: "/", AlbumCover: "/", Album: "Album", Artist: "Artist", Duration: 0, Title: "title" }
 }
 
 export default function (state = initialState, action: Action) {
@@ -38,7 +38,7 @@ export default function (state = initialState, action: Action) {
             const { ID } = action as DeletePlaylistSuccess;
             return {
                 ...state,
-                playlists: state.playlists.filter((playlist: Playlist) => playlist.ID != ID)
+                playlists: state.playlists.filter((playlist: Playlist) => playlist._id != ID)
             }
         }
         case CURRENT_PLAYLIST_SUCCESS: {
@@ -52,7 +52,7 @@ export default function (state = initialState, action: Action) {
             const { ID } = action as CurrentTrack;
             return {
                 ...state,
-                currentTrack: state.currentPlaylist.Tracks.filter((track: Track) => track.ID === ID).pop()
+                currentTrack: state.currentPlaylist.Tracks.filter((track: Track) => track._id === ID).pop()
             }
         }
         case ADD_TRACK_SUCCESS: {
@@ -68,7 +68,7 @@ export default function (state = initialState, action: Action) {
             console.log(state.currentPlaylist.Tracks);
             return {
                 ...state,
-                currentPlaylist: {...state.currentPlaylist, Tracks: [state.currentPlaylist.Tracks.filter((track: Track) => track.ID != ID)]}
+                currentPlaylist: {...state.currentPlaylist, Tracks: [state.currentPlaylist.Tracks.filter((track: Track) => track._id != ID)]}
             }
         }
         default: return state;

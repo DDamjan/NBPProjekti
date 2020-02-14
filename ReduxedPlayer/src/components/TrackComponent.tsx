@@ -20,7 +20,7 @@ class TrackComponent extends Component<Props, State>{
                     <Card.Img variant="top" src={this.props.track.AlbumCover} />
                     <Card.Title>
                         {this.props.track.Title} - {this.props.track.Artist}
-                        <Link to={"/track/" + this.props.track.ID}><i className="fas fa-play-circle"></i></Link>
+                        <Link to={"/track/" + this.props.track._id}><i className="fas fa-play-circle"></i></Link>
                         <a onClick={this.deleteTrack}><i className="fas fa-trash-alt"></i></a>
                     </Card.Title>
                     <Card.Text>

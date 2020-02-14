@@ -119,7 +119,7 @@ class HomeComponent extends Component<Props, any>{
         event.preventDefault();
         const payload = {
             name: this.state.playlistName,
-            ownerID: this.props.currentUser.user.ID
+            ownerID: this.props.currentUser.user[0]._id
         }
         console.log("payload");
         console.log(payload);

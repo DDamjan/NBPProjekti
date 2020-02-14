@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/auth', async (req, res) => {
-  //req.body.password = sha('sha256').update(req.body.password).digest('hex');
+  req.body.password = sha('sha256').update(req.body.password).digest('hex');
   mongoDB.execPost(req, res, mongoDB.AUTH_USER);
 });
 
