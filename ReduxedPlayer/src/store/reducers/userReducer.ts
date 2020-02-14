@@ -36,7 +36,7 @@ export default function (state = initialState, action: Action): userState {
       const { ID } = action as DeletePlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists: state.user.playlists.filter((playlist: Playlist)=> playlist.ID != ID) }
+        user: {...state.user, playlists: state.user.playlists.filter((playlist: Playlist)=> playlist._id != ID) }
       };
     }
     case REGISTER_USER_SUCCESS: {

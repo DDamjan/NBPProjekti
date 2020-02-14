@@ -4,10 +4,10 @@ import { Playlist } from "../../models/playlist";
 import { Track } from "../../models/Track";
 
 export interface GetPlaylists extends Action {
-    ID: number;
+    ID: string;
 }
 
-export function getPlaylists(ID: number): GetPlaylists {
+export function getPlaylists(ID: string): GetPlaylists {
     return {
         type: FETCH_PLAYLISTS,
         ID
@@ -48,10 +48,10 @@ export function addPlaylistSuccess(playlist: Playlist): AddPlaylistSuccess {
 }
 
 export interface DeletePlaylist extends Action {
-    ID: number;
+    ID: string;
 }
 
-export function deletePlaylist(ID: number): DeletePlaylist {
+export function deletePlaylist(ID: string): DeletePlaylist {
     return {
         type: DELETE_PLAYLIST,
         ID
@@ -59,10 +59,10 @@ export function deletePlaylist(ID: number): DeletePlaylist {
 }
 
 export interface DeletePlaylistSuccess extends Action {
-    ID: number;
+    ID: string;
 }
 
-export function deletePlaylistSuccess(ID: number): DeletePlaylistSuccess {
+export function deletePlaylistSuccess(ID: string): DeletePlaylistSuccess {
     return{
         type: DELETE_PLAYLIST_SUCCESS,
         ID
@@ -70,10 +70,10 @@ export function deletePlaylistSuccess(ID: number): DeletePlaylistSuccess {
 }
 
 export interface CurrentPlaylist extends Action{
-    ID: number;
+    ID: string;
 }
 
-export function currentPlaylist(ID: number): CurrentPlaylist{
+export function currentPlaylist(ID: string): CurrentPlaylist{
     return {
         type: CURRENT_PLAYLIST,
         ID
@@ -92,10 +92,10 @@ export function currentPlaylistSuccess(currentPlaylist: Playlist): CurrentPlayli
 }
 
 export interface CurrentTrack extends Action{
-    ID: number;
+    ID: string;
 }
 
-export function currentTrack(ID: number): CurrentTrack{
+export function currentTrack(ID: string): CurrentTrack{
     return {
         type: CURRENT_TRACK,
         ID
@@ -104,10 +104,10 @@ export function currentTrack(ID: number): CurrentTrack{
 
 export interface AddTrack extends Action{
     track: Track;
-    playlistID: number;
+    playlistID: string;
 }
 
-export function addTrack(track: Track, playlistID: number): AddTrack{
+export function addTrack(track: Track, playlistID: string): AddTrack{
     return {
         type: ADD_TRACK,
         track,
@@ -128,10 +128,10 @@ export function addTrackSuccess(track: Track): AddTrackSuccess{
 
 export interface FindTrack extends Action{
     query: string;
-    playlistID: number;
+    playlistID: string;
 }
 
-export function findTrack(query: string, playlistID: number): FindTrack{
+export function findTrack(query: string, playlistID: string): FindTrack{
     return{
         type: FIND_TRACK,
         query,
@@ -141,10 +141,10 @@ export function findTrack(query: string, playlistID: number): FindTrack{
 
 export interface FindTrackSuccess extends Action{
     track: Track;
-    playlistID: number;
+    playlistID: string;
 }
 
-export function findTrackSuccess(track: any, playlistID: number): FindTrackSuccess{
+export function findTrackSuccess(track: any, playlistID: string): FindTrackSuccess{
     return{
         type: FIND_TRACK_SUCCESS,
         track,
@@ -153,10 +153,10 @@ export function findTrackSuccess(track: any, playlistID: number): FindTrackSucce
 }
 
 export interface RemoveTrack extends Action{
-    ID: number;
+    ID: string;
 }
 
-export function removeTrack(ID: number): RemoveTrack{
+export function removeTrack(ID: string): RemoveTrack{
     return {
         type: REMOVE_TRACK,
         ID
@@ -164,10 +164,10 @@ export function removeTrack(ID: number): RemoveTrack{
 }
 
 export interface RemoveTrackSuccess extends Action{
-    ID: number;
+    ID: string;
 }
 
-export function RemoveTrackSuccess(ID: number): RemoveTrackSuccess{
+export function RemoveTrackSuccess(ID: string): RemoveTrackSuccess{
     return {
         type: REMOVE_TRACK_SUCCESS,
         ID

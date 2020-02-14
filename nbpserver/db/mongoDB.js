@@ -93,7 +93,7 @@ async function AUTH_USER(body){
       if (err) throw err;  
         if(user.Password === body.password){
           resolve(user);
-        }else resolve({});
+        }else resolve([]);
       });
   });
 }

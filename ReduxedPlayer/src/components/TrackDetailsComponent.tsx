@@ -12,7 +12,7 @@ import { removeTrack } from "../store/actions/playlistActions";
 
 interface Props {
     track: Track;
-    removeTrack: (trackID: number) => void;
+    removeTrack: (trackID: string) => void;
 }
 
 interface State {
@@ -131,13 +131,13 @@ class TrackDetailsComponent extends Component<Props, State>{
     }
 
     onDelete() {
-        this.props.removeTrack(this.props.track.ID);
+        this.props.removeTrack(this.props.track._id);
     }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        removeTrack: (ID: number) => dispatch(removeTrack(ID))
+        removeTrack: (ID: string) => dispatch(removeTrack(ID))
     }
 }
 

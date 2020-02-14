@@ -20,8 +20,8 @@ import NavComponent from "./NavComponent";
 interface Props {
     currentPlaylist: Playlist;
     match: any;
-    fetchPlaylist: (ID: number) => void;
-    addTrack: (track: string, playlistID: number) => void;
+    fetchPlaylist: (ID: string) => void;
+    addTrack: (track: string, playlistID: string) => void;
 }
 
 interface State {
@@ -104,7 +104,7 @@ class PlaylistDetailsComponent extends Component<Props, any>{
 
     handleSubmit(event: any) {
         event.preventDefault();
-        this.props.addTrack(this.state.trackName, this.props.currentPlaylist.ID);
+        this.props.addTrack(this.state.trackName, this.props.currentPlaylist._id);
     }
 
     handleChange = (event: any) => {
@@ -120,7 +120,7 @@ class PlaylistDetailsComponent extends Component<Props, any>{
     renderCards() {
         if (this.props.currentPlaylist.Tracks != undefined) {
             return this.props.currentPlaylist.Tracks.map(track => {
-                return (<TrackDetailsComponent track={track} key={track.ID} />)
+                return (<TrackDetailsComponent track={track} key={track._id} />)
             })
         }
         return null;
@@ -141,8 +141,8 @@ class PlaylistDetailsComponent extends Component<Props, any>{
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        fetchPlaylist: (ID: number) => dispatch(currentPlaylist(ID)),
-        addTrack: (payload: string, playlistID: number) => dispatch(findTrack(payload, playlistID))
+        fetchPlaylist: (ID: string) => dispatch(currentPlaylist(ID)),
+        addTrack: (payload: string, playlistID: string) => dispatch(findTrack(payload, playlistID))
     }
 }
 function mapStateToProps(state: AppState) {
