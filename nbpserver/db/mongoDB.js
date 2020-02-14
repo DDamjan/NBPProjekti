@@ -35,7 +35,7 @@ const Track = mongoose.model('Track', trackSchema);
 const playlistSchema = new Schema({
     ID: Number,
     Name: { type: String, default: 'hahaha' },
-    OwnerID: Number,
+    OwnerID: { type: String, default: '' },
     Tracks: trackSchema
 });
 const Playlist = mongoose.model('Playlist', playlistSchema);
@@ -172,9 +172,7 @@ async function execGet(req, res, fun) {
     try {
       fun(req.query).then((result)=>{
         if (result== undefined){
-            console.log("req.query");
-            console.log(req.query);
-            res.json(req.query);
+            res.json([]);
             res.send();
         }
         else{
@@ -196,9 +194,7 @@ async function execGet(req, res, fun) {
     try {
         fun(req.body).then((result)=>{
           if (result== undefined){
-            console.log("req.body");
-            console.log(req.body);
-            res.json(req.body);
+            res.json([]);
             res.send();
           }
           else{
