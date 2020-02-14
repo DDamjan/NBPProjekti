@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const mongoose = require('mongoose');
- 
+
 const Schema = mongoose.Schema;
 //const ObjectId = Schema.ObjectId;
 
@@ -69,47 +69,54 @@ const User = mongoose.model('User', userSchema);
 //     });
 // });
 
-async function REGISTER_USER(body){
-  console.log("REGISTER_USER");
-  console.log(body);
+function REGISTER_USER(body){
+  return new Promise((resolve, reject) => {
+    console.log("REGISTER_USER");
+    console.log(body);
     const instanceU = new User();
     instanceU.Username = body.username;
     instanceU.Password = body.password;
-    return await instanceU.save(function (err, user) {
+    instanceU.save(function (err, user) {
         console.log("User registerd");
         console.log(user);
-        console.log(err);
-        return user;
-    })
+        resolve(user);
+    });
+  });
 }
 
 
 async function AUTH_USER(body){
-  console.log("AUTH_USER");
+  return new Promise((resolve, reject) => {
+    console.log("AUTH_USER");
     console.log(body);
-    return User.findOne({ Username: body.username }, function(err, user) {
-        if (err) throw err;  
+    User.findOne({ Username: body.username }, function(err, user) {
+      if (err) throw err;  
         if(user.Password === body.password){
-            return {"user":user};
-        }else return {"user": {}}
-    });
+          resolve(user);
+        }else resolve({});
+      });
+  });
 }
 
 async function USER_BY_ID(query){
-  console.log("USER_BY_ID");
-  console.log(query);
-  return User.find({_id: query.id}, function (err, user) {
-    console.log(user);
-    return {"user":user};
+  return new Promise((resolve, reject) => {
+    console.log("USER_BY_ID");
+    console.log(query);
+    User.find({_id: query.id}, function (err, user) {
+      console.log(user);
+      resolve(user);
+    });
   });
 }
 
 async function CHECK_USERNAME(query){
-  console.log("CHECK_USERNAME");
+  return new Promise((resolve, reject) => {
+    console.log("CHECK_USERNAME");
     console.log(query);
-    return User.find({_id: query.id}, function (err, users) {
-        return {"users":users};
+    User.find({_id: query.id}, function (err, users) {
+      resolve(users);
     });
+  });
 }
 
 async function ADD_PLAYLIST(body){
@@ -169,12 +176,9 @@ async function GET_DETAILS(query){
 
 async function execGet(req, res, fun) {
     try {
-        var result = await fun(req.query);
-
+      fun(req.query).then((result)=>{
         if (result== undefined){
-            console.log("req.query");
-            console.log(req.query);
-            res.json(req.query);
+            res.json([]);
             res.send();
         }
         else{
@@ -183,6 +187,7 @@ async function execGet(req, res, fun) {
             res.json(result);
             res.end();
         }
+      });
     } catch (err) {
       console.log("ERROR");
       res.status(500);
@@ -193,16 +198,18 @@ async function execGet(req, res, fun) {
   
   async function execPost(req, res, fun) {
     try {
-        var result = await fun(req.body);
-        console.log(result);
-        if (result== undefined){
-          res.json(req.body);
-          res.send();
-        }
-        else{
-          res.json(result);
-          res.end();
-        }
+        fun(req.body).then((result)=>{
+          if (result== undefined){
+            res.json([]);
+            res.send();
+          }
+          else{
+            console.log("result");
+            console.log(result);
+            res.json(result);
+            res.end();
+          }
+        });
     } catch (err) {
       console.log("ERROR");
       res.status(500);
@@ -210,6 +217,31 @@ async function execGet(req, res, fun) {
       res.end();
     }
   }
+
+  // async function execPost(req, res, fun) {
+  //   try {
+  //     fun(req.body).subscribe((result)=>{
+  //       if (result== undefined){
+  //         console.log("req.body");
+  //         console.log(req.body);
+  //         res.json(req.body);
+  //         res.send();
+  //       }
+  //       else{
+  //         console.log("result");
+  //         console.log(result);
+  //         res.json(result);
+  //         res.end();
+  //       }
+  //     });
+  //   } catch (err) {
+  //     console.log("ERROR");
+  //     res.status(500);
+  //     res.send(err.message);
+  //     res.end();
+  //   }
+  // }
+  
   
   async function execFile(res, path) {
     try {
