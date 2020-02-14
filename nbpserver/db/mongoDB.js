@@ -14,10 +14,10 @@ async function conectToDB(){
     useUnifiedTopology: true
     });
 
-    // User.find({}, function (err, users) {
-    //     console.log("ima users");
-    //     console.log(users);
-    // });
+    User.find({}, function (err, users) {
+        console.log("ima users");
+        console.log(users);
+    });
 }
 
 
@@ -35,7 +35,7 @@ const Track = mongoose.model('Track', trackSchema);
 const playlistSchema = new Schema({
     ID: Number,
     Name: { type: String, default: 'hahaha' },
-    OwnerID: Number,
+    OwnerID: String,
     Tracks: [trackSchema]
 });
 const Playlist = mongoose.model('Playlist', playlistSchema);
@@ -113,14 +113,20 @@ async function CHECK_USERNAME(query){
 }
 
 async function ADD_PLAYLIST(body){
-        const instancePL=new Playlist();
-        instancePL.Name=body.name;
-        instancePL.OwnerID=body.ownerID;
-        instancePL.save(function (err){
-                console.log("Playlist added!");
-                console.log(err);
-                return err;
+        instancePL = {
+        instancePL:Name=body.name,
+        instancePL:OwnerID=body.ownerID
+        };
+        Playlist.create(instancePL, function (err, playlist)
+        {
+          if(err) console.log(err);
+          User.findOne({_id:body.ownerID},function (err, user) {
+          if(err) console.log(err);
+          user.playlists.push(instancePL);
+          });
         });
+      
+        
 }
 
 async function ADD_TRACK(body){

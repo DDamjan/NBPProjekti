@@ -30,7 +30,7 @@ router.post('/delete', async (req, res)=> {
 
 router.get('/details/', async (req, res)=>{
   let id = req.query.id;
-  mongoDB.execGet(req,res,mongoDB.GET_DETAILS);
+ // mongoDB.execGet(req,res,mongoDB.GET_DETAILS);
 
   //query.execPlaylists(req, res, id);
 });
