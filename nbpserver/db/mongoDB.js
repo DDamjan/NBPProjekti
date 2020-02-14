@@ -120,19 +120,25 @@ async function CHECK_USERNAME(query){
 }
 
 async function ADD_PLAYLIST(body){
+  return new Promise((resolve, reject) => {
         instancePL = {
         instancePL:Name=body.name,
         instancePL:OwnerID=body.ownerID
         };
         Playlist.create(instancePL, function (err, playlist)
         {
+          console.log("PLAYLISTS");
+          console.log(playlist);
           if(err) console.log(err);
-          User.findOne({_id:body.ownerID},function (err, user) {
+          User.findById(playlist.OwnerID,function (err, user) {
+          // console.log(user);
           if(err) console.log(err);
-          user.playlists.push(instancePL);
+          user.playlists.push(playlist);
+          console.log(user);
+          resolve(user);
           });
         });
-      
+      });
         
 }
 
@@ -148,30 +154,42 @@ async function ADD_TRACK(body){
 }
 
 async function GET_PLAYLISTS(query){
+  return new Promise((resolve, reject) => {
     console.log("WTFFFF");
     return Playlist.find({OwnerID: query.id}, function (err, playlists) {
         console.log("Playliste");
         console.log({"playlists": playlists});
-        return JSON.stringify({"playlists": playlists});
+        resolve(playlists);
+      
     });
+  });
+
 }
 
 async function DELETE_PLAYLIST(body){
+  return new Promise((resolve, reject) => {
   console.log("WTFFFF");
   return Playlist.deleteOne({_id: body.id}, function (err, playlists) {
       console.log("Playliste");
       console.log({"playlists": playlists});
-      return JSON.stringify({"playlists": playlists});
+      resolve(playlists);
+
   });
+});
+
 }
 
 async function GET_DETAILS(query){
+  return new Promise((resolve, reject) => {
   console.log("WTFFFF");
   return Playlist.find({_id: query.id}, function (err, playlists) {
       console.log("Playliste");
       console.log({"playlists": playlists});
-      return JSON.stringify({"playlists": playlists});
+      resolve(playlists);
+      
   });
+});
+
 }
 
 async function execGet(req, res, fun) {

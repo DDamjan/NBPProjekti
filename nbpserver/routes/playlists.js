@@ -8,8 +8,8 @@ const mongoDB = require('../db/mongoDB.js');
 router.post('/add', async (req, res) => {
   let name = req.body.name;
   let ownerID = req.body.ownerID;
-  console.log("REPCUGA 1");
-  console.log(req.body);
+  //console.log("REPCUGA 1");
+  //console.log(req.body);
   mongoDB.execPost(req,res, mongoDB.ADD_PLAYLIST);
   //query.execPost(req, res, queryString.ADD_PLAYLIST(name, ownerID));
 });
