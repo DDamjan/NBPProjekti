@@ -122,8 +122,8 @@ async function CHECK_USERNAME(query){
 async function ADD_PLAYLIST(body){
   return new Promise((resolve, reject) => {
         instancePL = {
-        instancePL:Name=body.name,
-        instancePL:OwnerID=body.ownerID
+        Name:body.name,
+        OwnerID:body.ownerID
         };
         Playlist.create(instancePL, function (err, playlist)
         {
@@ -134,8 +134,8 @@ async function ADD_PLAYLIST(body){
           // console.log(user);
           if(err) console.log(err);
           user.playlists.push(playlist);
-          console.log(user);
-          resolve(user);
+          //console.log(user);
+          resolve(playlist);
           });
         });
       });
