@@ -29,14 +29,14 @@ export default function (state = initialState, action: Action): userState {
       const { playlist } = action as AddPlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists:[...state.user[0].playlists, playlist] }
+        user: {...state.user, playlists:[...state.user.playlists, playlist] }
       };
     }
     case DELETE_PLAYLIST_SUCCESS: {
       const { ID } = action as DeletePlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists: state.user[0].playlists.filter((playlist: Playlist)=> playlist._id != ID) }
+        user: {...state.user, playlists: state.user.playlists.filter((playlist: Playlist)=> playlist._id != ID) }
       };
     }
     case REGISTER_USER_SUCCESS: {

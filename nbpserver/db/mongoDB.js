@@ -110,9 +110,9 @@ async function USER_BY_ID(query) {
   return new Promise((resolve, reject) => {
     console.log("USER_BY_ID");
     console.log(query);
-    User.find({ _id: query.id }, function (err, user) {
+    User.find({ _id: query.id }, '-Password', function (err, user) {
       console.log(user);
-      resolve(user);
+      resolve(user[0]);
     });
   });
 }
