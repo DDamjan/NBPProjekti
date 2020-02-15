@@ -29,14 +29,14 @@ export default function (state = initialState, action: Action): userState {
       const { playlist } = action as AddPlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists:[...state.user.playlists, playlist] }
+        user: {...state.user, Playlists:[...state.user.Playlists, playlist] }
       };
     }
     case DELETE_PLAYLIST_SUCCESS: {
       const { ID } = action as DeletePlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists: state.user.playlists.filter((playlist: Playlist)=> playlist._id != ID) }
+        user: {...state.user, Playlists: state.user.Playlists.filter((playlist: Playlist)=> playlist._id != ID) }
       };
     }
     case REGISTER_USER_SUCCESS: {
@@ -64,14 +64,14 @@ export default function (state = initialState, action: Action): userState {
       const { id } = action as RemoveFriendSuccess;
       return {
         ...state,
-        user: {...state.user, friends: state.user[0].friends.filter((friend: User)=> friend._id != id) }
+        user: {...state.user, Friends: state.user[0].Friends.filter((friend: User)=> friend._id != id) }
       }
     }
     case ADD_FRIEND_SUCCESS: {
       const { friend } = action as AddFriendSuccess;
       return {
         ...state,
-        user: {...state.user, friends: [...state.user[0].friends, friend] }
+        user: {...state.user, Friends: [...state.user[0].Friends, friend] }
       }
     }
     default: return state;
