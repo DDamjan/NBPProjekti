@@ -39,7 +39,7 @@ class NavComponent extends Component<Props, State>{
         return (
             <div className="container">
                 <div className="title">
-                    
+
                     <Link to="/" style={{ textDecoration: 'none', color: 'white' }}><h1>Reduxed player</h1></Link>
                     {this.renderName()}
                     <p onClick={this.logout.bind(this)}><Link to="/login" style={{ cursor: 'pointer', color: 'white' }}>Log out</Link></p>
@@ -49,20 +49,16 @@ class NavComponent extends Component<Props, State>{
     }
 
     renderName() {
-        if (this.props.currentUser.user !== undefined)
-            if (this.props.currentUser.user.constructor == Array){
-                return (<h3>Welcome {this.props.currentUser.user[0].Username}</h3>);
-            } 
-            else{
-                return (<h3>Welcome {this.props.currentUser.user.Username}</h3>);
-            }
+        if (this.props.currentUser.user !== undefined) {
+            return (<h3>Welcome {this.props.currentUser.user.Username}</h3>);
+        }
     }
 
     logout() {
         const cookies = new Cookies();
         cookies.remove('logedIn');
     }
-    
+
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
