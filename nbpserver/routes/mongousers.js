@@ -24,4 +24,9 @@ router.get('/checkuser', async (req, res) => {
   mongoDB.execQuery(req.query, res, mongoDB.CHECK_USERNAME);
 })
 
+router.post('/addfriend', async (req, res) => {
+  mongoDB.execQuery(req.body, res, mongoDB.ADD_FRIEND);
+  console.log("11111111");
+});
+
 module.exports = router;

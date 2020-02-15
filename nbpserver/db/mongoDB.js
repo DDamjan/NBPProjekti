@@ -177,9 +177,25 @@ async function ADD_TRACK(body) {
 
 async function ADD_FRIEND(body) {
   return new Promise((resolve, reject) => {
+    console.log("22222");
   
-     const user= User.find({Username:body.user});
-     const friend=User.findOne({Username:body.friend},'-Password -friends')
+     User.findOne({Username:body.user},function (err, user) {
+     User.findOne({Username:body.friend},'-Password -friends',function (err, friend) {
+      console.log(user);
+      console.log(friend);
+   
+      const friendParse=new Friend();
+     friendParse.Username=friend.Username;
+     friendParse.ID=friend.ID;
+     friendParse.Playlists=friend.Playlists;
+     friendParse.save();
+     console.log(user);
+     user.Friends.push(friendParse);
+     user.save();
+     resolve(user);
+    });
+  });
+
     });
   
 
