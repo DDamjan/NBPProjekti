@@ -40,11 +40,19 @@ const playlistSchema = new Schema({
 });
 const Playlist = mongoose.model('Playlist', playlistSchema);
 
+const friendSchema = new Schema({
+  ID: Number,
+  Username: { type: String, default: 'hahaha' },
+  Playlists: [playlistSchema]
+});
+const Friend = mongoose.model('Friend', friendSchema);
+
 const userSchema = new Schema({
   ID: Number,
   Username: { type: String, default: 'hahaha' },
   Password: { type: String, default: 'hahaha' },
-  playlists: [playlistSchema]
+  Playlists: [playlistSchema],
+  Friends: [friendSchema]
 });
 const User = mongoose.model('User', userSchema);
 
@@ -132,7 +140,7 @@ async function ADD_PLAYLIST(body) {
       User.findById(playlist.OwnerID, function (err, user) {
         // console.log(user);
         if (err) console.log(err);
-        user.playlists.push(playlist);
+        user.Playlists.push(playlist);
         //console.log(user);
         user.save();
         resolve(playlist);
@@ -157,7 +165,7 @@ async function ADD_TRACK(body) {
         if (err) console.log(err);
         User.findOne({_id: body.userID}, function (err, user) {
           if (err) console.log(err);
-          user.playlists.find(x => x._id == body.playlistID).Tracks.push(track);
+          user.Playlists.find(x => x._id == body.playlistID).Tracks.push(track);
           user.save();
           resolve(track);
         });
@@ -165,6 +173,16 @@ async function ADD_TRACK(body) {
       });
 
   });
+}
+
+async function ADD_FRIEND(body) {
+  return new Promise((resolve, reject) => {
+  
+     const user= User.find({Username:body.user});
+     const friend=User.findOne({Username:body.friend},'-Password -friends')
+    });
+  
+
 }
 
 async function GET_PLAYLISTS(query) {
@@ -183,8 +201,8 @@ async function GET_PLAYLISTS(query) {
 async function DELETE_PLAYLIST(body) {
   return new Promise((resolve, reject) => {
     return User.findOne({ _id: body.ownerID }, async function (err, user) {
-      const payload = await user.playlists.filter(x => x._id != body.playlistID);
-      await user.updateOne({ playlists: payload });
+      const payload = await user.Playlists.filter(x => x._id != body.playlistID);
+      await user.updateOne({ Playlists: payload });
       resolve({playlistID: body.playlistID});
     });
   });
@@ -315,5 +333,6 @@ module.exports = {
   GET_PLAYLISTS: GET_PLAYLISTS,
   DELETE_PLAYLIST: DELETE_PLAYLIST,
   GET_DETAILS: GET_DETAILS,
-  ADD_TRACK: ADD_TRACK
+  ADD_TRACK: ADD_TRACK,
+  ADD_FRIEND: ADD_FRIEND
 }
