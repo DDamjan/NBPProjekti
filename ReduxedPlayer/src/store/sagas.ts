@@ -17,13 +17,9 @@ export function* sAuthUser(user: AuthUser) {
 export function* sRegisterUser(user: RegisterUser) {
     console.log("sRegisterUser");
     const username = yield dbCheckUsername(user.user.Username);
-    console.log("username");
-    console.log(username);
     if (username.length === 0) {
         if (user.user.Password === user.user.confirmPassword) {
             const dbUser = yield dbRegisterUser(user.user.Username, user.user.Password);
-            console.log("dbUser");
-            console.log(dbUser);
             const cookies = new Cookies();
             debugger;
             cookies.set('logedIn', dbUser._id, { path: '/' });
