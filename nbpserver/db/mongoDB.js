@@ -204,7 +204,7 @@ async function GET_DETAILS(query) {
 
 }
 
-function execQuery(result, res) {
+function execQuery(req, res, fun) {
   try {
     fun(req).then((result) => {
       if (result == undefined) {
