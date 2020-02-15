@@ -11,10 +11,12 @@ import { Dispatch, Action } from "redux";
 import { connect } from "react-redux";
 import { deletePlaylist } from '../store/actions/playlistActions';
 import { Link } from 'react-router-dom';
+import { removeFriend } from '../store/actions/userActions';
 
 interface Props {
-    user: User;
-    removeFriend: (id: string, ida: string) => void;
+    friend: User;
+    removeFriend: (payload: any) => void;
+    currentUser: User;
 }
 
 interface State {
@@ -23,17 +25,18 @@ interface State {
 class FriendComponent extends Component<Props, State>{
 
     render() {
+        console.log(this.props.friend);
         return (
             <div className="card-outline">
-                <Card>  
+                <Card>
                     <CardContent>
                         <Typography variant="body2" component="p">
-                            {this.props.user.Username}
+                            {this.props.friend.Username}
                             <br />
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Link to={"/user/" + this.props.user._id} >
+                        <Link to={"/friends/" + this.props.friend._id} >
                             <Button variant="light">Open</Button>
                         </Link>
                         <Button variant="light" onClick={this.handleDelete.bind(this)}>Delete</Button>
@@ -44,18 +47,23 @@ class FriendComponent extends Component<Props, State>{
     }
 
     handleDelete() {
-        // this.props.removeFriend(this.props.user._id);
+        const payload = {
+            friendID: this.props.friend._id,
+            userID: this.props.currentUser._id
+        };
+        this.props.removeFriend(payload);
     }
 
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        removeFriend: (id: string, ida: string) => dispatch(deletePlaylist(id, ida))
+        removeFriend: (payload: any) => dispatch(removeFriend(payload))
     }
 }
 function mapStateToProps(state: AppState) {
     return {
+        currentUser: state.user.user
     }
 }
 

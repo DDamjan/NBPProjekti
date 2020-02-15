@@ -12,7 +12,29 @@ html, body {
     padding: 0;
 }
 
-.addPlaylist{
+.title {
+    width: 100vw;
+    height: 50px;
+    padding-left: 2%;
+    padding-right: 2%;
+    background-color: #388E3C;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+h1 {
+    margin: auto;
+}
+
+h3 {
+    margin: auto;
+    color: white;
+}
+
+.addFriend{
     background-color: #4CAF50;
     width: 100vw;
     display: flex;

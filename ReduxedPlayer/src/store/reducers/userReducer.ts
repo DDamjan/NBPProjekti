@@ -1,19 +1,21 @@
 /* eslint-disable no-unused-expressions */
 import { User } from "../../models/user";
 import { Action } from "redux";
-import { REGISTER_USER_SUCCESS, AUTH_USER_SUCCESS, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS } from "../actions/types";
-import { AuthUserSuccess, RegisterUserSuccess, GetUserByIDSuccess, RegisterUserFail, RemoveFriendSuccess, AddFriendSuccess } from "../actions/userActions";
+import { REGISTER_USER_SUCCESS, AUTH_USER_SUCCESS, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS, GET_FRIEND } from "../actions/types";
+import { AuthUserSuccess, RegisterUserSuccess, GetUserByIDSuccess, RegisterUserFail, RemoveFriendSuccess, AddFriendSuccess, GetFriend } from "../actions/userActions";
 import { AddPlaylistSuccess, DeletePlaylistSuccess } from "../actions/playlistActions";
 import { Playlist } from "../../models/playlist";
 
 export interface userState {
   user?: User;
   error?: string;
+  currentFriend?: User;
 }
 
 const initialState: userState = {
   user: undefined,
-  error: ""
+  error: "",
+  currentFriend: undefined
 }
 
 export default function (state = initialState, action: Action): userState {
@@ -61,17 +63,24 @@ export default function (state = initialState, action: Action): userState {
       }
     }
     case REMOVE_FRIEND_SUCCESS: {
-      const { id } = action as RemoveFriendSuccess;
+      const { friendID } = action as RemoveFriendSuccess;
       return {
         ...state,
-        user: {...state.user, Friends: state.user[0].Friends.filter((friend: User)=> friend._id != id) }
+        user: {...state.user, Friends: state.user.Friends.filter((friend: User)=> friend._id != friendID) }
       }
     }
     case ADD_FRIEND_SUCCESS: {
       const { friend } = action as AddFriendSuccess;
       return {
         ...state,
-        user: {...state.user, Friends: [...state.user[0].Friends, friend] }
+        user: {...state.user, Friends: [...state.user.Friends, friend] }
+      }
+    }
+    case GET_FRIEND: {
+      const { friendID } = action as GetFriend;
+      return {
+        ...state,
+        currentFriend: state.user.Friends.find(x => x._id == friendID)
       }
     }
     default: return state;

@@ -39,13 +39,18 @@ export function* sGetUserByID(user: GetUserByID) {
 }
 
 export function* sRemoveFriend(user: RemoveFriend) {
-    const dbUser = yield dbRemoveFriend(user.id);
+    const dbUser = yield dbRemoveFriend(user.payload);
     yield put(removeFriendSuccess(dbUser));
 }
 
 export function* sAddFriend(friend: AddFriend) {
     const dbFriend = yield dbAddFriend(friend.payload);
-    yield put(addFriendSuccess(dbFriend));
+    if (dbFriend.length !== 0){
+        yield put(addFriendSuccess(dbFriend));
+    }else{
+        alert("Username doesn't exist, try again!");
+    }
+    
 }
 
 

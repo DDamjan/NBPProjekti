@@ -13,34 +13,39 @@ import '../style/home.css';
 import { addPlaylist } from "../store/actions/playlistActions";
 import { Grid } from "@material-ui/core";
 import NavComponent from "./NavComponent";
+import { User } from "../models/user";
 
 interface Props {
     currentUser: any;
+    fetchFriend: (ID: string) => void;
     fetchUser: (ID: string) => void;
     addPlaylist: (payload: any) => void;
     playlists: any;
+    match: any;
+    friend: User;
 }
 
 interface State {
-    playlistName: string;
 }
 
-class HomeComponent extends Component<Props, any>{
+class FriendPlaylistComponent extends Component<Props, any>{
 
     constructor(props: Props) {
         super(props);
-        this.state = {
-            playlistName: "",
-            redirect: false
-        }
     }
 
     componentDidMount() {
-        const cookies = new Cookies();
-        let id = cookies.get('logedIn');
-        console.log("id");
-        console.log(id);
-        this.props.fetchUser(id);
+        if (this.props.currentUser != undefined) {
+            const cookies = new Cookies();
+            let id = cookies.get('logedIn');
+            console.log("id");
+            console.log(id);
+            this.props.fetchUser(id);
+        }
+        const { id } = this.props.match.params;
+        if (id !== undefined) {
+            this.props.fetchFriend(id);
+        }
     }
 
     renderRedirect() {
@@ -55,27 +60,7 @@ class HomeComponent extends Component<Props, any>{
                 <NavComponent></NavComponent>
                 <div className="addPlaylist">
                     <div className="playlist-container">
-                        <h3>Playlists</h3>
-                    </div>
-                    <div className="form-container">
-                        <Form onSubmit={this.handleSubmit.bind(this)}>
-                            <Form.Group controlId="playlistName"  >
-                                <Form.Control
-                                    type='text'
-                                    placeholder="Playlist name"
-                                    autoFocus
-                                    value={this.state.playlistName}
-                                    onChange={this.handleChange}
-                                />
-                            </Form.Group>
-                            <Button
-                                block
-                                disabled={!this.validateForm()}
-                                type="submit"
-                            >
-                                Add playlist
-                            </Button>
-                        </Form>
+                        <h3>{this.props.friend.Username}'s playlists</h3>
                     </div>
                 </div>
                 <div className="PlaylistGrid">
@@ -150,4 +135,4 @@ function mapStateToProps(state: AppState) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(FriendPlaylistComponent);

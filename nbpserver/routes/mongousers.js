@@ -16,7 +16,6 @@ router.post('/auth', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  console.log(req.query);
   mongoDB.execQuery(req.query, res, mongoDB.USER_BY_ID);
 });
 
@@ -25,8 +24,8 @@ router.get('/checkuser', async (req, res) => {
 })
 
 router.post('/addfriend', async (req, res) => {
+  console.log(req.body);
   mongoDB.execQuery(req.body, res, mongoDB.ADD_FRIEND);
-  console.log("11111111");
 });
 
 router.post('/removefriend', async (req, res) => {

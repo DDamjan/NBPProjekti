@@ -9,16 +9,18 @@ import { AppState } from "../store/store";
 import { connect } from "react-redux";
 import Cookies from "universal-cookie";
 import { getUserByID, addFriend } from "../store/actions/userActions";
-import '../style/home.css';
+import '../style/friend.css';
 import { addPlaylist } from "../store/actions/playlistActions";
 import { Grid } from "@material-ui/core";
 import NavComponent from "./NavComponent";
 import FriendComponent from "./FriendComponent";
+import { User } from "../models/user";
 
 interface Props {
     currentUser: any;
     addFriend: (payload: any) => void;
     match: any;
+    friends: User[];
 }
 
 interface State {
@@ -93,9 +95,9 @@ class FriendDetailsComponent extends Component<Props, any>{
     }
 
     renderCards() {
-        if (this.props.currentUser.user !== undefined && this.props.currentUser[0].friends) {
-            return this.props.currentUser[0].friends.map(friend => {
-                return (<FriendComponent user={friend} key={friend._id} />)
+        if (this.props.currentUser !== undefined && this.props.currentUser.Friends) {
+            return this.props.friends.map(friend => {
+                return (<FriendComponent friend={friend} key={friend._id} />)
             })
         }
         return null;
@@ -114,14 +116,16 @@ class FriendDetailsComponent extends Component<Props, any>{
     handleSubmit(event: any) {
         event.preventDefault();
         const payload = {
-            name: this.state.friendUsername,
-            userID: this.props.currentUser.user[0]._id
+            friendName: this.state.friendUsername,
+            userID: this.props.currentUser._id
         }
-        console.log("payload");
         console.log(payload);
-
-        this.props.addFriend(payload);
-        this.forceUpdate();
+        if (payload.friendName == this.props.currentUser.Username) {
+            alert("Wrong input!");
+        } else {
+            this.props.addFriend(payload);
+            this.forceUpdate();
+        }
     }
 
     logout() {
@@ -138,7 +142,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>) {
 
 function mapStateToProps(state: AppState) {
     return {
-        currentUser: state.user
+        currentUser: state.user.user,
+        friends: state.user.user.Friends
     }
 }
 

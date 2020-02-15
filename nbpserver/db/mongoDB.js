@@ -111,7 +111,6 @@ async function USER_BY_ID(query) {
     console.log("USER_BY_ID");
     console.log(query);
     User.find({ _id: query.id }, '-Password', function (err, user) {
-      console.log(user);
       resolve(user[0]);
     });
   });
@@ -163,7 +162,7 @@ async function ADD_TRACK(body) {
     let idU =
       Track.create(instanceT, function (err, track) {
         if (err) console.log(err);
-        User.findOne({_id: body.userID}, function (err, user) {
+        User.findOne({ _id: body.userID }, function (err, user) {
           if (err) console.log(err);
           user.Playlists.find(x => x._id == body.playlistID).Tracks.push(track);
           user.save();
@@ -177,26 +176,26 @@ async function ADD_TRACK(body) {
 
 async function ADD_FRIEND(body) {
   return new Promise((resolve, reject) => {
-    console.log("22222");
-  
-     User.findOne({Username:body.user},function (err, user) {
-     User.findOne({Username:body.friend},'-Password -friends',function (err, friend) {
-      console.log(user);
-      console.log(friend);
-   
-      const friendParse=new Friend();
-     friendParse.Username=friend.Username;
-     friendParse.ID=friend.ID;
-     friendParse.Playlists=friend.Playlists;
-     friendParse.save();
-     console.log(user);
-     user.Friends.push(friendParse);
-     user.save();
-     resolve(user);
+    User.findOne({ _id: body.userID }, function (err, user) {
+      User.findOne({ Username: body.friendName }, '-Password -Friends', function (err, friend) {
+        if (friend !== null){
+          const friendParse = new Friend();
+          friendParse.Username = friend.Username;
+          friendParse.ID = friend.ID;
+          friendParse.Playlists = friend.Playlists;
+          friendParse.save();
+          console.log(user);
+          user.Friends.push(friendParse);
+          user.save();
+          resolve(user.Friends.find(x=> x.Username == body.friendName));
+        }else{
+          resolve([]);
+        }
+        
+      });
     });
-  });
 
-    });
+  });
 }
 
 async function REMOVE_FRIEND(body) {
@@ -204,7 +203,7 @@ async function REMOVE_FRIEND(body) {
     return User.findOne({ _id: body.userID }, async function (err, user) {
       const payload = await user.Friends.filter(x => x._id != body.friendID);
       await user.updateOne({ Friends: payload });
-      resolve({friendID: body.friendID});
+      resolve(body.friendID);
     });
   });
 }
@@ -212,13 +211,13 @@ async function REMOVE_FRIEND(body) {
 async function REMOVE_TRACK(body) {
   return new Promise((resolve, reject) => {
     return User.findOne({ _id: body.userID }, async function (err, user) {
-       user.Playlists.findOne({ _id: body.playlistID }, async function (err, playlist) {
-      const payload = await playlist.Tracks.filter(x => x._id != body.trackID);
-      await playlist.updateOne({ Tracks: payload });
-      //resolve({friendID: body.friendID});
+      user.Playlists.findOne({ _id: body.playlistID }, async function (err, playlist) {
+        const payload = await playlist.Tracks.filter(x => x._id != body.trackID);
+        await playlist.updateOne({ Tracks: payload });
+        //resolve({friendID: body.friendID});
+      });
     });
   });
-});
 
 }
 
@@ -240,7 +239,7 @@ async function DELETE_PLAYLIST(body) {
     return User.findOne({ _id: body.ownerID }, async function (err, user) {
       const payload = await user.Playlists.filter(x => x._id != body.playlistID);
       await user.updateOne({ Playlists: payload });
-      resolve({playlistID: body.playlistID});
+      resolve({ playlistID: body.playlistID });
     });
   });
 

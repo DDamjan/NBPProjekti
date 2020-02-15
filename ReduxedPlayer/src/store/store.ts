@@ -3,8 +3,8 @@ import { applyMiddleware, createStore } from "redux";
 import {composeWithDevTools} from 'redux-devtools-extension';
 import rootReducer from './reducers'
 import { takeEvery } from '@redux-saga/core/effects';
-import { REGISTER_USER, FETCH_PLAYLISTS, ADD_PLAYLIST, DELETE_PLAYLIST, ADD_TRACK, REMOVE_TRACK, AUTH_USER, GET_USER_BY_ID, CURRENT_PLAYLIST, FIND_TRACK, FIND_TRACK_SUCCESS, REMOVE_FRIEND } from "./actions/types";
-import { sAuthUser, sRegisterUser, sFetchPlaylists, sAddPlaylists, sDeletePlaylist, sAddTrack, sRemoveTrack, sGetUserByID, sCurrentPlaylist, sFindTrack, sRemoveFriend } from "./sagas";
+import { REGISTER_USER, FETCH_PLAYLISTS, ADD_PLAYLIST, DELETE_PLAYLIST, ADD_TRACK, REMOVE_TRACK, AUTH_USER, GET_USER_BY_ID, CURRENT_PLAYLIST, FIND_TRACK, FIND_TRACK_SUCCESS, REMOVE_FRIEND, ADD_FRIEND } from "./actions/types";
+import { sAuthUser, sRegisterUser, sFetchPlaylists, sAddPlaylists, sDeletePlaylist, sAddTrack, sRemoveTrack, sGetUserByID, sCurrentPlaylist, sFindTrack, sRemoveFriend, sAddFriend } from "./sagas";
 import { userState } from "./reducers/userReducer";
 import { playlistState } from "./reducers/playlistReducer";
 
@@ -38,6 +38,7 @@ export function* rootSaga(){
     yield takeEvery (FIND_TRACK, sFindTrack);
     yield takeEvery (FIND_TRACK_SUCCESS, sAddTrack);
     yield takeEvery (REMOVE_FRIEND, sRemoveFriend);
+    yield takeEvery (ADD_FRIEND, sAddFriend);
 }
 
 export default configureStore();

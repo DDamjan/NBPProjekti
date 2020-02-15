@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import '../style/home.css';
 import { Link, Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { Action, Dispatch } from "redux";
@@ -7,10 +6,11 @@ import { getUserByID } from "../store/actions/userActions";
 import { addPlaylist } from "../store/actions/playlistActions";
 import { AppState } from "../store/store";
 import { connect } from "react-redux";
+import '../style/nav.css'
 
 interface Props {
     currentUser: any;
-    fetchUser: (ID: number) => void;
+    fetchUser: (ID: string) => void;
 }
 
 interface State {
@@ -42,7 +42,10 @@ class NavComponent extends Component<Props, State>{
 
                     <Link to="/" style={{ textDecoration: 'none', color: 'white' }}><h1>Reduxed player</h1></Link>
                     {this.renderName()}
-                    <p onClick={this.logout.bind(this)}><Link to="/login" style={{ cursor: 'pointer', color: 'white' }}>Log out</Link></p>
+                    <div className="options">
+                        <h6><Link to="/friends" style={{ cursor: 'pointer', color: 'white' }}>Friends</Link></h6>
+                        <h6 onClick={this.logout.bind(this)}><Link to="/login" style={{ cursor: 'pointer', color: 'white' }}>Log out</Link></h6>
+                    </div>
                 </div>
             </div>
         );
@@ -63,7 +66,7 @@ class NavComponent extends Component<Props, State>{
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        fetchUser: (ID: number) => dispatch(getUserByID(ID)),
+        fetchUser: (ID: string) => dispatch(getUserByID(ID)),
         addPlaylist: (payload: any) => dispatch(addPlaylist(payload))
     }
 }

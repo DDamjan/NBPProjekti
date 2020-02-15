@@ -25,7 +25,7 @@ export function dbAuthUser(username: string, password: string) {
         then(res => res.json());
 }
 
-export function dbGetUserByID(ID: number) {
+export function dbGetUserByID(ID: string) {
     const url = baseURL + `?id=${ID}`;
 
     return fetch(url).
@@ -38,10 +38,11 @@ export function dbCheckUsername(username: string) {
     return fetch(url).then(res=> res.json());
 }
 
-export function dbRemoveFriend(id: string) {
-    const url = `${baseURL}removefriend?id=${id}`;
+export function dbRemoveFriend(payload: any) {
+    const url = `${baseURL}removefriend`;
 
-    return fetch(url).then(res=> res.json());
+    return fetch(url, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "application/json" } }).
+        then(res => res.json());
 }
 
 export function dbAddFriend(payload: any) {
