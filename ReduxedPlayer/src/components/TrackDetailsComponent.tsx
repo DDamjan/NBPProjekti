@@ -17,6 +17,7 @@ interface Props {
     removeTrack: (payload: any) => void;
     currentUser: User;
     currentPlaylist: Playlist;
+    currentFriend: User;
 }
 
 interface State {
@@ -86,7 +87,7 @@ class TrackDetailsComponent extends Component<Props, State>{
             this.audio.pause();
             this.stopTimer();
         });
-        if (this.state.timerTime >= 30000){
+        if (this.state.timerTime >= 30000) {
             this.resetTimer();
         }
     }
@@ -119,9 +120,7 @@ class TrackDetailsComponent extends Component<Props, State>{
                                 <IconButton aria-label="stop" onClick={this.toggleStop.bind(this)}>
                                     <StopIcon />
                                 </IconButton>
-                                <IconButton aria-label="remove" onClick={this.onDelete.bind(this)}>
-                                    <DeleteIcon />
-                                </IconButton>
+                                {this.renderButton()}
                             </div>
                         </div>
                     </div>
@@ -141,6 +140,11 @@ class TrackDetailsComponent extends Component<Props, State>{
         };
         this.props.removeTrack(payload);
     }
+
+    renderButton() {
+        if (this.props.currentFriend == undefined)
+        return (<IconButton aria-label="remove" onClick={this.onDelete.bind(this)}><DeleteIcon /></IconButton>)
+    }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
@@ -149,10 +153,11 @@ function mapDispatchToProps(dispatch: Dispatch<Action>) {
     }
 }
 
-function mapStateToProps(state: AppState){
-    return{
+function mapStateToProps(state: AppState) {
+    return {
         currentUser: state.user.user,
-        currentPlaylist: state.playlists.currentPlaylist
+        currentPlaylist: state.playlists.currentPlaylist,
+        currentFriend: state.user.currentFriend
     }
 }
 
