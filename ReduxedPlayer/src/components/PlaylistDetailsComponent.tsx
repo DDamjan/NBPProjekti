@@ -16,12 +16,14 @@ import { addTrack, currentPlaylist, findTrack } from "../store/actions/playlistA
 import { AppState } from "../store/store";
 import '../style/home.css';
 import NavComponent from "./NavComponent";
+import { User } from "../models/user";
 
 interface Props {
     currentPlaylist: Playlist;
+    currentUser: User;
     match: any;
     fetchPlaylist: (ID: string) => void;
-    addTrack: (track: string, playlistID: string) => void;
+    addTrack: (track: string, playlistID: string, userID: string) => void;
 }
 
 interface State {
@@ -104,7 +106,7 @@ class PlaylistDetailsComponent extends Component<Props, any>{
 
     handleSubmit(event: any) {
         event.preventDefault();
-        this.props.addTrack(this.state.trackName, this.props.currentPlaylist._id);
+        this.props.addTrack(this.state.trackName, this.props.currentPlaylist._id, this.props.currentUser[0]._id);
     }
 
     handleChange = (event: any) => {
@@ -138,12 +140,13 @@ class PlaylistDetailsComponent extends Component<Props, any>{
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
         fetchPlaylist: (ID: string) => dispatch(currentPlaylist(ID)),
-        addTrack: (payload: string, playlistID: string) => dispatch(findTrack(payload, playlistID))
+        addTrack: (payload: string, playlistID: string, userID: string) => dispatch(findTrack(payload, playlistID, userID))
     }
 }
 function mapStateToProps(state: AppState) {
     return {
-        currentPlaylist: state.playlists.currentPlaylist
+        currentPlaylist: state.playlists.currentPlaylist,
+        currentUser: state.user.user
     }
 }
 

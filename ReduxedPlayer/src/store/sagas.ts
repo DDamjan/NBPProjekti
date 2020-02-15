@@ -68,8 +68,8 @@ export function* sDeletePlaylist(playlist: DeletePlaylist) {
 }
 
 export function* sAddTrack(track: AddTrack) {
-    const dbTrack = yield dbAddTrack(track.track, track.playlistID);
-    yield put(addTrackSuccess(dbTrack[0]));
+    const dbTrack = yield dbAddTrack(track.track, track.playlistID, track.userID);
+    yield put(addTrackSuccess(dbTrack));
 }
 
 export function* sFindTrack(query: FindTrack) {
@@ -85,7 +85,7 @@ export function* sFindTrack(query: FindTrack) {
         URL: dzTrack.data[0].preview
     }
 
-    yield put(findTrackSuccess(track, query.playlistID));
+    yield put(findTrackSuccess(track, query.playlistID, query.userID));
 }
 
 export function* sRemoveTrack(track: RemoveTrack) {

@@ -29,13 +29,14 @@ export function dbDeletePlaylist(ID: string) {
         then(res => res.json());
 }
 
-export function dbAddTrack(track: Track, playlistID: string) {
+export function dbAddTrack(track: Track, playlistID: string, userID: string) {
     const url = baseURL + "addtrack";
     const data = {
         track,
-        playlistID
+        playlistID,
+        userID
     }
-
+    
     return fetch(url, { method: "POST", body: JSON.stringify(data), headers: { "Content-Type": "application/json" } }).
         then(res => res.json());
 }

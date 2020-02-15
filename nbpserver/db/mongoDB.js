@@ -157,20 +157,23 @@ async function ADD_TRACK(body) {
         //console.log("track");
         //console.log(track);
         if (err) console.log(err);
-        Playlist.findById(body.playlistID, function (err, playlist) {
-          // console.log(playlist);
+        // Playlist.findById(body.playlistID, function (err, playlist) {
+        //   // console.log(playlist);
+        //   if (err) console.log(err);
+        console.log("BODY");
+        console.log(body);
+        User.findOne({_id: body.userID}, function (err, user) {
           if (err) console.log(err);
-
-          User.findById(playlist.OwnerID, function (err, user) {
-            if (err) console.log(err);
-            playlist.Tracks.push(track);
-            //console.log(user);
-            playlist.save();
-            user.save();
-            //User.findById(playlist.OwnerID).save();
-            resolve(user);
-          });
+          //console.log(user);
+          user.playlists.find(x => x._id == body.playlistID).Tracks.push(track);
+          // playlist.Tracks.push(track);
+          // //console.log(user);
+          // playlist.save();
+          user.save();
+          //User.findById(playlist.OwnerID).save();
+          resolve(track);
         });
+        // });
       });
 
   });
@@ -194,8 +197,8 @@ async function DELETE_PLAYLIST(body) {
     console.log("WTFFFF");
     return User.findById({ _id: body.ownerID }, async function (err, user) {
       const payload = await user.playlists.filter(x => x._id != body.playlistID);
-      await user.updateOne({playlists: payload});
-      Playlist.deleteOne({_id: body.playlistID});
+      await user.updateOne({ playlists: payload });
+      Playlist.deleteOne({ _id: body.playlistID });
       Playlist.save();
       resolve(body.playlistID);
     });
@@ -233,16 +236,7 @@ async function GET_DETAILS(query) {
 async function execGet(req, res, fun) {
   try {
     fun(req.query).then((result) => {
-      if (result == undefined) {
-        res.json([]);
-        res.send();
-      }
-      else {
-        console.log("result");
-        console.log(result);
-        res.json(result);
-        res.end();
-      }
+      execQuery(result, res);
     });
   } catch (err) {
     console.log("ERROR");
@@ -255,21 +249,25 @@ async function execGet(req, res, fun) {
 async function execPost(req, res, fun) {
   try {
     fun(req.body).then((result) => {
-      if (result == undefined) {
-        res.json([]);
-        res.send();
-      }
-      else {
-        console.log("result");
-        console.log(result);
-        res.json(result);
-        res.end();
-      }
+      execQuery(result, res);
     });
   } catch (err) {
     console.log("ERROR");
     res.status(500);
     res.send(err.message);
+    res.end();
+  }
+}
+
+function execQuery(result, res) {
+  if (result == undefined) {
+    res.json([]);
+    res.send();
+  }
+  else {
+    console.log("result");
+    console.log(result);
+    res.json(result);
     res.end();
   }
 }

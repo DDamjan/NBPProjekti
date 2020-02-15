@@ -105,13 +105,15 @@ export function currentTrack(ID: string): CurrentTrack{
 export interface AddTrack extends Action{
     track: Track;
     playlistID: string;
+    userID: string;
 }
 
-export function addTrack(track: Track, playlistID: string): AddTrack{
+export function addTrack(track: Track, playlistID: string, userID: string): AddTrack{
     return {
         type: ADD_TRACK,
         track,
-        playlistID
+        playlistID,
+        userID
     };
 }
 
@@ -129,26 +131,30 @@ export function addTrackSuccess(track: Track): AddTrackSuccess{
 export interface FindTrack extends Action{
     query: string;
     playlistID: string;
+    userID: string;
 }
 
-export function findTrack(query: string, playlistID: string): FindTrack{
+export function findTrack(query: string, playlistID: string, userID: string): FindTrack{
     return{
         type: FIND_TRACK,
         query,
-        playlistID
+        playlistID,
+        userID
     };
 }
 
 export interface FindTrackSuccess extends Action{
     track: Track;
     playlistID: string;
+    userID: string;
 }
 
-export function findTrackSuccess(track: any, playlistID: string): FindTrackSuccess{
+export function findTrackSuccess(track: any, playlistID: string, userID: string): FindTrackSuccess{
     return{
         type: FIND_TRACK_SUCCESS,
         track,
-        playlistID
+        playlistID,
+        userID
     };
 }
 
