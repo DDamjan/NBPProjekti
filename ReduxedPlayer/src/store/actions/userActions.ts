@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { REGISTER_USER, REGISTER_USER_SUCCESS, AUTH_USER, AUTH_USER_SUCCESS, GET_USER_BY_ID, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL } from "./types";
+import { REGISTER_USER, REGISTER_USER_SUCCESS, AUTH_USER, AUTH_USER_SUCCESS, GET_USER_BY_ID, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, REMOVE_FRIEND, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS,ADD_FRIEND } from "./types";
 import { User } from "../../models/user";
 
 export interface AuthUser extends Action {
@@ -82,5 +82,49 @@ export function getUserByIDSuccess (user: User): GetUserByIDSuccess{
     return {
         type: GET_USER_BY_ID_SUCCESS,
         user
+    }
+}
+
+export interface RemoveFriend extends Action{
+    id: string;
+}
+
+export function removeFriend (id: string): RemoveFriend{
+    return {
+        type: REMOVE_FRIEND,
+        id
+    }
+}
+
+export interface RemoveFriendSuccess extends Action{
+    id: string;
+}
+
+export function removeFriendSuccess (id: string): RemoveFriendSuccess{
+    return {
+        type: REMOVE_FRIEND_SUCCESS,
+        id
+    }
+}
+
+export interface AddFriend extends Action{
+    payload: any;
+}
+
+export function addFriend (payload: any): AddFriend{
+    return {
+        type: ADD_FRIEND,
+        payload
+    }
+}
+
+export interface AddFriendSuccess extends Action{
+    friend: User;
+}
+
+export function addFriendSuccess (friend: User): AddFriendSuccess{
+    return {
+        type: ADD_FRIEND_SUCCESS,
+        friend
     }
 }

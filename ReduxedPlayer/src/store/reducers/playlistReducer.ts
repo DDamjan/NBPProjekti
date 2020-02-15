@@ -2,9 +2,10 @@
 
 import { Playlist } from "../../models/playlist";
 import { Action } from "redux";
-import { FETCH_PLAYLISTS_SUCCESS, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, CURRENT_PLAYLIST, CURRENT_TRACK, ADD_TRACK_SUCCESS, CURRENT_PLAYLIST_SUCCESS, REMOVE_TRACK_SUCCESS } from "../actions/types";
+import { FETCH_PLAYLISTS_SUCCESS, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, CURRENT_PLAYLIST, CURRENT_TRACK, ADD_TRACK_SUCCESS, CURRENT_PLAYLIST_SUCCESS, REMOVE_TRACK_SUCCESS, GET_USER_BY_ID_SUCCESS } from "../actions/types";
 import { GetPlaylists, GetPlaylistsSuccess, AddPlaylistSuccess, DeletePlaylistSuccess, CurrentPlaylist, CurrentTrack, AddTrackSuccess, CurrentPlaylistSuccess, currentPlaylist, RemoveTrackSuccess } from "../actions/playlistActions";
 import { Track } from "../../models/Track";
+import { GetUserByID, GetUserByIDSuccess } from "../actions/userActions";
 
 export interface playlistState {
     currentPlaylist: Playlist;
@@ -20,6 +21,13 @@ const initialState: playlistState = {
 
 export default function (state = initialState, action: Action) {
     switch (action.type) {
+        case GET_USER_BY_ID_SUCCESS: {
+            const { user } = action as GetUserByIDSuccess;
+            return {
+                ...state,
+                playlists: user[0].playlists
+            };
+        }
         case FETCH_PLAYLISTS_SUCCESS: {
             const { playlists } = action as GetPlaylistsSuccess;
             return {
@@ -41,11 +49,11 @@ export default function (state = initialState, action: Action) {
                 playlists: state.playlists.filter((playlist: Playlist) => playlist._id != ID)
             }
         }
-        case CURRENT_PLAYLIST_SUCCESS: {
-            const { currentPlaylist } = action as CurrentPlaylistSuccess;
+        case CURRENT_PLAYLIST: {
+            const { ID } = action as CurrentPlaylist;
             return {
                 ...state,
-                currentPlaylist
+                currentPlaylist: state.playlists.find(x => x._id === ID)
             }
         }
         case CURRENT_TRACK: {

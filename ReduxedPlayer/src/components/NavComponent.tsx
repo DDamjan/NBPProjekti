@@ -49,7 +49,7 @@ class NavComponent extends Component<Props, State>{
     }
 
     renderName() {
-        if (this.props.currentUser.user !== undefined) return (<h3>Welcome {this.props.currentUser.user.Username}</h3>);
+        if (this.props.currentUser.user !== undefined) return (<h3>Welcome {this.props.currentUser.user[0].Username}</h3>);
     }
 
     logout() {

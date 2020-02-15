@@ -8,40 +8,39 @@ import { Dispatch, Action } from "redux";
 import { AppState } from "../store/store";
 import { connect } from "react-redux";
 import Cookies from "universal-cookie";
-import { getUserByID } from "../store/actions/userActions";
+import { getUserByID, addFriend } from "../store/actions/userActions";
 import '../style/home.css';
 import { addPlaylist } from "../store/actions/playlistActions";
 import { Grid } from "@material-ui/core";
 import NavComponent from "./NavComponent";
+import FriendComponent from "./FriendComponent";
 
 interface Props {
     currentUser: any;
-    fetchUser: (ID: number) => void;
-    addPlaylist: (payload: any) => void;
-    playlists: any;
+    addFriend: (payload: any) => void;
+    match: any;
 }
 
 interface State {
-    playlistName: string;
+    friendUsername: string;
 }
 
-class HomeComponent extends Component<Props, any>{
+class FriendDetailsComponent extends Component<Props, any>{
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            playlistName: "",
+            friendUsername: "",
             redirect: false
         }
     }
 
-    componentDidMount() {
-        const cookies = new Cookies();
-        let id = cookies.get('logedIn');
-        console.log("id");
-        console.log(id);
-        this.props.fetchUser(id);
-    }
+    // componentDidMount() {
+    //     const { id } = this.props.match.params;
+    //     if (id !== undefined) {
+    //         this.props.fetchFriend(id);
+    //     }
+    // }
 
     renderRedirect() {
         if (this.state.redirect) {
@@ -53,18 +52,18 @@ class HomeComponent extends Component<Props, any>{
         return (
             <div className="container">
                 <NavComponent></NavComponent>
-                <div className="addPlaylist">
-                    <div className="playlist-container">
-                        <h3>Playlists</h3>
+                <div className="addFriend">
+                    <div className="friend-container">
+                        <h3>Friends</h3>
                     </div>
                     <div className="form-container">
                         <Form onSubmit={this.handleSubmit.bind(this)}>
-                            <Form.Group controlId="playlistName"  >
+                            <Form.Group controlId="friendUsername"  >
                                 <Form.Control
                                     type='text'
-                                    placeholder="Playlist name"
+                                    placeholder="Username"
                                     autoFocus
-                                    value={this.state.playlistName}
+                                    value={this.state.friendUsername}
                                     onChange={this.handleChange}
                                 />
                             </Form.Group>
@@ -73,12 +72,12 @@ class HomeComponent extends Component<Props, any>{
                                 disabled={!this.validateForm()}
                                 type="submit"
                             >
-                                Add playlist
+                                Add Friend
                             </Button>
                         </Form>
                     </div>
                 </div>
-                <div className="PlaylistGrid">
+                <div className="FriendsGrid">
                     <Grid
                         container
                         direction="row"
@@ -93,40 +92,35 @@ class HomeComponent extends Component<Props, any>{
         )
     }
 
-    renderName() {
-        if (this.props.currentUser.user !== undefined) return (<h3>Welcome {this.props.currentUser.user.Username}</h3>);
-    }
-
     renderCards() {
-        if (this.props.currentUser.user !== undefined && this.props.playlists.playlists) {
-            console.log(this.props.playlists);
-            return this.props.playlists.playlists.map(playlist => {
-                return (<PlaylistComponent playList={playlist} key={playlist._id} />)
+        if (this.props.currentUser.user !== undefined && this.props.currentUser[0].friends) {
+            return this.props.currentUser[0].friends.map(friend => {
+                return (<FriendComponent user={friend} key={friend._id} />)
             })
         }
         return null;
     }
 
     validateForm() {
-        return this.state.playlistName.length > 0;
+        return this.state.friendUsername.length > 0;
     }
 
     handleChange = (event: any) => {
         this.setState({
-            playlistName: event.target.value
+            friendUsername: event.target.value
         });
     }
 
     handleSubmit(event: any) {
         event.preventDefault();
         const payload = {
-            name: this.state.playlistName,
-            ownerID: this.props.currentUser.user[0]._id
+            name: this.state.friendUsername,
+            userID: this.props.currentUser.user[0]._id
         }
         console.log("payload");
         console.log(payload);
 
-        this.props.addPlaylist(payload);
+        this.props.addFriend(payload);
         this.forceUpdate();
     }
 
@@ -138,16 +132,14 @@ class HomeComponent extends Component<Props, any>{
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        fetchUser: (ID: number) => dispatch(getUserByID(ID)),
-        addPlaylist: (payload: any) => dispatch(addPlaylist(payload))
+        addFriend: (payload: any) => dispatch(addFriend(payload))
     }
 }
 
 function mapStateToProps(state: AppState) {
     return {
-        currentUser: state.user,
-        playlists: state.playlists
+        currentUser: state.user
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(FriendDetailsComponent);

@@ -1,5 +1,5 @@
-import { RegisterUser, registerUserSuccess, AuthUser, authUserSuccess, GetUserByID, getUserByIDSuccess, registerUserFail } from "./actions/userActions";
-import { dbAuthUser, dbRegisterUser, dbGetUserByID, dbCheckUsername } from "../service/userService";
+import { RegisterUser, registerUserSuccess, AuthUser, authUserSuccess, GetUserByID, getUserByIDSuccess, registerUserFail, RemoveFriend, AddFriend, removeFriendSuccess, addFriendSuccess } from "./actions/userActions";
+import { dbAuthUser, dbRegisterUser, dbGetUserByID, dbCheckUsername, dbRemoveFriend, dbAddFriend } from "../service/userService";
 import { dbGetPlaylists, dbAddPlaylist, dbDeletePlaylist, dbAddTrack, dbRemoveTrack, dbFetchCurrentPlaylist } from "../service/playlistService";
 import { put } from "redux-saga/effects";
 import { GetPlaylists, getPlaylistsSuccess, AddPlaylist, addPlaylistSuccess, DeletePlaylist, deletePlaylistSuccess, AddTrack, addTrackSuccess, RemoveTrack, RemoveTrackSuccess, CurrentPlaylist, currentPlaylistSuccess, FindTrack, findTrackSuccess } from "./actions/playlistActions";
@@ -35,13 +35,18 @@ export function* sRegisterUser(user: RegisterUser) {
 }
 
 export function* sGetUserByID(user: GetUserByID) {
-    console.log("sGetUserByID");
-    console.log("user");
-    console.log(user);
     const dbUser = yield dbGetUserByID(user.ID);
-    console.log("dbUser");
-    console.log(dbUser);
     yield put(getUserByIDSuccess(dbUser));
+}
+
+export function* sRemoveFriend(user: RemoveFriend) {
+    const dbUser = yield dbRemoveFriend(user.id);
+    yield put(removeFriendSuccess(dbUser));
+}
+
+export function* sAddFriend(friend: AddFriend) {
+    const dbFriend = yield dbAddFriend(friend.payload);
+    yield put(addFriendSuccess(dbFriend));
 }
 
 
@@ -53,7 +58,7 @@ export function* sFetchPlaylists(playlist: GetPlaylists) {
 
 export function* sAddPlaylists(playlist: AddPlaylist) {
     const dbPlaylist = yield dbAddPlaylist(playlist);
-    yield put(addPlaylistSuccess(dbPlaylist[0]));
+    yield put(addPlaylistSuccess(dbPlaylist));
 }
 
 export function* sDeletePlaylist(playlist: DeletePlaylist) {

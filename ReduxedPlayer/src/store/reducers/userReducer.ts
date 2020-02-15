@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import { User } from "../../models/user";
 import { Action } from "redux";
-import { REGISTER_USER_SUCCESS, AUTH_USER_SUCCESS, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS } from "../actions/types";
-import { AuthUserSuccess, RegisterUserSuccess, GetUserByIDSuccess, RegisterUserFail } from "../actions/userActions";
+import { REGISTER_USER_SUCCESS, AUTH_USER_SUCCESS, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS } from "../actions/types";
+import { AuthUserSuccess, RegisterUserSuccess, GetUserByIDSuccess, RegisterUserFail, RemoveFriendSuccess, AddFriendSuccess } from "../actions/userActions";
 import { AddPlaylistSuccess, DeletePlaylistSuccess } from "../actions/playlistActions";
 import { Playlist } from "../../models/playlist";
 
@@ -29,19 +29,18 @@ export default function (state = initialState, action: Action): userState {
       const { playlist } = action as AddPlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists:[...state.user.playlists, playlist] }
+        user: {...state.user, playlists:[...state.user[0].playlists, playlist] }
       };
     }
     case DELETE_PLAYLIST_SUCCESS: {
       const { ID } = action as DeletePlaylistSuccess;
       return {
         ...state,
-        user: {...state.user, playlists: state.user.playlists.filter((playlist: Playlist)=> playlist._id != ID) }
+        user: {...state.user, playlists: state.user[0].playlists.filter((playlist: Playlist)=> playlist._id != ID) }
       };
     }
     case REGISTER_USER_SUCCESS: {
       const { user } = action as RegisterUserSuccess;
-      console.log(action);
       return {
         ...state,
         user: user
@@ -49,7 +48,6 @@ export default function (state = initialState, action: Action): userState {
     }
     case REGISTER_USER_FAIL: {
       const { error } = action as RegisterUserFail;
-      console.log(action);
       return {
         ...state,
         error
@@ -60,6 +58,20 @@ export default function (state = initialState, action: Action): userState {
       return {
         ...state,
         user: user
+      }
+    }
+    case REMOVE_FRIEND_SUCCESS: {
+      const { id } = action as RemoveFriendSuccess;
+      return {
+        ...state,
+        user: {...state.user, friends: state.user[0].friends.filter((friend: User)=> friend._id != id) }
+      }
+    }
+    case ADD_FRIEND_SUCCESS: {
+      const { friend } = action as AddFriendSuccess;
+      return {
+        ...state,
+        user: {...state.user, friends: [...state.user[0].friends, friend] }
       }
     }
     default: return state;

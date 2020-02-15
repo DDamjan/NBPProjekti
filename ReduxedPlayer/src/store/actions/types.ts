@@ -6,6 +6,10 @@ export const REGISTER_USER_SUCCESS: string = "REGISTER_USER_SUCCESS";
 export const REGISTER_USER_FAIL: string = "REGISTER_USER_FAIL";
 export const GET_USER_BY_ID: string = "GET_USER_BY_ID";
 export const GET_USER_BY_ID_SUCCESS: string = "GET_USER_BY_ID_SUCCESS";
+export const REMOVE_FRIEND: string = "REMOVE_FRIEND";
+export const REMOVE_FRIEND_SUCCESS: string = "REMOVE_FRIEND_SUCCESS";
+export const ADD_FRIEND_SUCCESS: string = "ADD_FRIEND_SUCCESS";
+export const ADD_FRIEND: string = "ADD_FRIEND";
 
 //playlist
 export const FETCH_PLAYLISTS: string = "FETCH_PLAYLISTS";

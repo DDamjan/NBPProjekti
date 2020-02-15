@@ -133,10 +133,6 @@ class PlaylistDetailsComponent extends Component<Props, any>{
         
 
     }
-
-    addSong() {
-
-    }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {

@@ -37,3 +37,16 @@ export function dbCheckUsername(username: string) {
 
     return fetch(url).then(res=> res.json());
 }
+
+export function dbRemoveFriend(id: string) {
+    const url = `${baseURL}removefriend?id=${id}`;
+
+    return fetch(url).then(res=> res.json());
+}
+
+export function dbAddFriend(payload: any) {
+    const url = `${baseURL}addfriend`;
+
+    return fetch(url, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "application/json" } }).
+        then(res => res.json());
+}
