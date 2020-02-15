@@ -62,9 +62,8 @@ export function* sAddPlaylists(playlist: AddPlaylist) {
 }
 
 export function* sDeletePlaylist(playlist: DeletePlaylist) {
-    const deletedPlaylistID = yield dbDeletePlaylist(playlist.ID);
-    console.log(deletedPlaylistID);
-    yield put(deletePlaylistSuccess(deletedPlaylistID.ID));
+    const deletedPlaylistID = yield dbDeletePlaylist(playlist.playlistID, playlist.ownerID);
+    yield put(deletePlaylistSuccess(deletedPlaylistID.playlistID));
 }
 
 export function* sAddTrack(track: AddTrack) {

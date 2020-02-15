@@ -154,23 +154,11 @@ async function ADD_TRACK(body) {
     }
     let idU =
       Track.create(instanceT, function (err, track) {
-        //console.log("track");
-        //console.log(track);
         if (err) console.log(err);
-        // Playlist.findById(body.playlistID, function (err, playlist) {
-        //   // console.log(playlist);
-        //   if (err) console.log(err);
-        console.log("BODY");
-        console.log(body);
         User.findOne({_id: body.userID}, function (err, user) {
           if (err) console.log(err);
-          //console.log(user);
           user.playlists.find(x => x._id == body.playlistID).Tracks.push(track);
-          // playlist.Tracks.push(track);
-          // //console.log(user);
-          // playlist.save();
           user.save();
-          //User.findById(playlist.OwnerID).save();
           resolve(track);
         });
         // });
@@ -194,13 +182,10 @@ async function GET_PLAYLISTS(query) {
 
 async function DELETE_PLAYLIST(body) {
   return new Promise((resolve, reject) => {
-    console.log("WTFFFF");
-    return User.findById({ _id: body.ownerID }, async function (err, user) {
+    return User.findOne({ _id: body.ownerID }, async function (err, user) {
       const payload = await user.playlists.filter(x => x._id != body.playlistID);
       await user.updateOne({ playlists: payload });
-      Playlist.deleteOne({ _id: body.playlistID });
-      Playlist.save();
-      resolve(body.playlistID);
+      resolve({playlistID: body.playlistID});
     });
   });
 
@@ -219,55 +204,24 @@ async function GET_DETAILS(query) {
 
 }
 
-// {
-
-// 	"track":{
-// 	"DeezerID":44,
-// 	"Artist":"2Pac",
-// 	"Title":"JosSamZiv",
-// 	"AlbumCover":"Comebackkkk",
-// 	"Album":"2PACw6PAC",
-// 	"URL":"hhhhhhhhhhhhhhhhhhhhhhh"
-// 	},
-// 	"playlistID":"5e474213c943673568b9b4ef"
-
-// }
-
-async function execGet(req, res, fun) {
-  try {
-    fun(req.query).then((result) => {
-      execQuery(result, res);
-    });
-  } catch (err) {
-    console.log("ERROR");
-    res.status(500);
-    res.send(err.message);
-    res.end();
-  }
-}
-
-async function execPost(req, res, fun) {
-  try {
-    fun(req.body).then((result) => {
-      execQuery(result, res);
-    });
-  } catch (err) {
-    console.log("ERROR");
-    res.status(500);
-    res.send(err.message);
-    res.end();
-  }
-}
-
 function execQuery(result, res) {
-  if (result == undefined) {
-    res.json([]);
-    res.send();
-  }
-  else {
-    console.log("result");
-    console.log(result);
-    res.json(result);
+  try {
+    fun(req).then((result) => {
+      if (result == undefined) {
+        res.json([]);
+        res.send();
+      }
+      else {
+        console.log("result");
+        console.log(result);
+        res.json(result);
+        res.end();
+      }
+    });
+  } catch (err) {
+    console.log("ERROR");
+    res.status(500);
+    res.send(err.message);
     res.end();
   }
 }
@@ -349,8 +303,7 @@ async function execPlaylists(req, res, ID) {
 
 module.exports = {
   conectToDB: conectToDB,
-  execGet: execGet,
-  execPost: execPost,
+  execQuery: execQuery,
   execFile: execFile,
   execUser: execUser,
   execPlaylists: execPlaylists,

@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 
 interface Props {
     user: User;
-    removeFriend: (id: string) => void;
+    removeFriend: (id: string, ida: string) => void;
 }
 
 interface State {
@@ -44,14 +44,14 @@ class FriendComponent extends Component<Props, State>{
     }
 
     handleDelete() {
-        this.props.removeFriend(this.props.user._id);
+        // this.props.removeFriend(this.props.user._id);
     }
 
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        removeFriend: (id: string) => dispatch(deletePlaylist(id))
+        removeFriend: (id: string, ida: string) => dispatch(deletePlaylist(id, ida))
     }
 }
 function mapStateToProps(state: AppState) {

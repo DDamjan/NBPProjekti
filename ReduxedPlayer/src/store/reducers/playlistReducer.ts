@@ -44,6 +44,8 @@ export default function (state = initialState, action: Action) {
         }
         case DELETE_PLAYLIST_SUCCESS: {
             const { ID } = action as DeletePlaylistSuccess;
+            console.log("PLAYLISTID");
+            console.log(ID);
             return {
                 ...state,
                 playlists: state.playlists.filter((playlist: Playlist) => playlist._id != ID)

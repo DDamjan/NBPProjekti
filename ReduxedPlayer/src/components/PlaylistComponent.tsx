@@ -14,7 +14,8 @@ import { Link } from 'react-router-dom';
 
 interface Props {
     playList: Playlist;
-    deletePlaylist: (playlistID: string) => void;
+    deletePlaylist: (playlistID: string, ownerID: string) => void;
+    user: User;
 }
 
 interface State {
@@ -45,19 +46,19 @@ class PlaylistComponent extends Component<Props, State>{
     }
 
     handleDelete() {
-        this.props.deletePlaylist(this.props.playList._id);
+        this.props.deletePlaylist(this.props.playList._id, this.props.user[0]._id);
     }
 
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        deletePlaylist: (playlistID: string) => dispatch(deletePlaylist(playlistID))
+        deletePlaylist: (playlistID: string, ownerID: string) => dispatch(deletePlaylist(playlistID, ownerID))
     }
 }
 function mapStateToProps(state: AppState) {
     return {
-        user: state.user
+        user: state.user.user
     }
 }
 

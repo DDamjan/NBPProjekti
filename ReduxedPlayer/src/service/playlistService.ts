@@ -17,11 +17,12 @@ export function dbAddPlaylist(payload: any) {
         then(res => res.json());
 }
 
-export function dbDeletePlaylist(ID: string) {
+export function dbDeletePlaylist(playlistID: string, ownerID: string) {
     const url = baseURL + "delete";
 
     const payload = {
-        ID
+        playlistID,
+        ownerID
     }
     console.log(payload);
 
@@ -36,7 +37,7 @@ export function dbAddTrack(track: Track, playlistID: string, userID: string) {
         playlistID,
         userID
     }
-    
+
     return fetch(url, { method: "POST", body: JSON.stringify(data), headers: { "Content-Type": "application/json" } }).
         then(res => res.json());
 }

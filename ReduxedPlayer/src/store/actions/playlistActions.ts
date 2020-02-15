@@ -48,13 +48,15 @@ export function addPlaylistSuccess(playlist: Playlist): AddPlaylistSuccess {
 }
 
 export interface DeletePlaylist extends Action {
-    ID: string;
+    playlistID: string;
+    ownerID: string;
 }
 
-export function deletePlaylist(ID: string): DeletePlaylist {
+export function deletePlaylist(playlistID: string, ownerID: string): DeletePlaylist {
     return {
         type: DELETE_PLAYLIST,
-        ID
+        playlistID,
+        ownerID
     };
 }
 
