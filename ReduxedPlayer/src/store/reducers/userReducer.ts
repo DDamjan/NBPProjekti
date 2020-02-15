@@ -78,6 +78,8 @@ export default function (state = initialState, action: Action): userState {
     }
     case GET_FRIEND: {
       const { friendID } = action as GetFriend;
+      console.log("FriendID iz reducera");
+      console.log(friendID);
       return {
         ...state,
         currentFriend: state.user.Friends.find(x => x._id == friendID)

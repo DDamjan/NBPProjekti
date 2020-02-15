@@ -38,8 +38,6 @@ class HomeComponent extends Component<Props, any>{
     componentDidMount() {
         const cookies = new Cookies();
         let id = cookies.get('logedIn');
-        console.log("id");
-        console.log(id);
         this.props.fetchUser(id);
     }
 
@@ -99,7 +97,6 @@ class HomeComponent extends Component<Props, any>{
 
     renderCards() {
         if (this.props.currentUser.user !== undefined && this.props.playlists.playlists) {
-            console.log(this.props.playlists);
             return this.props.playlists.playlists.map(playlist => {
                 return (<PlaylistComponent playList={playlist} key={playlist._id} />)
             })

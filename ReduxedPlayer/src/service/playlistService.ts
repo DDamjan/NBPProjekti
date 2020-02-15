@@ -42,13 +42,10 @@ export function dbAddTrack(track: Track, playlistID: string, userID: string) {
         then(res => res.json());
 }
 
-export function dbRemoveTrack(ID: string) {
+export function dbRemoveTrack(payload) {
     const url = baseURL + "removetrack";
-    const data = {
-        ID
-    }
 
-    return fetch(url, { method: "POST", body: JSON.stringify(data), headers: { "Content-Type": "application/json" } }).
+    return fetch(url, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "application/json" } }).
         then(res => res.json());
 }
 

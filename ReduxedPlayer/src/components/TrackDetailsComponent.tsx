@@ -9,10 +9,14 @@ import { Dispatch, Action } from "redux";
 import { AppState } from "../store/store";
 import { connect } from "react-redux";
 import { removeTrack } from "../store/actions/playlistActions";
+import { User } from "../models/user";
+import { Playlist } from "../models/playlist";
 
 interface Props {
     track: Track;
-    removeTrack: (trackID: string) => void;
+    removeTrack: (payload: any) => void;
+    currentUser: User;
+    currentPlaylist: Playlist;
 }
 
 interface State {
@@ -130,14 +134,26 @@ class TrackDetailsComponent extends Component<Props, State>{
     }
 
     onDelete() {
-        this.props.removeTrack(this.props.track._id);
+        const payload = {
+            userID: this.props.currentUser._id,
+            playlistID: this.props.currentPlaylist._id,
+            trackID: this.props.track._id
+        };
+        this.props.removeTrack(payload);
     }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        removeTrack: (ID: string) => dispatch(removeTrack(ID))
+        removeTrack: (payload: any) => dispatch(removeTrack(payload))
     }
 }
 
-export default connect(null, mapDispatchToProps)(TrackDetailsComponent);
+function mapStateToProps(state: AppState){
+    return{
+        currentUser: state.user.user,
+        currentPlaylist: state.playlists.currentPlaylist
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TrackDetailsComponent);

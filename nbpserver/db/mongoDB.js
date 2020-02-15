@@ -133,14 +133,10 @@ async function ADD_PLAYLIST(body) {
       OwnerID: body.ownerID
     };
     Playlist.create(instancePL, function (err, playlist) {
-      //console.log("PLAYLISTS");
-      //console.log(playlist);
       if (err) console.log(err);
       User.findById(playlist.OwnerID, function (err, user) {
-        // console.log(user);
         if (err) console.log(err);
         user.Playlists.push(playlist);
-        //console.log(user);
         user.save();
         resolve(playlist);
       });
@@ -210,12 +206,11 @@ async function REMOVE_FRIEND(body) {
 
 async function REMOVE_TRACK(body) {
   return new Promise((resolve, reject) => {
-    return User.findOne({ _id: body.userID }, async function (err, user) {
-      user.Playlists.findOne({ _id: body.playlistID }, async function (err, playlist) {
-        const payload = await playlist.Tracks.filter(x => x._id != body.trackID);
-        await playlist.updateOne({ Tracks: payload });
-        //resolve({friendID: body.friendID});
-      });
+    User.findOne({_id: body.userID}, (err, user)=> {
+      const trackIndex = user.Playlists.find(x => x._id == body.playlistID).Tracks.findIndex(x => x._id == body.trackID);
+      user.Playlists.find(x => x._id == body.playlistID).Tracks.splice(trackIndex, 1);
+      user.save();
+      resolve(body.trackID);
     });
   });
 

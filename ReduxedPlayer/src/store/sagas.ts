@@ -92,7 +92,7 @@ export function* sFindTrack(query: FindTrack) {
 }
 
 export function* sRemoveTrack(track: RemoveTrack) {
-    const dbTrack = yield dbRemoveTrack(track.ID);
+    const dbTrack = yield dbRemoveTrack(track.payload);
     yield put(RemoveTrackSuccess(dbTrack));
 }
 

@@ -27,7 +27,7 @@ class PlaylistComponent extends Component<Props, State>{
     render() {
         return (
             <div className="card-outline">
-                <Card>  
+                <Card>
                     <CardContent>
                         <Typography variant="body2" component="p">
                             {this.props.playList.Name}

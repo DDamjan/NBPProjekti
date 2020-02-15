@@ -28,3 +28,4 @@ export const FIND_TRACK: string = "FIND_TRACK";
 export const FIND_TRACK_SUCCESS: string = "FIND_TRACK_SUCCESS";
 export const REMOVE_TRACK: string = "REMOVE_TRACK";
 export const REMOVE_TRACK_SUCCESS: string = "REMOVE_TRACK_SUCCESS";
+export const CURRENT_FRIEND_PLAYLIST: string = "CURRENT_FRIEND_PLAYLIST";

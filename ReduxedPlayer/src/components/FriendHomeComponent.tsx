@@ -8,19 +8,18 @@ import { Dispatch, Action } from "redux";
 import { AppState } from "../store/store";
 import { connect } from "react-redux";
 import Cookies from "universal-cookie";
-import { getUserByID } from "../store/actions/userActions";
+import { getUserByID, getFriend } from "../store/actions/userActions";
 import '../style/home.css';
 import { addPlaylist } from "../store/actions/playlistActions";
 import { Grid } from "@material-ui/core";
 import NavComponent from "./NavComponent";
 import { User } from "../models/user";
+import { Playlist } from "../models/playlist";
+import FriendPlaylistComponent from "./FriendPlaylistComponent";
 
 interface Props {
     currentUser: any;
     fetchFriend: (ID: string) => void;
-    fetchUser: (ID: string) => void;
-    addPlaylist: (payload: any) => void;
-    playlists: any;
     match: any;
     friend: User;
 }
@@ -28,21 +27,16 @@ interface Props {
 interface State {
 }
 
-class FriendPlaylistComponent extends Component<Props, any>{
+class FriendHomeComponent extends Component<Props, any>{
 
     constructor(props: Props) {
         super(props);
+
     }
 
     componentDidMount() {
-        if (this.props.currentUser != undefined) {
-            const cookies = new Cookies();
-            let id = cookies.get('logedIn');
-            console.log("id");
-            console.log(id);
-            this.props.fetchUser(id);
-        }
         const { id } = this.props.match.params;
+        console.log("COMPONENT");
         if (id !== undefined) {
             this.props.fetchFriend(id);
         }
@@ -60,7 +54,7 @@ class FriendPlaylistComponent extends Component<Props, any>{
                 <NavComponent></NavComponent>
                 <div className="addPlaylist">
                     <div className="playlist-container">
-                        <h3>{this.props.friend.Username}'s playlists</h3>
+                        <h3>{this.renderName()}</h3>
                     </div>
                 </div>
                 <div className="PlaylistGrid">
@@ -79,14 +73,15 @@ class FriendPlaylistComponent extends Component<Props, any>{
     }
 
     renderName() {
-        if (this.props.currentUser.user !== undefined) return (<h3>Welcome {this.props.currentUser.user.Username}</h3>);
+        if (this.props.friend !== undefined) return (<h3>{this.props.friend.Username}'s playlists</h3>);
     }
 
     renderCards() {
-        if (this.props.currentUser.user !== undefined && this.props.playlists.playlists) {
-            console.log(this.props.playlists);
-            return this.props.playlists.playlists.map(playlist => {
-                return (<PlaylistComponent playList={playlist} key={playlist._id} />)
+        console.log("Friend");
+        
+        if (this.props.friend !== undefined && this.props.friend.Playlists) {
+            return this.props.friend.Playlists.map(playlist => {
+                return (<FriendPlaylistComponent playList={playlist} key={playlist._id} />)
             })
         }
         return null;
@@ -102,19 +97,6 @@ class FriendPlaylistComponent extends Component<Props, any>{
         });
     }
 
-    handleSubmit(event: any) {
-        event.preventDefault();
-        const payload = {
-            name: this.state.playlistName,
-            ownerID: this.props.currentUser.user._id
-        }
-        console.log("payload");
-        console.log(payload);
-
-        this.props.addPlaylist(payload);
-        this.forceUpdate();
-    }
-
     logout() {
         const cookies = new Cookies();
         cookies.remove('logedIn');
@@ -123,16 +105,17 @@ class FriendPlaylistComponent extends Component<Props, any>{
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        fetchUser: (ID: string) => dispatch(getUserByID(ID)),
-        addPlaylist: (payload: any) => dispatch(addPlaylist(payload))
+        fetchFriend: (ID: string) => dispatch(getFriend(ID))
     }
 }
 
 function mapStateToProps(state: AppState) {
+    console.log("current friend");
+    console.log(state.user.currentFriend);
     return {
         currentUser: state.user,
-        playlists: state.playlists
+        friend: state.user.currentFriend
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FriendPlaylistComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(FriendHomeComponent);

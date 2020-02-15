@@ -18,11 +18,11 @@ import NavComponent from "./NavComponent";
 import { User } from "../models/user";
 
 interface Props {
-    currentPlaylist: Playlist;
+    currentFriend: User;
     currentUser: User;
+    currentPlaylist: Playlist;
     match: any;
-    fetchPlaylist: (ID: string) => void;
-    addTrack: (track: string, playlistID: string, userID: string) => void;
+    fetchFriendPlaylist: (ID: string) => void;
 }
 
 interface State {
@@ -31,20 +31,13 @@ interface State {
 }
 
 
-class PlaylistDetailsComponent extends Component<Props, any>{
+class FriendPlaylistDetailComponent extends Component<Props, any>{
 
     constructor(props: Props) {
         super(props);
         this.state = {
             trackName: "",
             redirect: false
-        }
-    }
-
-    componentDidMount() {
-        const { id } = this.props.match.params;
-        if (id !== undefined) {
-            this.props.fetchPlaylist(id);
         }
     }
 
@@ -61,26 +54,6 @@ class PlaylistDetailsComponent extends Component<Props, any>{
                 <div className="addPlaylist">
                     <div className="playlist-container">
                         {this.renderPlayListName()}
-                    </div>
-                    <div className="form-container">
-                        <Form onSubmit={this.handleSubmit.bind(this)}>
-                            <Form.Group controlId="playlistName"  >
-                                <Form.Control
-                                    type='text'
-                                    placeholder="Track name"
-                                    autoFocus
-                                    value={this.state.trackName}
-                                    onChange={this.handleChange}
-                                />
-                            </Form.Group>
-                            <Button
-                                block
-                                disabled={!this.validateForm()}
-                                type="submit"
-                            >
-                                Add track
-                            </Button>
-                        </Form>
                     </div>
                 </div>
                 <div className="PlaylistGrid">
@@ -103,11 +76,6 @@ class PlaylistDetailsComponent extends Component<Props, any>{
         cookies.remove('logedIn');
     }
 
-    handleSubmit(event: any) {
-        event.preventDefault();
-        this.props.addTrack(this.state.trackName, this.props.currentPlaylist._id, this.props.currentUser._id);
-    }
-
     handleChange = (event: any) => {
         this.setState({
             trackName: event.target.value
@@ -119,8 +87,10 @@ class PlaylistDetailsComponent extends Component<Props, any>{
     }
 
     renderCards() {
-        if (this.props.currentPlaylist.Tracks != undefined) {
-            return this.props.currentPlaylist.Tracks.map(track => {
+        const { id } = this.props.match.params;
+        const currentPlaylist = this.props.currentFriend.Playlists.find(x => x._id == id);
+        if (currentPlaylist != undefined) {
+            return currentPlaylist.Tracks.map(track => {
                 return (<TrackDetailsComponent track={track} key={track._id} />)
             })
         }
@@ -128,25 +98,24 @@ class PlaylistDetailsComponent extends Component<Props, any>{
     }
 
     renderPlayListName() {
-        if (this.props.currentPlaylist !== undefined) {
-            return (<h3>{this.props.currentPlaylist.Name}</h3>);
+        const { id } = this.props.match.params;
+        const currentPlaylist = this.props.currentFriend.Playlists.find(x => x._id == id);
+        if (currentPlaylist !== undefined) {
+            return (<h3>{currentPlaylist.Name}</h3>);
         }
-        
-
     }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
     return {
-        fetchPlaylist: (ID: string) => dispatch(currentPlaylist(ID)),
-        addTrack: (payload: string, playlistID: string, userID: string) => dispatch(findTrack(payload, playlistID, userID))
+        fetchFriendPlaylist: (ID: string) => dispatch(currentPlaylist(ID))
     }
 }
 function mapStateToProps(state: AppState) {
     return {
-        currentPlaylist: state.playlists.currentPlaylist,
+        currentFriend: state.user.currentFriend,
         currentUser: state.user.user
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlaylistDetailsComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(FriendPlaylistDetailComponent);
