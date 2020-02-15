@@ -197,7 +197,28 @@ async function ADD_FRIEND(body) {
   });
 
     });
-  
+}
+
+async function REMOVE_FRIEND(body) {
+  return new Promise((resolve, reject) => {
+    return User.findOne({ _id: body.userID }, async function (err, user) {
+      const payload = await user.Friends.filter(x => x._id != body.friendID);
+      await user.updateOne({ Friends: payload });
+      resolve({friendID: body.friendID});
+    });
+  });
+}
+
+async function REMOVE_TRACK(body) {
+  return new Promise((resolve, reject) => {
+    return User.findOne({ _id: body.userID }, async function (err, user) {
+       user.Playlists.findOne({ _id: body.playlistID }, async function (err, playlist) {
+      const payload = await playlist.Tracks.filter(x => x._id != body.trackID);
+      await playlist.updateOne({ Tracks: payload });
+      //resolve({friendID: body.friendID});
+    });
+  });
+});
 
 }
 
@@ -350,5 +371,7 @@ module.exports = {
   DELETE_PLAYLIST: DELETE_PLAYLIST,
   GET_DETAILS: GET_DETAILS,
   ADD_TRACK: ADD_TRACK,
-  ADD_FRIEND: ADD_FRIEND
+  ADD_FRIEND: ADD_FRIEND,
+  REMOVE_FRIEND: REMOVE_FRIEND,
+  REMOVE_TRACK: REMOVE_TRACK
 }

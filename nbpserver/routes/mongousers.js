@@ -29,4 +29,8 @@ router.post('/addfriend', async (req, res) => {
   console.log("11111111");
 });
 
+router.post('/removefriend', async (req, res) => {
+  mongoDB.execQuery(req.body, res, mongoDB.REMOVE_FRIEND);
+})
+
 module.exports = router;

@@ -43,6 +43,7 @@ router.post('/addtrack', async (req, res)=>{
 router.post('/removetrack', async(req, res)=>{
   let id = req.body.ID;
   console.log(id.ID);
+  mongoDB.execQuery(req.body,res,mongoDB.REMOVE_TRACK);
 
   //query.execPost(req, res, queryString.REMOVE_TRACK+id);
 })
