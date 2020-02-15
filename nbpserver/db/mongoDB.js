@@ -125,22 +125,16 @@ async function ADD_PLAYLIST(body) {
       Name: body.name,
       OwnerID: body.ownerID
     };
-    const newPL = new Playlist();
-    newPL.OwnerID = body.ownerID;
-    newPL.Name = body.name;
-    newPL.save(function (err, PL) {
-      console.log(PL);
-    });
     Playlist.create(instancePL, function (err, playlist) {
-      console.log("PLAYLISTS");
-      console.log(playlist);
+      //console.log("PLAYLISTS");
+      //console.log(playlist);
       if (err) console.log(err);
       User.findById(playlist.OwnerID, function (err, user) {
         // console.log(user);
         if (err) console.log(err);
         user.playlists.push(playlist);
-        user.save();
         //console.log(user);
+        user.save();
         resolve(playlist);
       });
     });
@@ -149,25 +143,48 @@ async function ADD_PLAYLIST(body) {
 }
 
 async function ADD_TRACK(body) {
-  const instanceT = new Track();
-  instanceT.DeezerID = body.track.DeezerID;
-  instanceT.Artist = body.track.Artist;
-  instanceT.Title = body.track.Title;
-  instanceT.AlbumCover = body.track.AlbumCover;
-  instanceT.Album = body.track.Album;
-  instanceT.URL = body.track.URL;
+  return new Promise((resolve, reject) => {
+    instanceT = {
+      DeezerID: body.track.DeezerID,
+      Artist: body.track.Artist,
+      Title: body.track.Title,
+      AlbumCover: body.track.AlbumCover,
+      Album: body.track.Album,
+      URL: body.track.URL
+    }
+    let idU =
+      Track.create(instanceT, function (err, track) {
+        //console.log("track");
+        //console.log(track);
+        if (err) console.log(err);
+        Playlist.findById(body.playlistID, function (err, playlist) {
+          // console.log(playlist);
+          if (err) console.log(err);
 
+          User.findById(playlist.OwnerID, function (err, user) {
+            if (err) console.log(err);
+            playlist.Tracks.push(track);
+            //console.log(user);
+            playlist.save();
+            user.save();
+            //User.findById(playlist.OwnerID).save();
+            resolve(user);
+          });
+        });
+      });
+
+  });
 }
 
 async function GET_PLAYLISTS(query) {
   return new Promise((resolve, reject) => {
     console.log("WTFFFF");
-    return Playlist.find({ OwnerID: query.id }, function (err, playlists) {
+    Playlist.find({ OwnerID: query.id }, function (err, playlists) {
       console.log("Playliste");
       console.log({ "playlists": playlists });
       resolve(playlists);
-
     });
+
   });
 
 }
@@ -175,11 +192,12 @@ async function GET_PLAYLISTS(query) {
 async function DELETE_PLAYLIST(body) {
   return new Promise((resolve, reject) => {
     console.log("WTFFFF");
-    return Playlist.deleteOne({ _id: body.id }, function (err, playlists) {
-      console.log("Playliste");
-      console.log({ "playlists": playlists });
-      resolve(playlists);
-
+    return User.findById({ _id: body.ownerID }, async function (err, user) {
+      const payload = await user.playlists.filter(x => x._id != body.playlistID);
+      await user.updateOne({playlists: payload});
+      Playlist.deleteOne({_id: body.playlistID});
+      Playlist.save();
+      resolve(body.playlistID);
     });
   });
 
@@ -189,14 +207,28 @@ async function GET_DETAILS(query) {
   return new Promise((resolve, reject) => {
     console.log("WTFFFF");
     return Playlist.find({ _id: query.id }, function (err, playlists) {
-      console.log("Playliste");
-      console.log({ "playlists": playlists });
+      console.log("Playliste"); ~
+        console.log({ "playlists": playlists });
       resolve(playlists);
 
     });
   });
 
 }
+
+// {
+
+// 	"track":{
+// 	"DeezerID":44,
+// 	"Artist":"2Pac",
+// 	"Title":"JosSamZiv",
+// 	"AlbumCover":"Comebackkkk",
+// 	"Album":"2PACw6PAC",
+// 	"URL":"hhhhhhhhhhhhhhhhhhhhhhh"
+// 	},
+// 	"playlistID":"5e474213c943673568b9b4ef"
+
+// }
 
 async function execGet(req, res, fun) {
   try {

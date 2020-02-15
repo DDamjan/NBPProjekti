@@ -16,7 +16,6 @@ router.post('/add', async (req, res) => {
 
 router.get('/', async (req, res) => {
   let id = req.query.id;
-  console.log("REPCUGA 2");
  mongoDB.execGet(req,res,mongoDB.GET_PLAYLISTS);
  // query.execGet(req, res, queryString.GET_PLAYLISTS + id);
 });
