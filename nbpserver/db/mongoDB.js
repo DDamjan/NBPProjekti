@@ -125,6 +125,12 @@ async function ADD_PLAYLIST(body){
         Name:body.name,
         OwnerID:body.ownerID
         };
+        const newPL=new Playlist();
+        newPL.OwnerID=body.ownerID;
+        newPL.Name=body.name;
+        newPL.save(function (err, PL){
+          console.log(Pl);
+        });
         Playlist.create(instancePL, function (err, playlist)
         {
           console.log("PLAYLISTS");
