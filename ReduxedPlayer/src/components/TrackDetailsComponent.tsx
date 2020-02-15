@@ -82,7 +82,6 @@ class TrackDetailsComponent extends Component<Props, State>{
             this.audio.pause();
             this.stopTimer();
         });
-        debugger;
         if (this.state.timerTime >= 30000){
             this.resetTimer();
         }

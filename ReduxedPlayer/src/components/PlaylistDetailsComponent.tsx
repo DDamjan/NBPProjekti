@@ -106,7 +106,7 @@ class PlaylistDetailsComponent extends Component<Props, any>{
 
     handleSubmit(event: any) {
         event.preventDefault();
-        this.props.addTrack(this.state.trackName, this.props.currentPlaylist._id, this.props.currentUser[0]._id);
+        this.props.addTrack(this.state.trackName, this.props.currentPlaylist._id, this.props.currentUser._id);
     }
 
     handleChange = (event: any) => {

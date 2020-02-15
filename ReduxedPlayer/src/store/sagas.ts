@@ -21,7 +21,6 @@ export function* sRegisterUser(user: RegisterUser) {
         if (user.user.Password === user.user.confirmPassword) {
             const dbUser = yield dbRegisterUser(user.user.Username, user.user.Password);
             const cookies = new Cookies();
-            debugger;
             cookies.set('logedIn', dbUser._id, { path: '/' });
             yield put(registerUserSuccess(dbUser));
         }

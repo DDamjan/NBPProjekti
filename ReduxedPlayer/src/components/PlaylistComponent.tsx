@@ -46,7 +46,7 @@ class PlaylistComponent extends Component<Props, State>{
     }
 
     handleDelete() {
-        this.props.deletePlaylist(this.props.playList._id, this.props.user[0]._id);
+        this.props.deletePlaylist(this.props.playList._id, this.props.user._id);
     }
 
 }

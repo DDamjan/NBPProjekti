@@ -25,7 +25,7 @@ export default function (state = initialState, action: Action) {
             const { user } = action as GetUserByIDSuccess;
             return {
                 ...state,
-                playlists: user[0].playlists
+                playlists: user.playlists
             };
         }
         case FETCH_PLAYLISTS_SUCCESS: {
