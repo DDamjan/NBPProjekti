@@ -1,2 +1,6 @@
 # NBPProjekti
 Repozitorijum projekata predmeta Napredne Baze Podataka studenata Damjana Denića (16047), Predraga Aleksova (15990) i Filipa Stamenkovića (16342)
+
+1. Projekat: NGDispatcher (Angular, Node.js/Express.js, Redis, Neo4J): sistem nalik na Uber. Korisnik zahteva taksi vozilo i pritom daje i destinaciju. Aplikacija izracunava cenu voznje i obavestava sve slobodne taksiste. Taksisti biraju da li ce prihvatiti voznju ili ne. Nakon 10 sekundi svi taksisti koji su prihvatili voznju se "salju" operateru koji bira koji taksista ce voziti voznju i taj taksista i klijen se obavestavaju o tome. Klijent ima mogucnost otkazivanja voznje do momenta kada taksista stigne do njega dok je taksista zaduzen za "stizanje" i zavrsavanje voznje. Kroz aplikaciju je moguce kreirati klijente i vozace, ali to nije moguce za operatere. Svi password-i su "test".
+
+2. Projekat: ReduxedPlayer (React, Node.js/Express.js, MongoDB): Mini drustvena mreza okrenuta razmeni i preslusavanju muzike. Korisnik moze pretraziti muziku iz Deezer-ove baze pesama koje moze grupisati u plejliste. Takodje, korisnik moze videti plejliste i pesme korisnika sa kojima je prijatelj. Korisnike je moguce kreirati kroz samu aplikaciju.
