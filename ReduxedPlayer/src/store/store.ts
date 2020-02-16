@@ -3,8 +3,8 @@ import { applyMiddleware, createStore } from "redux";
 import {composeWithDevTools} from 'redux-devtools-extension';
 import rootReducer from './reducers'
 import { takeEvery } from '@redux-saga/core/effects';
-import { REGISTER_USER, FETCH_PLAYLISTS, ADD_PLAYLIST, DELETE_PLAYLIST, ADD_TRACK, REMOVE_TRACK, AUTH_USER, GET_USER_BY_ID, CURRENT_PLAYLIST, FIND_TRACK, FIND_TRACK_SUCCESS, REMOVE_FRIEND, ADD_FRIEND } from "./actions/types";
-import { sAuthUser, sRegisterUser, sFetchPlaylists, sAddPlaylists, sDeletePlaylist, sAddTrack, sRemoveTrack, sGetUserByID, sCurrentPlaylist, sFindTrack, sRemoveFriend, sAddFriend } from "./sagas";
+import { REGISTER_USER, FETCH_PLAYLISTS, ADD_PLAYLIST, DELETE_PLAYLIST, ADD_TRACK, REMOVE_TRACK, AUTH_USER, GET_USER_BY_ID, CURRENT_PLAYLIST, FIND_TRACK, FIND_TRACK_SUCCESS, REMOVE_FRIEND, ADD_FRIEND, GET_USER_BY_ID_SUCCESS } from "./actions/types";
+import { sAuthUser, sRegisterUser, sFetchPlaylists, sAddPlaylists, sDeletePlaylist, sAddTrack, sRemoveTrack, sGetUserByID, sCurrentPlaylist, sFindTrack, sRemoveFriend, sAddFriend, sUpdateUser } from "./sagas";
 import { userState } from "./reducers/userReducer";
 import { playlistState } from "./reducers/playlistReducer";
 
@@ -33,6 +33,7 @@ export function* rootSaga(){
     yield takeEvery (DELETE_PLAYLIST, sDeletePlaylist);
     yield takeEvery (REMOVE_TRACK, sRemoveTrack);
     yield takeEvery (GET_USER_BY_ID, sGetUserByID);
+    yield takeEvery (GET_USER_BY_ID_SUCCESS, sUpdateUser);
     yield takeEvery (REGISTER_USER, sRegisterUser);
     // yield takeEvery (CURRENT_PLAYLIST, sCurrentPlaylist);
     yield takeEvery (FIND_TRACK, sFindTrack);

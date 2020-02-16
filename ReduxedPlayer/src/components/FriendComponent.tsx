@@ -48,7 +48,7 @@ class FriendComponent extends Component<Props, State>{
 
     handleDelete() {
         const payload = {
-            friendID: this.props.friend._id,
+            friendID: this.props.friend.userID,
             userID: this.props.currentUser._id
         };
         this.props.removeFriend(payload);

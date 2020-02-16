@@ -1,6 +1,6 @@
 import { Track } from '../models/Track';
 
-const baseURL = 'http://localhost:8080/playlists/';
+const baseURL = 'http://denicdamjan.ddns.net:8080/playlists/';
 
 export function dbGetPlaylists(ID: string) {
     const url = baseURL + `?ID=${ID}`;

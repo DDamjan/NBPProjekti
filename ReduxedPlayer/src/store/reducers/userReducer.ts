@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import { User } from "../../models/user";
 import { Action } from "redux";
-import { REGISTER_USER_SUCCESS, AUTH_USER_SUCCESS, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS, GET_FRIEND } from "../actions/types";
-import { AuthUserSuccess, RegisterUserSuccess, GetUserByIDSuccess, RegisterUserFail, RemoveFriendSuccess, AddFriendSuccess, GetFriend } from "../actions/userActions";
+import { REGISTER_USER_SUCCESS, AUTH_USER_SUCCESS, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, ADD_PLAYLIST_SUCCESS, DELETE_PLAYLIST_SUCCESS, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS, GET_FRIEND, UPDATE_USER } from "../actions/types";
+import { AuthUserSuccess, RegisterUserSuccess, GetUserByIDSuccess, RegisterUserFail, RemoveFriendSuccess, AddFriendSuccess, GetFriend, UpdateUser } from "../actions/userActions";
 import { AddPlaylistSuccess, DeletePlaylistSuccess } from "../actions/playlistActions";
 import { Playlist } from "../../models/playlist";
 
@@ -66,7 +66,7 @@ export default function (state = initialState, action: Action): userState {
       const { friendID } = action as RemoveFriendSuccess;
       return {
         ...state,
-        user: {...state.user, Friends: state.user.Friends.filter((friend: User)=> friend._id != friendID) }
+        user: {...state.user, Friends: state.user.Friends.filter((friend: User)=> friend.userID != friendID) }
       }
     }
     case ADD_FRIEND_SUCCESS: {
@@ -83,6 +83,15 @@ export default function (state = initialState, action: Action): userState {
       return {
         ...state,
         currentFriend: state.user.Friends.find(x => x._id == friendID)
+      }
+    }
+    case UPDATE_USER: {
+      const { data } = action as UpdateUser;
+      console.log("Update");
+      console.log(data);
+      return {
+        ...state,
+        user: {...state.user, Friends: data}
       }
     }
     default: return state;

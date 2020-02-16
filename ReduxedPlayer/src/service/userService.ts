@@ -1,7 +1,7 @@
 
 import { User } from '../models/user';
 
-const baseURL = 'http://localhost:8080/mongousers/';
+const baseURL = 'http://denicdamjan.ddns.net:8080/mongousers/';
 
 export function dbRegisterUser(username: string, password: string) {
     const url = baseURL + 'register';
@@ -47,6 +47,13 @@ export function dbRemoveFriend(payload: any) {
 
 export function dbAddFriend(payload: any) {
     const url = `${baseURL}addfriend`;
+
+    return fetch(url, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "application/json" } }).
+        then(res => res.json());
+}
+
+export function dbUpdateUser(payload: any) {
+    const url = `${baseURL}updateuser`;
 
     return fetch(url, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "application/json" } }).
         then(res => res.json());

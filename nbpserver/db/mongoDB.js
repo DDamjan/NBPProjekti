@@ -43,7 +43,8 @@ const Playlist = mongoose.model('Playlist', playlistSchema);
 const friendSchema = new Schema({
   ID: Number,
   Username: { type: String, default: 'hahaha' },
-  Playlists: [playlistSchema]
+  Playlists: [playlistSchema],
+  userID: String
 });
 const Friend = mongoose.model('Friend', friendSchema);
 
@@ -174,20 +175,19 @@ async function ADD_FRIEND(body) {
   return new Promise((resolve, reject) => {
     User.findOne({ _id: body.userID }, function (err, user) {
       User.findOne({ Username: body.friendName }, '-Password -Friends', function (err, friend) {
-        if (friend !== null){
+        if (friend !== null) {
           const friendParse = new Friend();
           friendParse.Username = friend.Username;
-          friendParse.ID = friend.ID;
+          friendParse.userID = friend._id;
           friendParse.Playlists = friend.Playlists;
-          friendParse.save();
           console.log(user);
           user.Friends.push(friendParse);
           user.save();
-          resolve(user.Friends.find(x=> x.Username == body.friendName));
-        }else{
+          resolve(user.Friends.find(x => x.Username == body.friendName));
+        } else {
           resolve([]);
         }
-        
+
       });
     });
 
@@ -197,7 +197,11 @@ async function ADD_FRIEND(body) {
 async function REMOVE_FRIEND(body) {
   return new Promise((resolve, reject) => {
     return User.findOne({ _id: body.userID }, async function (err, user) {
-      const payload = await user.Friends.filter(x => x._id != body.friendID);
+      console.log("Neki user");
+      console.log(user);
+      const payload = await user.Friends.filter(x => x.userID != body.friendID);
+      // console.log("Neki user");
+      // console.log(user.Friends.filter(x => x._id != body.friendID));
       await user.updateOne({ Friends: payload });
       resolve(body.friendID);
     });
@@ -206,7 +210,7 @@ async function REMOVE_FRIEND(body) {
 
 async function REMOVE_TRACK(body) {
   return new Promise((resolve, reject) => {
-    User.findOne({_id: body.userID}, (err, user)=> {
+    User.findOne({ _id: body.userID }, (err, user) => {
       const trackIndex = user.Playlists.find(x => x._id == body.playlistID).Tracks.findIndex(x => x._id == body.trackID);
       user.Playlists.find(x => x._id == body.playlistID).Tracks.splice(trackIndex, 1);
       user.save();
@@ -253,6 +257,32 @@ async function GET_DETAILS(query) {
 
 }
 
+async function UPDATE_USER(body) {
+  return new Promise((resolve, reject) => {
+    User.findOne({ _id: body.userID }, function (err, user) {
+      User.find({ _id: { $in: body.friends } }, '-Password -Friends', (err, friend) => {
+        if (friend.length > 0) {
+          let updatedFriends = [];
+          friend.forEach(f => {
+            const friendParse = new Friend();
+            friendParse.Username = f.Username;
+            friendParse.userID = f._id;
+            friendParse.Playlists = f.Playlists;
+            updatedFriends.push(friendParse);
+          })
+          user.Friends = updatedFriends;
+          user.update();
+          resolve(updatedFriends);
+        } else {
+          resolve([]);
+        }
+      });
+    });
+
+  });
+}
+
+
 function execQuery(req, res, fun) {
   try {
     fun(req).then((result) => {
@@ -275,87 +305,9 @@ function execQuery(req, res, fun) {
   }
 }
 
-// async function execPost(req, res, fun) {
-//   try {
-//     fun(req.body).subscribe((result)=>{
-//       if (result== undefined){
-//         console.log("req.body");
-//         console.log(req.body);
-//         res.json(req.body);
-//         res.send();
-//       }
-//       else{
-//         console.log("result");
-//         console.log(result);
-//         res.json(result);
-//         res.end();
-//       }
-//     });
-//   } catch (err) {
-//     console.log("ERROR");
-//     res.status(500);
-//     res.send(err.message);
-//     res.end();
-//   }
-// }
-
-
-async function execFile(res, path) {
-  try {
-    res.sendFile(path);
-  } catch (err) {
-    console.log("ERROR");
-    res.status(500);
-    res.send(err.message);
-  }
-}
-
-async function returnArray(req, res, query) {
-  try {
-    const pool = await poolPromise;
-    const result = await pool.request()
-      .input('input_parameter', sql.Int, req.query.input_parameter)
-      .query(query);
-    return result.recordset;
-  } catch (err) {
-    res.status(500);
-    res.send(err.message);
-  }
-}
-
-async function execUser(req, res, ID) {
-  let user = await returnArray(req, res, queryString.GET_USER_BY_ID + ID);
-  let playlists = await returnArray(req, res, queryString.GET_PLAYLISTS + ID);
-
-  let data = {
-    ID: user[0].ID,
-    Username: user[0].Username,
-    playlists: playlists
-  }
-
-  res.json(data);
-}
-
-async function execPlaylists(req, res, ID) {
-  let playlist = await returnArray(req, res, queryString.CURRENT_PLAYLIST + ID);
-  let tracks = await returnArray(req, res, queryString.TRACKS_PLAYLIST + ID);
-
-  let data = {
-    ID: playlist[0].ID,
-    Name: playlist[0].Name,
-    OwnerID: playlist[0].OwnerID,
-    Tracks: tracks
-  }
-
-  res.json(data);
-}
-
 module.exports = {
   conectToDB: conectToDB,
   execQuery: execQuery,
-  execFile: execFile,
-  execUser: execUser,
-  execPlaylists: execPlaylists,
   REGISTER_USER: REGISTER_USER,
   AUTH_USER: AUTH_USER,
   USER_BY_ID: USER_BY_ID,
@@ -367,5 +319,6 @@ module.exports = {
   ADD_TRACK: ADD_TRACK,
   ADD_FRIEND: ADD_FRIEND,
   REMOVE_FRIEND: REMOVE_FRIEND,
-  REMOVE_TRACK: REMOVE_TRACK
+  REMOVE_TRACK: REMOVE_TRACK,
+  UPDATE_USER: UPDATE_USER
 }

@@ -1,5 +1,5 @@
-import { RegisterUser, registerUserSuccess, AuthUser, authUserSuccess, GetUserByID, getUserByIDSuccess, registerUserFail, RemoveFriend, AddFriend, removeFriendSuccess, addFriendSuccess } from "./actions/userActions";
-import { dbAuthUser, dbRegisterUser, dbGetUserByID, dbCheckUsername, dbRemoveFriend, dbAddFriend } from "../service/userService";
+import { RegisterUser, registerUserSuccess, AuthUser, authUserSuccess, GetUserByID, getUserByIDSuccess, registerUserFail, RemoveFriend, AddFriend, removeFriendSuccess, addFriendSuccess, GetUserByIDSuccess, updateUser } from "./actions/userActions";
+import { dbAuthUser, dbRegisterUser, dbGetUserByID, dbCheckUsername, dbRemoveFriend, dbAddFriend, dbUpdateUser } from "../service/userService";
 import { dbGetPlaylists, dbAddPlaylist, dbDeletePlaylist, dbAddTrack, dbRemoveTrack, dbFetchCurrentPlaylist } from "../service/playlistService";
 import { put } from "redux-saga/effects";
 import { GetPlaylists, getPlaylistsSuccess, AddPlaylist, addPlaylistSuccess, DeletePlaylist, deletePlaylistSuccess, AddTrack, addTrackSuccess, RemoveTrack, RemoveTrackSuccess, CurrentPlaylist, currentPlaylistSuccess, FindTrack, findTrackSuccess } from "./actions/playlistActions";
@@ -34,7 +34,7 @@ export function* sRegisterUser(user: RegisterUser) {
 }
 
 export function* sGetUserByID(user: GetUserByID) {
-    const dbUser = yield dbGetUserByID(user.ID);
+    const dbUser = yield dbGetUserByID(user.data);
     yield put(getUserByIDSuccess(dbUser));
 }
 
@@ -53,6 +53,18 @@ export function* sAddFriend(friend: AddFriend) {
     
 }
 
+export function* sUpdateUser(user: GetUserByIDSuccess) {
+    let arr = [];
+    user.user.Friends.forEach(friend => {
+        arr.push(friend.userID);
+    })
+    const payload = {
+        friends: arr,
+        userID: user.user._id
+    }
+    const dbUser = yield dbUpdateUser(payload);
+    yield put(updateUser(dbUser));
+}
 
 //playlists
 export function* sFetchPlaylists(playlist: GetPlaylists) {

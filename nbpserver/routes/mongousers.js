@@ -32,4 +32,8 @@ router.post('/removefriend', async (req, res) => {
   mongoDB.execQuery(req.body, res, mongoDB.REMOVE_FRIEND);
 })
 
+router.post('/updateuser', async (req, res) => {
+  mongoDB.execQuery(req.body, res, mongoDB.UPDATE_USER);
+})
+
 module.exports = router;

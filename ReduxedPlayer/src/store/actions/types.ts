@@ -11,6 +11,7 @@ export const REMOVE_FRIEND_SUCCESS: string = "REMOVE_FRIEND_SUCCESS";
 export const ADD_FRIEND_SUCCESS: string = "ADD_FRIEND_SUCCESS";
 export const ADD_FRIEND: string = "ADD_FRIEND";
 export const GET_FRIEND: string = "GET_FRIEND";
+export const UPDATE_USER: string = "UPDATE_USER";
 
 //playlist
 export const FETCH_PLAYLISTS: string = "FETCH_PLAYLISTS";

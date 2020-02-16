@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { REGISTER_USER, REGISTER_USER_SUCCESS, AUTH_USER, AUTH_USER_SUCCESS, GET_USER_BY_ID, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, REMOVE_FRIEND, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS, ADD_FRIEND, GET_FRIEND } from "./types";
+import { REGISTER_USER, REGISTER_USER_SUCCESS, AUTH_USER, AUTH_USER_SUCCESS, GET_USER_BY_ID, GET_USER_BY_ID_SUCCESS, REGISTER_USER_FAIL, REMOVE_FRIEND, REMOVE_FRIEND_SUCCESS, ADD_FRIEND_SUCCESS, ADD_FRIEND, GET_FRIEND, UPDATE_USER } from "./types";
 import { User } from "../../models/user";
 
 export interface AuthUser extends Action {
@@ -64,13 +64,13 @@ export function registerUserFail(error: string): RegisterUserFail {
 }
 
 export interface GetUserByID extends Action {
-    ID: string;
+    data: any;
 }
 
-export function getUserByID(ID: string): GetUserByID {
+export function getUserByID(data: any): GetUserByID {
     return {
         type: GET_USER_BY_ID,
-        ID
+        data
     };
 }
 
@@ -137,5 +137,16 @@ export function getFriend(friendID: string): GetFriend {
     return {
         type: GET_FRIEND,
         friendID
+    }
+}
+
+export interface UpdateUser extends Action {
+    data: any;
+}
+
+export function updateUser(data: any): UpdateUser {
+    return {
+        type: UPDATE_USER,
+        data
     }
 }

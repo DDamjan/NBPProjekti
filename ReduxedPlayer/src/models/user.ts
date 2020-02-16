@@ -6,4 +6,5 @@ export interface User{
     Password?: string;
     Playlists: Playlist[];
     Friends?: User[];
+    userID?: string;
 }   
