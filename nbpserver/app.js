@@ -6,8 +6,14 @@ var logger = require('morgan');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 
+const mongoDB = require('./db/mongoDB.js');
+mongoDB.conectToDB();
+
 var ridesRouter = require('./routes/rides');
 var usersRouter = require('./routes/users');
+
+var playlistsRouter = require('./routes/playlists');
+var mongousersRouter = require('./routes/mongousers');
 
 var app = express();
 app.set("view engine", "pug");
@@ -22,6 +28,9 @@ app.use(cors());
 
 app.use('/rides', ridesRouter);
 app.use('/users', usersRouter);
+
+app.use('/playlists', playlistsRouter);
+app.use('/mongousers', mongousersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
