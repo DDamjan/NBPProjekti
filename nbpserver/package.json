@@ -24,7 +24,7 @@
     "redis-parser": "^3.0.0",
     "rxjs": "^6.5.4",
     "sha.js": "^2.4.11",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-client": "^2.3.0",
     "socket.io-emitter": "^3.1.1",
     "socket.io-parser": "~3.2.0"
